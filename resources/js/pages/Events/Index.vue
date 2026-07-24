@@ -13,18 +13,8 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { dashboard, login, register } from '@/routes';
-
-type Event = {
-    id: number;
-    name: string;
-    description: string;
-    date: string;
-    location: string;
-    category: string;
-    distance: string;
-    participants: number;
-    image: string;
-};
+import { show as eventsShow } from '@/routes/events';
+import type { Event } from '@/types';
 
 defineProps<{
     events: Event[];
@@ -99,7 +89,9 @@ function formatParticipants(count: number): string {
                 </CardContent>
 
                 <CardFooter>
-                    <Button class="w-full">View details</Button>
+                    <Button as-child class="w-full">
+                        <Link :href="eventsShow(event.id)">View details</Link>
+                    </Button>
                 </CardFooter>
             </Card>
         </div>
