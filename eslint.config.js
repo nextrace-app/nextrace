@@ -84,6 +84,8 @@ export default defineConfigWithVueTs(
             'resources/js/components/ui/*',
             'resources/js/routes/**',
             'resources/js/wayfinder/**',
+            'resources/js/auto-imports.d.ts',
+            'resources/js/components.d.ts',
         ],
     },
     prettier,

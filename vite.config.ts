@@ -4,6 +4,8 @@ import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
+import AutoImport from 'unplugin-auto-import/vite';
+import Components from 'unplugin-vue-components/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -29,6 +31,16 @@ export default defineConfig({
         }),
         wayfinder({
             formVariants: true,
+        }),
+        AutoImport({
+            imports: ['vue', '@vueuse/core'],
+            dirs: ['resources/js/composables'],
+            vueTemplate: true,
+            dts: 'resources/js/auto-imports.d.ts',
+        }),
+        Components({
+            dirs: ['resources/js/components'],
+            dts: 'resources/js/components.d.ts',
         }),
     ],
 });
