@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { Calendar, MapPin, Users } from '@lucide/vue';
-import { computed } from 'vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,16 +11,12 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { dashboard, login, register } from '@/routes';
 import { show as eventsShow } from '@/routes/events';
 import type { Event } from '@/types';
 
 defineProps<{
     events: Event[];
 }>();
-
-const page = usePage();
-const user = computed(() => page.props.auth.user);
 
 function formatDate(date: string): string {
     return new Date(date).toLocaleDateString('en-US', {
@@ -40,22 +35,7 @@ function formatParticipants(count: number): string {
     <Head title="Events" />
 
     <div class="min-h-screen bg-background p-6 lg:p-8">
-        <header class="mx-auto mb-8 flex max-w-6xl items-center justify-between">
-            <h1 class="text-lg font-semibold">Events</h1>
-            <nav class="flex items-center gap-4 text-sm">
-                <Link v-if="user" :href="dashboard()" class="text-muted-foreground hover:text-foreground">
-                    Dashboard
-                </Link>
-                <template v-else>
-                    <Link :href="login()" class="text-muted-foreground hover:text-foreground">
-                        Log in
-                    </Link>
-                    <Link :href="register()" class="text-muted-foreground hover:text-foreground">
-                        Register
-                    </Link>
-                </template>
-            </nav>
-        </header>
+        <DefaultHeader />
 
         <div class="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <Card v-for="event in events" :key="event.id" class="overflow-hidden pt-0">
