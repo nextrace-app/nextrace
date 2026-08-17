@@ -33,11 +33,20 @@ const messages = {
     },
 };
 
+export const defaultLocale = 'el';
+
 export type SupportedLocale = keyof typeof messages;
 
-export default createI18n({
-    legacy: false,
-    locale: 'el',
-    fallbackLocale: 'el',
-    messages,
-});
+/**
+ * A fresh instance per application: the SSR server renders every request from
+ * the same process, so a shared instance would leak one request's locale into
+ * the next one.
+ */
+export function createAppI18n(locale: SupportedLocale = defaultLocale) {
+    return createI18n({
+        legacy: false,
+        locale,
+        fallbackLocale: defaultLocale,
+        messages,
+    });
+}

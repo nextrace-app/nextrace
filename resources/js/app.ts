@@ -1,7 +1,6 @@
 import { createInertiaApp, router } from '@inertiajs/vue3';
-import { createApp, h } from 'vue';
 import { initializeTheme } from '@/composables/useAppearance';
-import i18n from '@/i18n';
+import { createAppI18n, defaultLocale } from '@/i18n';
 import type { SupportedLocale } from '@/i18n';
 import AppLayout from '@/layouts/AppLayout.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue';
@@ -10,14 +9,17 @@ import { initializeFlashToast } from '@/lib/flashToast';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+let i18n: ReturnType<typeof createAppI18n> | undefined;
+
 createInertiaApp({
-    setup({ el, App, props, plugin }) {
-        i18n.global.locale.value =
-            (props.initialPage.props.locale as SupportedLocale) || 'el';
-        createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .use(i18n)
-            .mount(el!);
+    // Not setup(), which would have to mount the app itself and so breaks server
+    // side rendering, where there is no element to mount onto.
+    withApp: (app, { page }) => {
+        i18n = createAppI18n(
+            (page.props.locale as SupportedLocale) || defaultLocale,
+        );
+
+        app.use(i18n);
     },
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {
@@ -41,6 +43,10 @@ createInertiaApp({
 
 // This will keep the client-side locale in sync with the server on every visit...
 router.on('navigate', (event) => {
+    if (!i18n) {
+        return;
+    }
+
     i18n.global.locale.value = event.detail.page.props
         .locale as SupportedLocale;
 });
