@@ -5,7 +5,7 @@ use App\Support\Locale;
 use Illuminate\Support\Facades\Route;
 
 $localized = function () {
-    Route::inertia('/', 'Welcome')->name('home');
+    Route::inertia('/', 'Home')->name('home');
 
     Route::get('events', [EventController::class, 'index'])->name('events.index');
     Route::get('events/{event}', [EventController::class, 'show'])->name('events.show');

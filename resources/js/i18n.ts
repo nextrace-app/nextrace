@@ -9,6 +9,12 @@ const messages = {
             events: 'Εκδηλώσεις',
             language: 'Γλώσσα',
         },
+        home: {
+            title: 'Βρες τον επόμενο αγώνα σου',
+            subtitle:
+                'Δες τις επερχόμενες εκδηλώσεις και δήλωσε συμμετοχή σε λίγα λεπτά.',
+            cta: 'Δες τις εκδηλώσεις',
+        },
     },
     en: {
         nav: {
@@ -17,6 +23,12 @@ const messages = {
             register: 'Register',
             events: 'Events',
             language: 'Language',
+        },
+        home: {
+            title: 'Find your next race',
+            subtitle:
+                'Browse the upcoming events and sign up in a couple of minutes.',
+            cta: 'Browse events',
         },
     },
 };
