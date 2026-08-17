@@ -21,7 +21,9 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // routes/auth.php registers these once per locale instead, so that
+        // /en/login exists alongside /login rather than 404ing.
+        Fortify::ignoreRoutes();
     }
 
     /**

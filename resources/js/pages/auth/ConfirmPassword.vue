@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
-import {
-    index as confirmOptions,
-    store as confirmStore,
-} from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyConfirmationController';
 import InputError from '@/components/InputError.vue';
 import PasskeyVerify from '@/components/PasskeyVerify.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { useLocale } from '@/composables/useLocale';
+import { confirm as confirmStore, confirmOptions } from '@/routes/passkey';
 import { store } from '@/routes/password/confirm';
+
+const { localeRoute } = useLocale();
 
 defineOptions({
     layout: {
@@ -26,8 +26,8 @@ defineOptions({
 
     <PasskeyVerify
         :routes="{
-            options: confirmOptions(),
-            submit: confirmStore(),
+            options: localeRoute(confirmOptions()),
+            submit: localeRoute(confirmStore()),
         }"
         label="Confirm with passkey"
         loading-label="Confirming..."
@@ -35,7 +35,7 @@ defineOptions({
     />
 
     <Form
-        v-bind="store.form()"
+        v-bind="localeRoute(store.form())"
         reset-on-success
         v-slot="{ errors, processing }"
     >

@@ -9,8 +9,11 @@ import {
     InputOTPGroup,
     InputOTPSlot,
 } from '@/components/ui/input-otp';
+import { useLocale } from '@/composables/useLocale';
 import { store } from '@/routes/two-factor/login';
 import type { TwoFactorConfigContent } from '@/types';
+
+const { localeRoute } = useLocale();
 
 const showRecoveryInput = ref<boolean>(false);
 const code = ref<string>('');
@@ -53,7 +56,7 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
     <div class="space-y-6">
         <template v-if="!showRecoveryInput">
             <Form
-                v-bind="store.form()"
+                v-bind="localeRoute(store.form())"
                 class="space-y-4"
                 reset-on-error
                 @error="code = ''"
@@ -100,7 +103,7 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
 
         <template v-else>
             <Form
-                v-bind="store.form()"
+                v-bind="localeRoute(store.form())"
                 class="space-y-4"
                 reset-on-error
                 #default="{ errors, processing, clearErrors }"

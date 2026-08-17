@@ -7,8 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { useLocale } from '@/composables/useLocale';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
+
+const { localeRoute } = useLocale();
 
 defineProps<{
     passwordRules: string;
@@ -26,7 +29,7 @@ defineOptions({
     <Head title="Register" />
 
     <Form
-        v-bind="store.form()"
+        v-bind="localeRoute(store.form())"
         :reset-on-success="['password', 'password_confirmation']"
         v-slot="{ errors, processing }"
         class="flex flex-col gap-6"
@@ -104,7 +107,7 @@ defineOptions({
         <div class="text-center text-sm text-muted-foreground">
             Already have an account?
             <TextLink
-                :href="login()"
+                :href="localeRoute(login())"
                 class="underline underline-offset-4"
                 :tabindex="6"
                 >Log in</TextLink

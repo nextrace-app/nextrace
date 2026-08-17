@@ -3,8 +3,11 @@ import { Form, Head } from '@inertiajs/vue3';
 import TextLink from '@/components/TextLink.vue';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import { useLocale } from '@/composables/useLocale';
 import { logout } from '@/routes';
 import { send } from '@/routes/verification';
+
+const { localeRoute } = useLocale();
 
 defineOptions({
     layout: {
@@ -31,7 +34,7 @@ defineProps<{
     </div>
 
     <Form
-        v-bind="send.form()"
+        v-bind="localeRoute(send.form())"
         class="space-y-6 text-center"
         v-slot="{ processing }"
     >
@@ -40,7 +43,11 @@ defineProps<{
             Resend verification email
         </Button>
 
-        <TextLink :href="logout()" as="button" class="mx-auto block text-sm">
+        <TextLink
+            :href="localeRoute(logout())"
+            as="button"
+            class="mx-auto block text-sm"
+        >
             Log out
         </TextLink>
     </Form>
