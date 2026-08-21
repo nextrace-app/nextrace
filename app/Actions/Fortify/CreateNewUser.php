@@ -28,6 +28,9 @@ class CreateNewUser implements CreatesNewUsers
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => $input['password'],
+            // Remembered so later notifications reach the user in the language
+            // they signed up in, even when sent from a queue.
+            'locale' => app()->getLocale(),
         ]);
     }
 }

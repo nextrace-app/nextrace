@@ -19,11 +19,17 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
-        // Keep guests on the locale they were browsing when they hit a protected page.
-        $middleware->redirectGuestsTo(fn () => route(Locale::routeName('login')));
+        // First in the group: everything after it may translate or build URLs.
+        $middleware->prependToGroup('web', SetLocale::class);
+
+        // Keep guests on the locale they were browsing when they hit a protected
+        // page. Read from the request rather than from the application's locale,
+        // because 'auth' can run before the locale has been applied.
+        $middleware->redirectGuestsTo(fn (Request $request) => route(
+            Locale::routeName('login', Locale::current($request))
+        ));
 
         $middleware->web(append: [
-            SetLocale::class,
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,

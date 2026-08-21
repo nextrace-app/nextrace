@@ -46,13 +46,17 @@ class Locale
     }
 
     /**
-     * The name a route carries under the current locale, e.g. 'login' becomes 'en.login'.
+     * The name a route carries under the given locale, e.g. 'login' becomes 'en.login'.
+     *
+     * Defaults to the locale the application is currently running in, which is
+     * the URL's locale during a request and the recipient's locale while a
+     * notification is being formatted.
      */
-    public static function routeName(string $name, ?Request $request = null): string
+    public static function routeName(string $name, ?string $locale = null): string
     {
-        $locale = self::fromRequest($request);
+        $locale ??= app()->getLocale();
 
-        return $locale === null ? $name : "{$locale}.{$name}";
+        return in_array($locale, self::prefixed(), true) ? "{$locale}.{$name}" : $name;
     }
 
     /**
