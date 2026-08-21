@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\RememberLocale;
 use App\Http\Middleware\SetLocale;
 use App\Support\Locale;
 use Illuminate\Foundation\Application;
@@ -30,6 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ));
 
         $middleware->web(append: [
+            // After the session, so it can read the cookie and the current user.
+            RememberLocale::class,
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,

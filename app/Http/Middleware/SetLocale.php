@@ -20,7 +20,7 @@ class SetLocale
 
         // Fortify reads this when it redirects after login, registration and password
         // confirmation, so it has to follow the locale the request came in on.
-        config(['fortify.home' => Locale::path(config('fortify.home'), $request)]);
+        config(['fortify.home' => Locale::path(config('fortify.home'))]);
 
         return $next($request);
     }

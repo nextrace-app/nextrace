@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useLocale } from '@/composables/useLocale';
 
 const { t } = useI18n();
-const { locale, supportedLocales, localeUrl } = useLocale();
+const { locale, supportedLocales, localeSwitchUrl } = useLocale();
 const page = usePage();
 
 const itemClass = 'rounded-md px-2 py-1 text-xs font-medium transition-colors';
@@ -29,7 +29,7 @@ const itemClass = 'rounded-md px-2 py-1 text-xs font-medium transition-colors';
             </span>
             <Link
                 v-else
-                :href="localeUrl(page.url, code)"
+                :href="localeSwitchUrl(page.url, code)"
                 :class="[
                     itemClass,
                     'text-neutral-500 hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60',

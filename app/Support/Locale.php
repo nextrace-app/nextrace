@@ -60,12 +60,25 @@ class Locale
     }
 
     /**
-     * The path a URL carries under the current locale, e.g. '/dashboard' becomes '/en/dashboard'.
+     * Whether the given locale is one the application serves.
      */
-    public static function path(string $path, ?Request $request = null): string
+    public static function isSupported(string $locale): bool
     {
-        $locale = self::fromRequest($request);
+        return in_array($locale, config('app.supported_locales'), true);
+    }
 
-        return $locale === null ? $path : "/{$locale}/".ltrim($path, '/');
+    /**
+     * The path a URL carries under the given locale (the application's current
+     * locale by default), e.g. '/dashboard' becomes '/en/dashboard'.
+     */
+    public static function path(string $path, ?string $locale = null): string
+    {
+        $locale ??= app()->getLocale();
+
+        if (! in_array($locale, self::prefixed(), true)) {
+            return $path;
+        }
+
+        return rtrim("/{$locale}/".ltrim($path, '/'), '/');
     }
 }

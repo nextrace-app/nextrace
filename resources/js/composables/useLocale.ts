@@ -42,11 +42,23 @@ export function useLocale() {
             : { action: localeUrl(route.action) }),
     });
 
+    // The server only sees a deliberate choice when it is spelled out: a bare
+    // URL is also what a visitor gets by simply typing the address.
+    const localeSwitchUrl = (url: string, targetLocale: string) => {
+        const [path, query] = localeUrl(url, targetLocale).split('?');
+        const params = new URLSearchParams(query);
+
+        params.set('locale', targetLocale);
+
+        return `${path}?${params.toString()}`;
+    };
+
     return {
         locale,
         defaultLocale,
         supportedLocales,
         localeUrl,
+        localeSwitchUrl,
         localeRoute,
     };
 }

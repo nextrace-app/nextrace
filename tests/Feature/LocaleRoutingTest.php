@@ -83,10 +83,10 @@ class LocaleRoutingTest extends TestCase
 
     public function test_settings_redirects_within_the_current_locale(): void
     {
-        $user = User::factory()->create();
-
-        $this->actingAs($user)->get('/en/settings')->assertRedirect(route('en.profile.edit'));
-        $this->actingAs($user)->get('/settings')->assertRedirect(route('profile.edit'));
+        // A user per request: visiting a locale is remembered on the account,
+        // so the same user would be carried back to the locale of the first one.
+        $this->actingAs(User::factory()->create())->get('/en/settings')->assertRedirect(route('en.profile.edit'));
+        $this->actingAs(User::factory()->create())->get('/settings')->assertRedirect(route('profile.edit'));
     }
 
     public function test_login_redirects_to_the_dashboard_of_its_locale(): void
