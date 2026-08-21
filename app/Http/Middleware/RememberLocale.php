@@ -115,6 +115,9 @@ class RememberLocale
     /**
      * The current URL as it looks in the given locale, without the switcher's
      * own query parameter.
+     *
+     * The path is taken unprefixed: the switcher links to a URL that already
+     * carries the target locale, which would otherwise be prefixed twice.
      */
     private function urlIn(Request $request, string $locale): string
     {
@@ -122,6 +125,6 @@ class RememberLocale
 
         unset($query[self::COOKIE]);
 
-        return url()->query(Locale::path('/'.$request->path(), $locale), $query);
+        return url()->query(Locale::path(Locale::unprefixedPath($request), $locale), $query);
     }
 }

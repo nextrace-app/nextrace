@@ -27,9 +27,26 @@ class LocalePreferenceTest extends TestCase
             ->assertCookie(RememberLocale::COOKIE, 'el');
     }
 
+    public function test_choosing_the_locale_a_page_already_carries_does_not_prefix_it_twice(): void
+    {
+        // The switcher links to the page in the target locale, so the choice
+        // usually arrives on a URL that is already prefixed.
+        $this->get('/en/events?locale=en')
+            ->assertRedirect('/en/events')
+            ->assertCookie(RememberLocale::COOKIE, 'en');
+    }
+
+    public function test_switching_away_from_a_prefixed_page_drops_the_prefix(): void
+    {
+        $this->get('/en/events?locale=el')
+            ->assertRedirect('/events')
+            ->assertCookie(RememberLocale::COOKIE, 'el');
+    }
+
     public function test_query_parameters_survive_the_switch(): void
     {
         $this->get('/events?locale=en&page=2')->assertRedirect('/en/events?page=2');
+        $this->get('/en/events?locale=el&page=2')->assertRedirect('/events?page=2');
     }
 
     public function test_visiting_a_prefixed_url_is_remembered(): void
