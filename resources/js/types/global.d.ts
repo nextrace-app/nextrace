@@ -1,3 +1,4 @@
+import type { Translations } from '@/i18n';
 import type { Auth } from '@/types/auth';
 
 // Extend ImportMeta interface for Vite...
@@ -22,6 +23,7 @@ declare module '@inertiajs/core' {
             locale: string;
             defaultLocale: string;
             supportedLocales: string[];
+            translations: Translations;
             [key: string]: unknown;
         };
     }

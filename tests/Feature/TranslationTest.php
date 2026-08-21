@@ -35,6 +35,17 @@ class TranslationTest extends TestCase
             ->assertSessionHasErrors(['email' => 'These credentials do not match our records.']);
     }
 
+    public function test_interface_translations_are_shared_with_the_frontend(): void
+    {
+        $this->get(route('home'))->assertInertia(
+            fn ($page) => $page->where('translations.nav.events', 'Εκδηλώσεις')
+        );
+
+        $this->get(route('en.home'))->assertInertia(
+            fn ($page) => $page->where('translations.nav.events', 'Events')
+        );
+    }
+
     public function test_json_strings_are_translated_for_the_default_locale(): void
     {
         $this->app->setLocale('el');

@@ -1,52 +1,19 @@
 import { createI18n } from 'vue-i18n';
 
-const messages = {
-    el: {
-        nav: {
-            dashboard: 'Πίνακας ελέγχου',
-            login: 'Σύνδεση',
-            register: 'Εγγραφή',
-            events: 'Εκδηλώσεις',
-            language: 'Γλώσσα',
-        },
-        home: {
-            title: 'Βρες τον επόμενο αγώνα σου',
-            subtitle:
-                'Δες τις επερχόμενες εκδηλώσεις και δήλωσε συμμετοχή σε λίγα λεπτά.',
-            cta: 'Δες τις εκδηλώσεις',
-        },
-    },
-    en: {
-        nav: {
-            dashboard: 'Dashboard',
-            login: 'Log in',
-            register: 'Register',
-            events: 'Events',
-            language: 'Language',
-        },
-        home: {
-            title: 'Find your next race',
-            subtitle:
-                'Browse the upcoming events and sign up in a couple of minutes.',
-            cta: 'Browse events',
-        },
-    },
-};
-
-export const defaultLocale = 'el';
-
-export type SupportedLocale = keyof typeof messages;
+export type Translations = { [key: string]: string | Translations };
 
 /**
- * A fresh instance per application: the SSR server renders every request from
- * the same process, so a shared instance would leak one request's locale into
- * the next one.
+ * A fresh instance per application, carrying the translations the server sent
+ * for the current locale: the SSR server renders every request from the same
+ * process, so a shared instance would leak one request's language into the next.
+ *
+ * Only the current locale is ever loaded - Laravel's language files are the
+ * single source of truth and resolve the fallback before sharing them.
  */
-export function createAppI18n(locale: SupportedLocale = defaultLocale) {
+export function createAppI18n(locale: string, messages: Translations) {
     return createI18n({
         legacy: false,
         locale,
-        fallbackLocale: defaultLocale,
-        messages,
+        messages: { [locale]: messages },
     });
 }

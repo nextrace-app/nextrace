@@ -1,7 +1,7 @@
 import { createInertiaApp, router } from '@inertiajs/vue3';
 import { initializeTheme } from '@/composables/useAppearance';
-import { createAppI18n, defaultLocale } from '@/i18n';
-import type { SupportedLocale } from '@/i18n';
+import { createAppI18n } from '@/i18n';
+import type { Translations } from '@/i18n';
 import AppLayout from '@/layouts/AppLayout.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
@@ -15,9 +15,7 @@ createInertiaApp({
     // Not setup(), which would have to mount the app itself and so breaks server
     // side rendering, where there is no element to mount onto.
     withApp: (app, { page }) => {
-        i18n = createAppI18n(
-            (page.props.locale as SupportedLocale) || defaultLocale,
-        );
+        i18n = createAppI18n(page.props.locale, page.props.translations);
 
         app.use(i18n);
     },
@@ -41,14 +39,20 @@ createInertiaApp({
     },
 });
 
-// This will keep the client-side locale in sync with the server on every visit...
+// This will keep the client-side locale and its strings in sync with the
+// server on every visit...
 router.on('navigate', (event) => {
     if (!i18n) {
         return;
     }
 
-    i18n.global.locale.value = event.detail.page.props
-        .locale as SupportedLocale;
+    const { locale, translations } = event.detail.page.props as {
+        locale: string;
+        translations: Translations;
+    };
+
+    i18n.global.setLocaleMessage(locale, translations);
+    i18n.global.locale.value = locale;
 });
 
 // This will set light / dark mode on page load...
