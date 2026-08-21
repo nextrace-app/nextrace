@@ -46,6 +46,47 @@ class Locale
     }
 
     /**
+     * The path of the given request with any locale prefix taken off, so it can
+     * be rebuilt in another locale.
+     */
+    public static function unprefixedPath(?Request $request = null): string
+    {
+        $request ??= request();
+
+        $segments = explode('/', trim($request->path(), '/'));
+
+        if (in_array($segments[0] ?? '', self::prefixed(), true)) {
+            array_shift($segments);
+        }
+
+        return '/'.implode('/', $segments);
+    }
+
+    /**
+     * The current page's absolute URL in every locale the application serves,
+     * for the alternate links search engines read.
+     *
+     * @return array<string, string>
+     */
+    public static function alternates(?Request $request = null): array
+    {
+        $request ??= request();
+
+        $path = self::unprefixedPath($request);
+
+        $query = $request->query();
+        unset($query['locale']);
+
+        $alternates = [];
+
+        foreach (config('app.supported_locales') as $locale) {
+            $alternates[$locale] = url()->query(self::path($path, $locale), $query);
+        }
+
+        return $alternates;
+    }
+
+    /**
      * The name a route carries under the given locale, e.g. 'login' becomes 'en.login'.
      *
      * Defaults to the locale the application is currently running in, which is

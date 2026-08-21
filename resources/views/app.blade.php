@@ -30,6 +30,14 @@
             }
         </style>
 
+        {{-- Every language this page exists in, so search engines serve the
+             right one and do not read them as duplicate content. --}}
+        <link rel="canonical" href="{{ $localeAlternates[app()->getLocale()] }}">
+        @foreach ($localeAlternates as $alternateLocale => $alternateUrl)
+            <link rel="alternate" hreflang="{{ $alternateLocale }}" href="{{ $alternateUrl }}">
+        @endforeach
+        <link rel="alternate" hreflang="x-default" href="{{ $localeAlternates[$defaultLocale] }}">
+
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">

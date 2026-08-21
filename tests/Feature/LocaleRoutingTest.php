@@ -101,6 +101,22 @@ class LocaleRoutingTest extends TestCase
         $this->assertAuthenticated();
     }
 
+    public function test_pages_point_search_engines_at_their_other_languages(): void
+    {
+        $this->get('/en/events')
+            ->assertSee('<link rel="canonical" href="'.url('/en/events').'">', false)
+            ->assertSee('hreflang="el" href="'.url('/events').'"', false)
+            ->assertSee('hreflang="en" href="'.url('/en/events').'"', false)
+            ->assertSee('hreflang="x-default" href="'.url('/events').'"', false);
+    }
+
+    public function test_alternate_links_keep_the_query_string(): void
+    {
+        $this->get('/en/events?page=2')
+            ->assertSee('hreflang="el" href="'.url('/events?page=2').'"', false)
+            ->assertSee('<link rel="canonical" href="'.url('/en/events?page=2').'">', false);
+    }
+
     public function test_locale_prefix_is_recomputed_for_each_request(): void
     {
         $this->get('/en/events')->assertOk();
