@@ -14,6 +14,7 @@
 /resources/js/components.d.ts
 /vendor
 .DS_Store
+*.sqlite*
 .env
 .env.backup
 .env.production
