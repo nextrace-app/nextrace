@@ -32,6 +32,34 @@ class EventControllerTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_every_event_in_the_catalogue_is_complete_and_uniquely_numbered(): void
+    {
+        $ids = array_column(Events::LIST, 'id');
+
+        $this->assertSame($ids, array_unique($ids), 'Two events share an id.');
+
+        foreach (Events::LIST as $event) {
+            $this->assertSame(
+                ['id', 'name', 'description', 'date', 'location', 'category', 'distance', 'participants', 'image'],
+                array_keys($event),
+                "Event [{$event['id']}] does not carry the expected fields."
+            );
+
+            $this->assertMatchesRegularExpression(
+                '/^\d{4}-\d{2}-\d{2}$/',
+                $event['date'],
+                "Event [{$event['id']}] has a date the frontend cannot format."
+            );
+        }
+    }
+
+    public function test_every_event_in_the_catalogue_has_its_own_page(): void
+    {
+        foreach (Events::LIST as $event) {
+            $this->get(route('events.show', ['event' => $event['id']]))->assertOk();
+        }
+    }
+
     public function test_visiting_an_unknown_event_returns_a_404(): void
     {
         $response = $this->get(route('events.show', ['event' => 999999]));
