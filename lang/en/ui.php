@@ -18,6 +18,7 @@ return [
         'login' => 'Log in',
         'register' => 'Register',
         'events' => 'Events',
+        'favorites' => 'Favorites',
         'language' => 'Language',
     ],
 
@@ -28,9 +29,17 @@ return [
     ],
 
     'events' => [
+        'participants' => 'participants',
+        'details' => 'View details',
         'favorite' => [
             'add' => 'Add to favorites',
             'remove' => 'Remove from favorites',
         ],
+    ],
+
+    'favorites' => [
+        'title' => 'Your favorites',
+        'empty' => 'You have not saved any events yet.',
+        'cta' => 'Browse events',
     ],
 ];

@@ -5,9 +5,28 @@ namespace App\Http\Controllers;
 use App\Constants\Events;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class FavoriteController extends Controller
 {
+    /**
+     * The events the signed in user marked with the heart, newest first.
+     */
+    public function index(Request $request): Response
+    {
+        $events = collect($request->user()->favoriteEventIds())
+            ->map(fn (int $id) => Events::find($id))
+            // An event can disappear from the catalogue while it is still
+            // someone's favorite, so the gaps are dropped rather than rendered.
+            ->filter()
+            ->values();
+
+        return Inertia::render('Favorites/Index', [
+            'events' => $events,
+        ]);
+    }
+
     /**
      * Mark an event as a favorite of the signed in user.
      */

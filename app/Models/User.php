@@ -65,7 +65,7 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
      */
     public function favoriteEventIds(): array
     {
-        return $this->favorites()->pluck('event_id')->all();
+        return $this->favorites()->latest()->pluck('event_id')->all();
     }
 
     /**

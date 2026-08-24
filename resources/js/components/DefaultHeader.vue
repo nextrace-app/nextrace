@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useLocale } from '@/composables/useLocale';
 import { dashboard, home, login, register } from '@/routes';
+import { index as favorites } from '@/routes/favorites';
 
 const { t } = useI18n();
 const { localeRoute } = useLocale();
@@ -23,13 +24,20 @@ const user = computed(() => page.props.auth.user);
             <h1 class="text-lg font-semibold">{{ t('nav.events') }}</h1>
         </Link>
         <nav class="flex items-center gap-4 text-sm">
-            <Link
-                v-if="user"
-                :href="localeRoute(dashboard())"
-                class="text-muted-foreground hover:text-foreground"
-            >
-                {{ t('nav.dashboard') }}
-            </Link>
+            <template v-if="user">
+                <Link
+                    :href="localeRoute(favorites())"
+                    class="text-muted-foreground hover:text-foreground"
+                >
+                    {{ t('nav.favorites') }}
+                </Link>
+                <Link
+                    :href="localeRoute(dashboard())"
+                    class="text-muted-foreground hover:text-foreground"
+                >
+                    {{ t('nav.dashboard') }}
+                </Link>
+            </template>
             <template v-else>
                 <Link
                     :href="localeRoute(login())"

@@ -20,6 +20,50 @@ class FavoriteTest extends TestCase
         $this->assertDatabaseCount('favorites', 0);
     }
 
+    public function test_the_favorites_page_is_only_for_signed_in_users(): void
+    {
+        $this->get(route('favorites.index'))->assertRedirect(route('login'));
+        $this->get(route('en.favorites.index'))->assertRedirect(route('en.login'));
+    }
+
+    public function test_the_favorites_page_lists_the_events_of_the_current_user_newest_first(): void
+    {
+        $user = User::factory()->create();
+        $someoneElse = User::factory()->create();
+
+        Favorite::factory()->for($user)->forEvent(1)->create(['created_at' => now()->subDay()]);
+        Favorite::factory()->for($user)->forEvent(3)->create(['created_at' => now()]);
+        Favorite::factory()->for($someoneElse)->forEvent(2)->create();
+
+        $this->actingAs($user)->get(route('favorites.index'))->assertInertia(
+            fn ($page) => $page
+                ->component('Favorites/Index')
+                ->where('events.0.id', 3)
+                ->where('events.1.id', 1)
+                ->count('events', 2)
+        );
+    }
+
+    public function test_the_favorites_page_is_empty_without_favorites(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->get(route('favorites.index'))->assertInertia(
+            fn ($page) => $page->component('Favorites/Index')->count('events', 0)
+        );
+    }
+
+    public function test_the_favorites_page_skips_events_that_no_longer_exist(): void
+    {
+        $user = User::factory()->create();
+        Favorite::factory()->for($user)->forEvent(1)->create();
+        Favorite::factory()->for($user)->forEvent(999999)->create();
+
+        $this->actingAs($user)->get(route('favorites.index'))->assertInertia(
+            fn ($page) => $page->count('events', 1)->where('events.0.id', 1)
+        );
+    }
+
     public function test_a_user_can_add_an_event_to_their_favorites(): void
     {
         $user = User::factory()->create();
