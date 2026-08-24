@@ -117,6 +117,33 @@ class LocaleRoutingTest extends TestCase
             ->assertSee('<link rel="canonical" href="'.url('/en/events?page=2').'">', false);
     }
 
+    public function test_logging_out_keeps_the_visitor_in_their_locale(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->post(route('en.logout'))->assertRedirect(route('en.home'));
+        $this->assertGuest();
+
+        $this->actingAs($user)->post(route('logout'))->assertRedirect(route('home'));
+        $this->assertGuest();
+    }
+
+    public function test_login_redirects_stay_in_their_locale_across_requests(): void
+    {
+        // Config is rewritten per request but survives inside one process, so the
+        // prefixed locale must not leak into the request that follows it.
+        $prefixed = User::factory()->create();
+        $default = User::factory()->create();
+
+        $this->post('/en/login', ['email' => $prefixed->email, 'password' => 'password'])
+            ->assertRedirect(route('en.dashboard'));
+
+        $this->post('/logout');
+
+        $this->post('/login', ['email' => $default->email, 'password' => 'password'])
+            ->assertRedirect(route('dashboard'));
+    }
+
     public function test_locale_prefix_is_recomputed_for_each_request(): void
     {
         $this->get('/en/events')->assertOk();

@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useLocale } from '@/composables/useLocale';
-import { dashboard, home, login, register } from '@/routes';
+import { dashboard, home, login, logout, register } from '@/routes';
 import { index as favorites } from '@/routes/favorites';
 
 const { t } = useI18n();
 const { localeRoute } = useLocale();
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+
+// Anything prefetched for the signed in user is no longer theirs to see.
+const handleLogout = () => router.flushAll();
 </script>
 
 <template>
@@ -36,6 +39,16 @@ const user = computed(() => page.props.auth.user);
                     class="text-muted-foreground hover:text-foreground"
                 >
                     {{ t('nav.dashboard') }}
+                </Link>
+                <span class="font-medium">{{ user.name }}</span>
+                <Link
+                    :href="localeRoute(logout())"
+                    as="button"
+                    class="text-muted-foreground hover:text-foreground"
+                    data-test="logout-button"
+                    @click="handleLogout"
+                >
+                    {{ t('nav.logout') }}
                 </Link>
             </template>
             <template v-else>

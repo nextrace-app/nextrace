@@ -19,6 +19,7 @@ return [
         'register' => 'Register',
         'events' => 'Events',
         'favorites' => 'Favorites',
+        'logout' => 'Log out',
         'language' => 'Language',
     ],
 

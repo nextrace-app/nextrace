@@ -53,13 +53,7 @@ class Locale
     {
         $request ??= request();
 
-        $segments = explode('/', trim($request->path(), '/'));
-
-        if (in_array($segments[0] ?? '', self::prefixed(), true)) {
-            array_shift($segments);
-        }
-
-        return '/'.implode('/', $segments);
+        return self::stripPrefix($request->path());
     }
 
     /**
@@ -112,6 +106,20 @@ class Locale
      * The path a URL carries under the given locale (the application's current
      * locale by default), e.g. '/dashboard' becomes '/en/dashboard'.
      */
+    /**
+     * The given path without a locale prefix, e.g. '/en/dashboard' becomes '/dashboard'.
+     */
+    public static function stripPrefix(string $path): string
+    {
+        $segments = explode('/', trim($path, '/'));
+
+        if (in_array($segments[0] ?? '', self::prefixed(), true)) {
+            array_shift($segments);
+        }
+
+        return '/'.implode('/', $segments);
+    }
+
     public static function path(string $path, ?string $locale = null): string
     {
         $locale ??= app()->getLocale();

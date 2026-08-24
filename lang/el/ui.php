@@ -19,6 +19,7 @@ return [
         'register' => 'Εγγραφή',
         'events' => 'Εκδηλώσεις',
         'favorites' => 'Αγαπημένα',
+        'logout' => 'Αποσύνδεση',
         'language' => 'Γλώσσα',
     ],
 

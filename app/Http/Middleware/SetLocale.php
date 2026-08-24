@@ -18,9 +18,16 @@ class SetLocale
     {
         app()->setLocale(Locale::current($request));
 
-        // Fortify reads this when it redirects after login, registration and password
-        // confirmation, so it has to follow the locale the request came in on.
-        config(['fortify.home' => Locale::path(config('fortify.home'))]);
+        // Fortify reads these when it redirects after login, registration, password
+        // confirmation and logout, so they have to follow the locale the request
+        // came in on. Logging out defaults to '/', which is the default locale.
+        // The prefix is stripped first: config survives between requests inside a
+        // single process, so a value rewritten for one locale must not be
+        // prefixed again for the next request.
+        config([
+            'fortify.home' => Locale::path(Locale::stripPrefix(config('fortify.home'))),
+            'fortify.redirects.logout' => Locale::path(Locale::stripPrefix(config('fortify.redirects.logout') ?? '/')),
+        ]);
 
         return $next($request);
     }
