@@ -16,6 +16,7 @@ import type { Event } from '@/types';
 
 defineProps<{
     events: Event[];
+    favorites: number[];
 }>();
 
 function formatDate(date: string): string {
@@ -38,14 +39,25 @@ function formatParticipants(count: number): string {
         <DefaultHeader />
 
         <div class="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <Card v-for="event in events" :key="event.id" class="overflow-hidden pt-0">
+            <Card
+                v-for="event in events"
+                :key="event.id"
+                class="overflow-hidden pt-0"
+            >
                 <div class="relative aspect-video overflow-hidden">
                     <img
                         :src="event.image"
                         :alt="event.name"
                         class="h-full w-full object-cover"
                     />
-                    <Badge class="absolute top-3 right-3">{{ event.category }}</Badge>
+                    <Badge class="absolute top-3 right-3">{{
+                        event.category
+                    }}</Badge>
+                    <FavoriteButton
+                        :event-id="event.id"
+                        :favorited="favorites.includes(event.id)"
+                        class="absolute top-3 left-3"
+                    />
                 </div>
 
                 <CardHeader>
@@ -53,7 +65,9 @@ function formatParticipants(count: number): string {
                     <CardDescription>{{ event.description }}</CardDescription>
                 </CardHeader>
 
-                <CardContent class="flex flex-col gap-2 text-sm text-muted-foreground">
+                <CardContent
+                    class="flex flex-col gap-2 text-sm text-muted-foreground"
+                >
                     <div class="flex items-center gap-2">
                         <Calendar class="size-4 shrink-0" />
                         <span>{{ formatDate(event.date) }}</span>
@@ -64,7 +78,12 @@ function formatParticipants(count: number): string {
                     </div>
                     <div class="flex items-center gap-2">
                         <Users class="size-4 shrink-0" />
-                        <span>{{ formatParticipants(event.participants) }} participants &middot; {{ event.distance }}</span>
+                        <span
+                            >{{
+                                formatParticipants(event.participants)
+                            }}
+                            participants &middot; {{ event.distance }}</span
+                        >
                     </div>
                 </CardContent>
 

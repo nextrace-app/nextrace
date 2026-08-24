@@ -53,4 +53,20 @@ class Events
             'image' => 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800',
         ],
     ];
+
+    /**
+     * The event with the given id, or null when there is no such event.
+     *
+     * @return array{id: int, name: string, description: string, date: string, location: string, category: string, distance: string, participants: int, image: string}|null
+     */
+    public static function find(int $id): ?array
+    {
+        foreach (self::LIST as $event) {
+            if ($event['id'] === $id) {
+                return $event;
+            }
+        }
+
+        return null;
+    }
 }

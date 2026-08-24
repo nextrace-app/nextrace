@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\FavoriteController;
 use App\Support\Locale;
 use Illuminate\Support\Facades\Route;
 
@@ -9,6 +10,11 @@ $localized = function () {
 
     Route::get('events', [EventController::class, 'index'])->name('events.index');
     Route::get('events/{event}', [EventController::class, 'show'])->name('events.show');
+
+    Route::middleware('auth')->group(function () {
+        Route::post('events/{event}/favorite', [FavoriteController::class, 'store'])->name('events.favorite.store');
+        Route::delete('events/{event}/favorite', [FavoriteController::class, 'destroy'])->name('events.favorite.destroy');
+    });
 
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::inertia('dashboard', 'Dashboard')->name('dashboard');

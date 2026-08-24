@@ -27,4 +27,10 @@ return [
         'cta' => 'Browse events',
     ],
 
+    'events' => [
+        'favorite' => [
+            'add' => 'Add to favorites',
+            'remove' => 'Remove from favorites',
+        ],
+    ],
 ];
