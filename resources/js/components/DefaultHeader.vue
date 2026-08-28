@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { useLocale } from '@/composables/useLocale';
 import { dashboard, home, login, logout, register } from '@/routes';
 import { index as favorites } from '@/routes/favorites';
+import { show as profile } from '@/routes/profile';
 
 const { t } = useI18n();
 const { localeRoute } = useLocale();
@@ -40,7 +41,9 @@ const handleLogout = () => router.flushAll();
                 >
                     {{ t('nav.dashboard') }}
                 </Link>
-                <span class="font-medium">{{ user.name }}</span>
+                <Link :href="localeRoute(profile())" class="font-medium">
+                    {{ user.name }}
+                </Link>
                 <Link
                     :href="localeRoute(logout())"
                     as="button"

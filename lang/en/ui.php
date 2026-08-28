@@ -19,6 +19,7 @@ return [
         'register' => 'Register',
         'events' => 'Events',
         'favorites' => 'Favorites',
+        'profile' => 'Profile',
         'logout' => 'Log out',
         'language' => 'Language',
     ],
@@ -42,5 +43,13 @@ return [
         'title' => 'Your favorites',
         'empty' => 'You have not saved any events yet.',
         'cta' => 'Browse events',
+    ],
+    'profile' => [
+        'title' => 'Your profile',
+        'member_since' => 'Member since',
+        'email_status' => 'Email address',
+        'verified' => 'Verified',
+        'unverified' => 'Not verified',
+        'edit' => 'Edit profile',
     ],
 ];

@@ -12,6 +12,8 @@ $localized = function () {
     Route::get('events/{event}', [EventController::class, 'show'])->name('events.show');
 
     Route::middleware('auth')->group(function () {
+        Route::inertia('profile', 'Profile')->name('profile.show');
+
         Route::get('favorites', [FavoriteController::class, 'index'])->name('favorites.index');
         Route::post('events/{event}/favorite', [FavoriteController::class, 'store'])->name('events.favorite.store');
         Route::delete('events/{event}/favorite', [FavoriteController::class, 'destroy'])->name('events.favorite.destroy');
