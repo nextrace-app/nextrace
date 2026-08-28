@@ -77,6 +77,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Fortify Redirects
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify where Fortify sends a user after a given action.
+    | Anything left out falls back to the "home" path above. Signing in
+    | leads to the profile, while registering still opens the dashboard.
+    |
+    */
+
+    'redirects' => [
+        'login' => '/profile',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Fortify Routes Prefix / Subdomain
     |--------------------------------------------------------------------------
     |

@@ -89,14 +89,14 @@ class LocaleRoutingTest extends TestCase
         $this->actingAs(User::factory()->create())->get('/settings')->assertRedirect(route('profile.edit'));
     }
 
-    public function test_login_redirects_to_the_dashboard_of_its_locale(): void
+    public function test_login_redirects_to_the_profile_of_its_locale(): void
     {
         $user = User::factory()->create();
 
         $this->post('/en/login', [
             'email' => $user->email,
             'password' => 'password',
-        ])->assertRedirect(route('en.dashboard'));
+        ])->assertRedirect(route('en.profile.show'));
 
         $this->assertAuthenticated();
     }
@@ -136,12 +136,12 @@ class LocaleRoutingTest extends TestCase
         $default = User::factory()->create();
 
         $this->post('/en/login', ['email' => $prefixed->email, 'password' => 'password'])
-            ->assertRedirect(route('en.dashboard'));
+            ->assertRedirect(route('en.profile.show'));
 
         $this->post('/logout');
 
         $this->post('/login', ['email' => $default->email, 'password' => 'password'])
-            ->assertRedirect(route('dashboard'));
+            ->assertRedirect(route('profile.show'));
     }
 
     public function test_locale_prefix_is_recomputed_for_each_request(): void

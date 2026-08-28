@@ -116,7 +116,7 @@ class LocalePreferenceTest extends TestCase
 
         $this->withCookie(RememberLocale::COOKIE, 'en')
             ->post('/login', ['email' => $user->email, 'password' => 'password'])
-            ->assertRedirect(route('dashboard', absolute: false));
+            ->assertRedirect(route('profile.show', absolute: false));
 
         $this->assertAuthenticated();
     }

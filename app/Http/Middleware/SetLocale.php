@@ -26,6 +26,7 @@ class SetLocale
         // prefixed again for the next request.
         config([
             'fortify.home' => Locale::path(Locale::stripPrefix(config('fortify.home'))),
+            'fortify.redirects.login' => Locale::path(Locale::stripPrefix(config('fortify.redirects.login') ?? config('fortify.home'))),
             'fortify.redirects.logout' => Locale::path(Locale::stripPrefix(config('fortify.redirects.logout') ?? '/')),
         ]);
 
