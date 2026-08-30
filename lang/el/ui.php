@@ -46,10 +46,5 @@ return [
     ],
     'profile' => [
         'title' => 'Το προφίλ σου',
-        'member_since' => 'Μέλος από',
-        'email_status' => 'Διεύθυνση email',
-        'verified' => 'Επιβεβαιωμένη',
-        'unverified' => 'Μη επιβεβαιωμένη',
-        'edit' => 'Επεξεργασία προφίλ',
     ],
 ];

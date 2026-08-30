@@ -46,10 +46,5 @@ return [
     ],
     'profile' => [
         'title' => 'Your profile',
-        'member_since' => 'Member since',
-        'email_status' => 'Email address',
-        'verified' => 'Verified',
-        'unverified' => 'Not verified',
-        'edit' => 'Edit profile',
     ],
 ];
