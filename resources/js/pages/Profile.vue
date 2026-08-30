@@ -2,6 +2,7 @@
 import { Head } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { Separator } from '@/components/ui/separator';
+import { Toaster } from '@/components/ui/sonner';
 
 const { t } = useI18n();
 </script>
@@ -24,8 +25,12 @@ const { t } = useI18n();
                     {{ t('profile.title') }}
                 </h2>
 
-                <ProfileForm />
+                <ProfilePageForm />
             </div>
         </div>
+
+        <!-- The layouts with a sidebar mount their own; this page carries the
+             public header instead, and still flashes a toast when saving. -->
+        <Toaster />
     </div>
 </template>

@@ -40,7 +40,10 @@ class ProfileController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Profile updated.')]);
 
-        return to_route('profile.edit');
+        // The same form is rendered on the profile page and in the settings
+        // section, so the user is returned to the one they submitted from
+        // rather than always to the settings copy of the default locale.
+        return back();
     }
 
     /**

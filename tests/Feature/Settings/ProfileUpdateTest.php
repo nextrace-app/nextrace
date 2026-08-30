@@ -27,6 +27,7 @@ class ProfileUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
+            ->from(route('profile.edit'))
             ->patch(route('profile.update'), [
                 'name' => 'Test User',
                 'email' => 'test@example.com',
@@ -43,12 +44,43 @@ class ProfileUpdateTest extends TestCase
         $this->assertNull($user->email_verified_at);
     }
 
+    public function test_saving_returns_to_the_page_the_form_was_submitted_from(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->from(route('profile.show'))
+            ->patch(route('profile.update'), ['name' => 'Test User', 'email' => $user->email])
+            ->assertRedirect(route('profile.show'));
+
+        $this->actingAs($user)
+            ->from(route('profile.edit'))
+            ->patch(route('profile.update'), ['name' => 'Test User', 'email' => $user->email])
+            ->assertRedirect(route('profile.edit'));
+    }
+
+    public function test_saving_keeps_the_visitor_in_their_locale(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->from(route('en.profile.show'))
+            ->patch(route('en.profile.update'), ['name' => 'Test User', 'email' => $user->email])
+            ->assertRedirect(route('en.profile.show'));
+
+        $this->actingAs($user)
+            ->from(route('en.profile.edit'))
+            ->patch(route('en.profile.update'), ['name' => 'Test User', 'email' => $user->email])
+            ->assertRedirect(route('en.profile.edit'));
+    }
+
     public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged()
     {
         $user = User::factory()->create();
 
         $response = $this
             ->actingAs($user)
+            ->from(route('profile.edit'))
             ->patch(route('profile.update'), [
                 'name' => 'Test User',
                 'email' => $user->email,
