@@ -14,7 +14,7 @@ const { t } = useI18n();
 
         <div class="mx-auto flex max-w-4xl flex-col lg:flex-row lg:space-x-12">
             <aside class="w-full max-w-xl lg:w-48">
-                <SettingsNav />
+                <ProfileNav />
             </aside>
 
             <Separator class="my-6 lg:hidden" />
