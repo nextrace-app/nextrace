@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
 import { KeyRound } from '@lucide/vue';
-import { destroy } from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyRegistrationController';
 import Heading from '@/components/Heading.vue';
 import PasskeyItem from '@/components/PasskeyItem.vue';
 import PasskeyRegister from '@/components/PasskeyRegister.vue';
+import { useLocale } from '@/composables/useLocale';
+import { destroy } from '@/routes/passkey';
 import type { Passkey } from '@/types/auth';
 
 export type Props = {
@@ -17,8 +18,10 @@ withDefaults(defineProps<Props>(), {
     passkeys: () => [],
 });
 
+const { localeUrl } = useLocale();
+
 const handleDelete = (id: number, onError: () => void) => {
-    router.delete(destroy.url(id), {
+    router.delete(localeUrl(destroy.url(id)), {
         preserveScroll: true,
         onError,
     });
