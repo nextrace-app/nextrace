@@ -25,7 +25,11 @@ const { t } = useI18n();
                     {{ t('profile.title') }}
                 </h2>
 
-                <ProfilePageForm />
+                <div class="space-y-12">
+                    <ProfilePageForm />
+
+                    <ProfilePageDeleteUser />
+                </div>
             </div>
         </div>
 

@@ -111,6 +111,18 @@ class ProfileUpdateTest extends TestCase
         $this->assertNull($user->fresh());
     }
 
+    public function test_deleting_an_account_returns_to_the_home_page_of_its_locale(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->from(route('en.profile.show'))
+            ->delete(route('en.profile.destroy'), ['password' => 'password'])
+            ->assertRedirect(route('en.home'));
+
+        $this->assertGuest();
+    }
+
     public function test_correct_password_must_be_provided_to_delete_account()
     {
         $user = User::factory()->create();
