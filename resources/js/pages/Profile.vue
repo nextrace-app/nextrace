@@ -10,10 +10,12 @@ const { t } = useI18n();
 <template>
     <Head :title="t('profile.title')" />
 
-    <div class="min-h-screen bg-background p-6 lg:p-8">
+    <div class="min-h-screen bg-background py-6 lg:py-8">
         <DefaultHeader />
 
-        <div class="mx-auto flex max-w-4xl flex-col lg:flex-row lg:space-x-12">
+        <div
+            class="mx-auto flex w-full max-w-6xl flex-col px-4 sm:px-6 lg:flex-row lg:space-x-12 lg:px-8"
+        >
             <aside class="w-full max-w-xl lg:w-48">
                 <ProfileNav />
             </aside>

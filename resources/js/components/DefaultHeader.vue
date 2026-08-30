@@ -17,7 +17,9 @@ const handleLogout = () => router.flushAll();
 </script>
 
 <template>
-    <header class="mx-auto flex max-w-6xl items-center justify-between pb-8">
+    <header
+        class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 pb-8 sm:px-6 lg:px-8"
+    >
         <Link
             :href="localeRoute(home())"
             class="flex items-center gap-2 font-medium"

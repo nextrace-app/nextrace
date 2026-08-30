@@ -14,10 +14,12 @@ const { t } = useI18n();
 <template>
     <Head :title="t('nav.events')" />
 
-    <div class="min-h-screen bg-background p-6 lg:p-8">
+    <div class="min-h-screen bg-background py-6 lg:py-8">
         <DefaultHeader />
 
-        <div class="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+            class="mx-auto grid w-full max-w-6xl gap-6 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 lg:px-8"
+        >
             <EventCard
                 v-for="event in events"
                 :key="event.id"

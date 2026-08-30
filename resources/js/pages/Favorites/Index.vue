@@ -18,10 +18,10 @@ const { localeRoute } = useLocale();
 <template>
     <Head :title="t('favorites.title')" />
 
-    <div class="min-h-screen bg-background p-6 lg:p-8">
+    <div class="min-h-screen bg-background py-6 lg:py-8">
         <DefaultHeader />
 
-        <div class="mx-auto max-w-6xl">
+        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
             <h2 class="mb-6 text-2xl font-semibold">
                 {{ t('favorites.title') }}
             </h2>

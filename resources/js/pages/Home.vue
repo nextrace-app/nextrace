@@ -12,16 +12,18 @@ const { localeRoute } = useLocale();
 <template>
     <Head :title="t('home.title')" />
 
-    <div class="min-h-screen bg-background p-6 lg:p-8">
+    <div class="min-h-screen bg-background py-6 lg:py-8">
         <DefaultHeader />
 
         <div
-            class="mx-auto flex max-w-3xl flex-col items-center gap-6 py-16 text-center"
+            class="mx-auto flex w-full max-w-6xl flex-col items-center gap-6 px-4 py-16 text-center sm:px-6 lg:px-8"
         >
-            <h2 class="text-4xl font-semibold tracking-tight sm:text-5xl">
+            <h2
+                class="max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl"
+            >
                 {{ t('home.title') }}
             </h2>
-            <p class="text-lg text-muted-foreground">
+            <p class="max-w-3xl text-lg text-muted-foreground">
                 {{ t('home.subtitle') }}
             </p>
             <Button as-child size="lg">

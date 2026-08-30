@@ -34,9 +34,9 @@ function formatParticipants(count: number): string {
 <template>
     <Head :title="event.name" />
 
-    <div class="min-h-screen bg-background p-6 lg:p-8">
+    <div class="min-h-screen bg-background py-6 lg:py-8">
         <header
-            class="mx-auto mb-8 flex max-w-4xl items-center justify-between"
+            class="mx-auto mb-8 flex w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8"
         >
             <h1 class="text-lg font-semibold">Events</h1>
             <nav class="flex items-center gap-4 text-sm">
@@ -64,7 +64,7 @@ function formatParticipants(count: number): string {
             </nav>
         </header>
 
-        <div class="mx-auto max-w-4xl">
+        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
             <Link
                 :href="eventsIndex()"
                 class="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
