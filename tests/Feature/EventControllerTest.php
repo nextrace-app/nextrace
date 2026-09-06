@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Constants\Events;
+use App\Models\Event;
 use App\Models\User;
+use Database\Seeders\EventSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -28,35 +29,91 @@ class EventControllerTest extends TestCase
 
     public function test_guests_can_visit_an_event_page(): void
     {
-        $response = $this->get(route('events.show', ['event' => Events::LIST[0]['id']]));
-        $response->assertOk();
+        $event = Event::factory()->create();
+
+        $this->get(route('events.show', ['event' => $event->id]))->assertOk();
     }
 
-    public function test_every_event_in_the_catalogue_is_complete_and_uniquely_numbered(): void
+    public function test_the_events_page_sends_the_fields_the_cards_render(): void
     {
-        $ids = array_column(Events::LIST, 'id');
+        Event::factory()->create([
+            'slug' => 'athens-marathon',
+            'name' => ['el' => 'Μαραθώνιος Αθήνας', 'en' => 'Athens Marathon'],
+            'description' => ['el' => 'Η αυθεντική διαδρομή.', 'en' => 'The authentic route.'],
+            'category' => 'Marathon',
+            'distance_meters' => 42200,
+            'starts_at' => '2026-11-08 09:00:00',
+            'city' => 'Athens',
+            'country' => 'GR',
+            'participants' => 18000,
+            'image_url' => 'https://example.com/athens.jpg',
+        ]);
 
-        $this->assertSame($ids, array_unique($ids), 'Two events share an id.');
-
-        foreach (Events::LIST as $event) {
-            $this->assertSame(
-                ['id', 'name', 'description', 'date', 'location', 'category', 'distance', 'participants', 'image'],
-                array_keys($event),
-                "Event [{$event['id']}] does not carry the expected fields."
-            );
-
-            $this->assertMatchesRegularExpression(
-                '/^\d{4}-\d{2}-\d{2}$/',
-                $event['date'],
-                "Event [{$event['id']}] has a date the frontend cannot format."
-            );
-        }
+        $this->get(route('en.events.index'))->assertInertia(
+            fn ($page) => $page
+                ->component('Events/Index')
+                ->where('events.0.slug', 'athens-marathon')
+                ->where('events.0.name', 'Athens Marathon')
+                ->where('events.0.description', 'The authentic route.')
+                ->where('events.0.date', '2026-11-08')
+                ->where('events.0.location', 'Athens, Greece')
+                ->where('events.0.category', 'Marathon')
+                ->where('events.0.distance', '42.2 km')
+                ->where('events.0.participants', 18000)
+                ->where('events.0.image', 'https://example.com/athens.jpg')
+        );
     }
 
-    public function test_every_event_in_the_catalogue_has_its_own_page(): void
+    public function test_the_events_page_speaks_the_locale_it_is_visited_in(): void
     {
-        foreach (Events::LIST as $event) {
-            $this->get(route('events.show', ['event' => $event['id']]))->assertOk();
+        Event::factory()->create([
+            'name' => ['el' => 'Μαραθώνιος Αθήνας', 'en' => 'Athens Marathon'],
+            'city' => 'Athens',
+        ]);
+
+        $this->get(route('events.index'))->assertInertia(
+            fn ($page) => $page
+                ->where('events.0.name', 'Μαραθώνιος Αθήνας')
+                ->where('events.0.location', 'Athens, Ελλάδα')
+        );
+    }
+
+    public function test_the_events_page_lists_the_race_coming_up_first(): void
+    {
+        $later = Event::factory()->create(['starts_at' => now()->addMonths(2)]);
+        $sooner = Event::factory()->create(['starts_at' => now()->addWeek()]);
+
+        $this->get(route('events.index'))->assertInertia(
+            fn ($page) => $page
+                ->where('events.0.id', $sooner->id)
+                ->where('events.1.id', $later->id)
+                ->count('events', 2)
+        );
+    }
+
+    public function test_drafts_are_kept_off_the_events_page(): void
+    {
+        $published = Event::factory()->create();
+        Event::factory()->unpublished()->create();
+
+        $this->get(route('events.index'))->assertInertia(
+            fn ($page) => $page->where('events.0.id', $published->id)->count('events', 1)
+        );
+    }
+
+    public function test_a_draft_has_no_page_of_its_own(): void
+    {
+        $event = Event::factory()->unpublished()->create();
+
+        $this->get(route('events.show', ['event' => $event->id]))->assertNotFound();
+    }
+
+    public function test_every_event_of_the_catalogue_has_its_own_page(): void
+    {
+        $this->seed(EventSeeder::class);
+
+        foreach (Event::all() as $event) {
+            $this->get(route('events.show', ['event' => $event->id]))->assertOk();
         }
     }
 

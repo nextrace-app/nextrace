@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Database\Factories\EventFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -64,6 +66,25 @@ class Event extends Model
         $locale ??= app()->getLocale();
 
         return $values[$locale] ?? $values[config('app.fallback_locale')] ?? '';
+    }
+
+    /**
+     * Restrict the query to the events visitors are allowed to see.
+     *
+     * @param  Builder<Event>  $query
+     */
+    #[Scope]
+    protected function published(Builder $query): void
+    {
+        $query->whereNotNull('published_at');
+    }
+
+    /**
+     * Whether the event is out of draft and shown on the events pages.
+     */
+    public function isPublished(): bool
+    {
+        return $this->published_at !== null;
     }
 
     /**

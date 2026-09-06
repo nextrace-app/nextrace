@@ -2,30 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Constants\Events;
+use App\Http\Resources\EventResource;
+use App\Models\Event;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class EventController extends Controller
 {
+    /**
+     * The published events, the race coming up first.
+     */
     public function index(Request $request): Response
     {
+        $events = Event::query()->published()->orderBy('starts_at')->get();
+
         return Inertia::render('Events/Index', [
-            'events' => Events::LIST,
+            'events' => EventResource::collection($events)->resolve(),
             'favorites' => $request->user()?->favoriteEventIds() ?? [],
         ]);
     }
 
-    public function show(Request $request, int $event): Response
+    /**
+     * The page of a single event.
+     */
+    public function show(Request $request, Event $event): Response
     {
-        $event = Events::find($event);
-
-        abort_if($event === null, 404);
+        // A draft has no page of its own until it is published.
+        abort_unless($event->isPublished(), 404);
 
         return Inertia::render('Events/Show', [
-            'event' => $event,
-            'isFavorite' => in_array($event['id'], $request->user()?->favoriteEventIds() ?? [], true),
+            'event' => (new EventResource($event))->resolve(),
+            'isFavorite' => $request->user()?->favorites()->where('event_id', $event->id)->exists() ?? false,
         ]);
     }
 }

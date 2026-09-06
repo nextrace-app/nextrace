@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
-            // Events are served from App\Constants\Events for now, so there is
-            // no table to point a foreign key at yet.
+            // Events had no table of their own yet, so the foreign key only
+            // arrives with add_event_foreign_key_to_favorites_table.
             $table->unsignedBigInteger('event_id');
 
             $table->timestamps();

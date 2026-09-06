@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Constants\Events;
 use App\Models\Event;
 use Database\Seeders\EventSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,9 +15,9 @@ class EventSeederTest extends TestCase
     {
         $this->seed(EventSeeder::class);
 
-        $this->assertSame(count(Events::LIST), Event::query()->count());
+        $this->assertSame(count(EventSeeder::catalogue()), Event::query()->count());
 
-        foreach (Events::LIST as $event) {
+        foreach (EventSeeder::catalogue() as $event) {
             $this->assertDatabaseHas('events', [
                 'id' => $event['id'],
                 'category' => $event['category'],
@@ -53,7 +52,7 @@ class EventSeederTest extends TestCase
         $this->seed(EventSeeder::class);
         $this->seed(EventSeeder::class);
 
-        $this->assertSame(count(Events::LIST), Event::query()->count());
+        $this->assertSame(count(EventSeeder::catalogue()), Event::query()->count());
     }
 
     public function test_an_event_created_afterwards_gets_a_free_id(): void
@@ -62,6 +61,6 @@ class EventSeederTest extends TestCase
 
         $event = Event::factory()->create();
 
-        $this->assertSame(count(Events::LIST) + 1, $event->id);
+        $this->assertSame(count(EventSeeder::catalogue()) + 1, $event->id);
     }
 }

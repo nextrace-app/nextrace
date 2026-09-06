@@ -1,5 +1,6 @@
 export type Event = {
     id: number;
+    slug: string;
     name: string;
     description: string;
     date: string;

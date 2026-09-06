@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Constants\Events;
+use App\Models\Event;
 use App\Models\Favorite;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,7 +21,7 @@ class FavoriteFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'event_id' => fake()->randomElement(array_column(Events::LIST, 'id')),
+            'event_id' => Event::factory(),
         ];
     }
 

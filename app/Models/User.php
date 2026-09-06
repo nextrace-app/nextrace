@@ -8,6 +8,7 @@ use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -56,6 +57,18 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
     public function favorites(): HasMany
     {
         return $this->hasMany(Favorite::class);
+    }
+
+    /**
+     * The events this user marked with the heart, newest first.
+     *
+     * @return BelongsToMany<Event, $this>
+     */
+    public function favoriteEvents(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class, 'favorites')
+            ->withTimestamps()
+            ->orderByPivot('created_at', 'desc');
     }
 
     /**
