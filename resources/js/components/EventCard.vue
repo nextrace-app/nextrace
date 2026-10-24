@@ -1,87 +1,98 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { Calendar, MapPin, Users } from '@lucide/vue';
+import { MapPin, Route, Users } from '@lucide/vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { useEventFormat } from '@/composables/useEventFormat';
 import { useLocale } from '@/composables/useLocale';
 import { show as eventsShow } from '@/routes/events';
 import type { Event } from '@/types';
 
-defineProps<{
+const props = defineProps<{
     event: Event;
     favorited: boolean;
 }>();
 
 const { t } = useI18n();
-const { locale, localeRoute } = useLocale();
+const { localeRoute } = useLocale();
+const { formatDate, formatDistance, formatNumber, categoryLabel } =
+    useEventFormat();
 
-function formatDate(date: string): string {
-    return new Date(date).toLocaleDateString(locale.value, {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-    });
-}
-
-function formatParticipants(count: number): string {
-    return new Intl.NumberFormat(locale.value).format(count);
-}
+const day = computed(() => formatDate(props.event.date, { day: 'numeric' }));
+const month = computed(() =>
+    formatDate(props.event.date, { month: 'short' }).replace('.', ''),
+);
+const fullDate = computed(() => formatDate(props.event.date));
 </script>
 
 <template>
-    <Card class="overflow-hidden pt-0">
-        <div class="relative aspect-video overflow-hidden">
-            <img
-                :src="event.image"
-                :alt="event.name"
-                class="h-full w-full object-cover"
-            />
-            <Badge class="absolute top-3 right-3">{{ event.category }}</Badge>
-            <FavoriteButton
-                :event-id="event.id"
-                :favorited="favorited"
-                class="absolute top-3 left-3"
-            />
+    <article
+        class="group relative flex gap-4 rounded-xl border bg-card p-4 text-card-foreground shadow-xs transition-shadow focus-within:ring-[3px] focus-within:ring-ring/50 hover:shadow-md"
+        data-test="event-card"
+    >
+        <div
+            class="flex size-16 shrink-0 flex-col items-center justify-center rounded-lg bg-primary text-primary-foreground"
+            aria-hidden="true"
+        >
+            <span class="text-2xl leading-none font-semibold">{{ day }}</span>
+            <span class="mt-1 text-xs tracking-wide uppercase">{{
+                month
+            }}</span>
         </div>
 
-        <CardHeader>
-            <CardTitle>{{ event.name }}</CardTitle>
-            <CardDescription>{{ event.description }}</CardDescription>
-        </CardHeader>
+        <div class="flex min-w-0 flex-1 flex-col gap-3">
+            <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                    <h3 class="text-base leading-snug font-semibold">
+                        <Link
+                            :href="localeRoute(eventsShow(event.id))"
+                            class="rounded-sm outline-none after:absolute after:inset-0 after:content-['']"
+                        >
+                            {{ event.name }}
+                        </Link>
+                    </h3>
+                    <p class="mt-0.5 text-sm text-muted-foreground">
+                        <time :datetime="event.date">{{ fullDate }}</time>
+                        <template v-if="event.time">
+                            &middot; {{ event.time }}
+                        </template>
+                    </p>
+                </div>
+                <FavoriteButton
+                    :event-id="event.id"
+                    :favorited="favorited"
+                    class="relative z-10 shrink-0"
+                />
+            </div>
 
-        <CardContent class="flex flex-col gap-2 text-sm text-muted-foreground">
-            <div class="flex items-center gap-2">
-                <Calendar class="size-4 shrink-0" />
-                <span>{{ formatDate(event.date) }}</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <MapPin class="size-4 shrink-0" />
-                <span>{{ event.location }}</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <Users class="size-4 shrink-0" />
-                <span>
-                    {{ formatParticipants(event.participants) }}
-                    {{ t('events.participants') }} &middot; {{ event.distance }}
-                </span>
-            </div>
-        </CardContent>
+            <ul
+                class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground"
+            >
+                <li class="flex items-center gap-1.5">
+                    <MapPin class="size-4 shrink-0" aria-hidden="true" />
+                    <span class="sr-only">{{ t('events.fields.city') }}:</span>
+                    {{ event.city }}
+                </li>
+                <li class="flex items-center gap-1.5">
+                    <Route class="size-4 shrink-0" aria-hidden="true" />
+                    <span class="sr-only"
+                        >{{ t('events.fields.distance') }}:</span
+                    >
+                    {{ formatDistance(event.distance_meters) }}
+                </li>
+                <li v-if="event.participants" class="flex items-center gap-1.5">
+                    <Users class="size-4 shrink-0" aria-hidden="true" />
+                    {{ formatNumber(event.participants) }}
+                    {{ t('events.participants') }}
+                </li>
+            </ul>
 
-        <CardFooter>
-            <Button as-child class="w-full">
-                <Link :href="localeRoute(eventsShow(event.id))">
-                    {{ t('events.details') }}
-                </Link>
-            </Button>
-        </CardFooter>
-    </Card>
+            <div>
+                <Badge variant="secondary">{{
+                    categoryLabel(event.category)
+                }}</Badge>
+            </div>
+        </div>
+    </article>
 </template>

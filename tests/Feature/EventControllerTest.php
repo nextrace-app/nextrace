@@ -64,6 +64,35 @@ class EventControllerTest extends TestCase
         );
     }
 
+    public function test_the_events_page_sends_the_time_only_when_it_is_not_midnight_and_the_links(): void
+    {
+        Event::factory()->create([
+            'starts_at' => '2026-12-06 08:00:00',
+            'latitude' => '35.3387000',
+            'longitude' => '25.1442000',
+            'registration_url' => 'https://example.com/register',
+            'distance_meters' => 70000,
+        ]);
+        Event::factory()->create([
+            'starts_at' => '2026-12-12 00:00:00',
+            'latitude' => null,
+            'longitude' => null,
+            'registration_url' => null,
+        ]);
+
+        $this->get(route('en.events.index'))->assertInertia(
+            fn ($page) => $page
+                ->where('events.0.time', '08:00')
+                ->where('events.0.latitude', 35.3387)
+                ->where('events.0.longitude', 25.1442)
+                ->where('events.0.registration_url', 'https://example.com/register')
+                ->where('events.0.distance_meters', 70000)
+                ->where('events.1.time', null)
+                ->where('events.1.latitude', null)
+                ->where('events.1.registration_url', null)
+        );
+    }
+
     public function test_the_events_page_speaks_the_locale_it_is_visited_in(): void
     {
         Event::factory()->create([

@@ -1,144 +1,207 @@
 <script setup lang="ts">
-import { Head, Link, usePage } from '@inertiajs/vue3';
-import { ArrowLeft, Calendar, MapPin, Route, Users } from '@lucide/vue';
+import { Head, Link } from '@inertiajs/vue3';
+import {
+    ArrowLeft,
+    Calendar,
+    Clock,
+    ExternalLink,
+    Map,
+    MapPin,
+    Route,
+    Users,
+} from '@lucide/vue';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { dashboard, login, register } from '@/routes';
+import { useEventFormat } from '@/composables/useEventFormat';
+import { useLocale } from '@/composables/useLocale';
 import { index as eventsIndex } from '@/routes/events';
 import type { Event } from '@/types';
 
-defineProps<{
+const props = defineProps<{
     event: Event;
     isFavorite: boolean;
 }>();
 
-const page = usePage();
-const user = computed(() => page.props.auth.user);
+const { t } = useI18n();
+const { localeRoute } = useLocale();
+const { formatDate, formatDistance, formatNumber, categoryLabel, mapUrl } =
+    useEventFormat();
 
-function formatDate(date: string): string {
-    return new Date(date).toLocaleDateString('en-US', {
+const fullDate = computed(() =>
+    formatDate(props.event.date, {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
         year: 'numeric',
-    });
-}
-
-function formatParticipants(count: number): string {
-    return new Intl.NumberFormat('en-US').format(count);
-}
+    }),
+);
+const map = computed(() => mapUrl(props.event));
 </script>
 
 <template>
     <Head :title="event.name" />
 
     <div class="min-h-screen bg-background py-6 lg:py-8">
-        <header
-            class="mx-auto mb-8 flex w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8"
-        >
-            <h1 class="text-lg font-semibold">Events</h1>
-            <nav class="flex items-center gap-4 text-sm">
-                <Link
-                    v-if="user"
-                    :href="dashboard()"
-                    class="text-muted-foreground hover:text-foreground"
-                >
-                    Dashboard
-                </Link>
-                <template v-else>
-                    <Link
-                        :href="login()"
-                        class="text-muted-foreground hover:text-foreground"
-                    >
-                        Log in
-                    </Link>
-                    <Link
-                        :href="register()"
-                        class="text-muted-foreground hover:text-foreground"
-                    >
-                        Register
-                    </Link>
-                </template>
-            </nav>
-        </header>
+        <DefaultHeader />
 
-        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        <main class="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
             <Link
-                :href="eventsIndex()"
-                class="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                :href="localeRoute(eventsIndex())"
+                class="mb-6 inline-flex items-center gap-1 rounded-sm text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
-                <ArrowLeft class="size-4" />
-                Back to events
+                <ArrowLeft class="size-4" aria-hidden="true" />
+                {{ t('events.back') }}
             </Link>
 
-            <Card class="overflow-hidden pt-0">
-                <div
-                    class="relative aspect-video overflow-hidden sm:aspect-[21/9]"
+            <article
+                class="overflow-hidden rounded-xl border bg-card shadow-xs"
+            >
+                <header
+                    class="relative bg-primary px-5 py-8 text-primary-foreground sm:px-8 sm:py-10"
                 >
                     <img
+                        v-if="event.image"
                         :src="event.image"
                         :alt="event.name"
-                        class="h-full w-full object-cover"
+                        class="absolute inset-0 h-full w-full object-cover opacity-15"
                     />
-                    <Badge class="absolute top-4 right-4">{{
-                        event.category
-                    }}</Badge>
-                    <FavoriteButton
-                        :event-id="event.id"
-                        :favorited="isFavorite"
-                        class="absolute top-4 left-4"
-                    />
-                </div>
+                    <div class="relative flex flex-col gap-4">
+                        <div class="flex items-start justify-between gap-4">
+                            <Badge
+                                variant="secondary"
+                                data-test="event-category"
+                                >{{ categoryLabel(event.category) }}</Badge
+                            >
+                            <FavoriteButton
+                                :event-id="event.id"
+                                :favorited="isFavorite"
+                                class="shrink-0 text-foreground"
+                            />
+                        </div>
+                        <h1
+                            class="text-2xl leading-tight font-semibold text-balance sm:text-4xl"
+                        >
+                            {{ event.name }}
+                        </h1>
+                        <ul
+                            class="flex flex-col gap-2 text-sm sm:flex-row sm:flex-wrap sm:gap-x-6 sm:text-base"
+                        >
+                            <li class="flex items-center gap-2">
+                                <Calendar
+                                    class="size-4 shrink-0"
+                                    aria-hidden="true"
+                                />
+                                <span class="sr-only"
+                                    >{{ t('events.fields.date') }}:</span
+                                >
+                                <time :datetime="event.date">{{
+                                    fullDate
+                                }}</time>
+                            </li>
+                            <li
+                                v-if="event.time"
+                                class="flex items-center gap-2"
+                            >
+                                <Clock
+                                    class="size-4 shrink-0"
+                                    aria-hidden="true"
+                                />
+                                <span class="sr-only"
+                                    >{{ t('events.fields.time') }}:</span
+                                >
+                                {{ event.time }}
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <MapPin
+                                    class="size-4 shrink-0"
+                                    aria-hidden="true"
+                                />
+                                <span class="sr-only"
+                                    >{{ t('events.fields.location') }}:</span
+                                >
+                                {{ event.location }}
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <Route
+                                    class="size-4 shrink-0"
+                                    aria-hidden="true"
+                                />
+                                <span class="sr-only"
+                                    >{{ t('events.fields.distance') }}:</span
+                                >
+                                {{ formatDistance(event.distance_meters) }}
+                            </li>
+                            <li
+                                v-if="event.participants"
+                                class="flex items-center gap-2"
+                            >
+                                <Users
+                                    class="size-4 shrink-0"
+                                    aria-hidden="true"
+                                />
+                                {{ formatNumber(event.participants) }}
+                                {{ t('events.participants') }}
+                            </li>
+                        </ul>
+                    </div>
+                </header>
 
-                <CardContent class="flex flex-col gap-6">
-                    <div>
-                        <h2 class="text-2xl font-semibold">{{ event.name }}</h2>
-                        <p class="mt-2 text-muted-foreground">
+                <div class="flex flex-col gap-6 p-5 sm:p-8">
+                    <div
+                        v-if="event.registration_url || map"
+                        class="flex flex-col gap-3 sm:flex-row"
+                    >
+                        <Button
+                            v-if="event.registration_url"
+                            as-child
+                            size="lg"
+                            class="w-full sm:w-auto"
+                        >
+                            <a
+                                :href="event.registration_url"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                {{ t('events.register') }}
+                                <ExternalLink aria-hidden="true" />
+                            </a>
+                        </Button>
+                        <Button
+                            v-if="map"
+                            as-child
+                            variant="outline"
+                            size="lg"
+                            class="w-full sm:w-auto"
+                        >
+                            <a
+                                :href="map"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <Map aria-hidden="true" />
+                                {{ t('events.view_map') }}
+                            </a>
+                        </Button>
+                    </div>
+
+                    <section>
+                        <h2 class="mb-2 text-lg font-semibold">
+                            {{ t('events.about') }}
+                        </h2>
+                        <p
+                            v-if="event.description"
+                            class="leading-relaxed whitespace-pre-line text-muted-foreground"
+                        >
                             {{ event.description }}
                         </p>
-                    </div>
-
-                    <div
-                        class="grid gap-4 border-t pt-6 text-sm sm:grid-cols-2"
-                    >
-                        <div class="flex items-center gap-2">
-                            <Calendar
-                                class="size-4 shrink-0 text-muted-foreground"
-                            />
-                            <span>{{ formatDate(event.date) }}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <MapPin
-                                class="size-4 shrink-0 text-muted-foreground"
-                            />
-                            <span>{{ event.location }}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <Route
-                                class="size-4 shrink-0 text-muted-foreground"
-                            />
-                            <span>{{ event.distance }}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <Users
-                                class="size-4 shrink-0 text-muted-foreground"
-                            />
-                            <span
-                                >{{
-                                    formatParticipants(event.participants)
-                                }}
-                                participants</span
-                            >
-                        </div>
-                    </div>
-
-                    <Button class="w-full sm:w-auto"
-                        >Register for this event</Button
-                    >
-                </CardContent>
-            </Card>
-        </div>
+                        <p v-else class="text-muted-foreground">
+                            {{ t('events.no_description') }}
+                        </p>
+                    </section>
+                </div>
+            </article>
+        </main>
     </div>
 </template>

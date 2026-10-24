@@ -28,11 +28,17 @@ class EventResource extends JsonResource
             'name' => $this->translated('name'),
             'description' => $this->translated('description'),
             'date' => $this->starts_at->toDateString(),
+            'time' => $this->starts_at->format('H:i') === '00:00' ? null : $this->starts_at->format('H:i'),
+            'city' => $this->city,
             'location' => $this->location(),
             'category' => $this->category,
             'distance' => $this->distance(),
+            'distance_meters' => $this->distance_meters,
             'participants' => $this->participants,
             'image' => $this->image_url,
+            'latitude' => $this->latitude === null ? null : (float) $this->latitude,
+            'longitude' => $this->longitude === null ? null : (float) $this->longitude,
+            'registration_url' => $this->registration_url,
         ];
     }
 

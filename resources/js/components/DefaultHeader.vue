@@ -18,7 +18,7 @@ const handleLogout = () => router.flushAll();
 
 <template>
     <header
-        class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 pb-8 sm:px-6 lg:px-8"
+        class="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 pb-8 sm:px-6 lg:px-8"
     >
         <Link
             :href="localeRoute(home())"
@@ -29,7 +29,9 @@ const handleLogout = () => router.flushAll();
             />
             <h1 class="text-lg font-semibold">{{ t('nav.events') }}</h1>
         </Link>
-        <nav class="flex items-center gap-4 text-sm">
+        <nav
+            class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm sm:gap-4"
+        >
             <template v-if="user">
                 <Link
                     :href="localeRoute(favorites())"
