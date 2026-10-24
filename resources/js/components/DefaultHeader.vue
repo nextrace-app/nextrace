@@ -45,8 +45,12 @@ const handleLogout = () => router.flushAll();
                 >
                     {{ t('nav.dashboard') }}
                 </Link>
-                <Link :href="localeRoute(profile())" class="font-medium">
-                    {{ user.name }}
+                <Link
+                    :href="localeRoute(profile())"
+                    :title="user.name"
+                    class="font-medium"
+                >
+                    {{ t('nav.profile') }}
                 </Link>
                 <Link
                     :href="localeRoute(logout())"
