@@ -55,6 +55,14 @@ class Event extends Model
     use HasFactory;
 
     /**
+     * Events are addressed by their slug in URLs.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    /**
      * The value of a translated attribute in the given locale, which defaults to
      * the one the application is running in, falling back to the fallback locale.
      */

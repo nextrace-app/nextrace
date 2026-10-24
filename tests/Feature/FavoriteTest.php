@@ -16,8 +16,8 @@ class FavoriteTest extends TestCase
     {
         $event = Event::factory()->create();
 
-        $this->post(route('events.favorite.store', ['event' => $event->id]))->assertRedirect(route('login'));
-        $this->post(route('el.events.favorite.store', ['event' => $event->id]))->assertRedirect(route('el.login'));
+        $this->post(route('events.favorite.store', ['event' => $event]))->assertRedirect(route('login'));
+        $this->post(route('el.events.favorite.store', ['event' => $event]))->assertRedirect(route('el.login'));
 
         $this->assertDatabaseCount('favorites', 0);
     }
@@ -82,7 +82,7 @@ class FavoriteTest extends TestCase
 
         $this->actingAs($user)
             ->from(route('events.index'))
-            ->post(route('events.favorite.store', ['event' => $event->id]))
+            ->post(route('events.favorite.store', ['event' => $event]))
             ->assertRedirect(route('events.index'));
 
         $this->assertDatabaseHas('favorites', [
@@ -96,8 +96,8 @@ class FavoriteTest extends TestCase
         $user = User::factory()->create();
         $event = Event::factory()->create();
 
-        $this->actingAs($user)->post(route('events.favorite.store', ['event' => $event->id]));
-        $this->actingAs($user)->post(route('events.favorite.store', ['event' => $event->id]));
+        $this->actingAs($user)->post(route('events.favorite.store', ['event' => $event]));
+        $this->actingAs($user)->post(route('events.favorite.store', ['event' => $event]));
 
         $this->assertDatabaseCount('favorites', 1);
     }
@@ -108,7 +108,7 @@ class FavoriteTest extends TestCase
         $event = Event::factory()->create();
         Favorite::factory()->for($user)->forEvent($event->id)->create();
 
-        $this->actingAs($user)->delete(route('events.favorite.destroy', ['event' => $event->id]));
+        $this->actingAs($user)->delete(route('events.favorite.destroy', ['event' => $event]));
 
         $this->assertDatabaseCount('favorites', 0);
     }
@@ -120,7 +120,7 @@ class FavoriteTest extends TestCase
         $event = Event::factory()->create();
         Favorite::factory()->for($someoneElse)->forEvent($event->id)->create();
 
-        $this->actingAs($user)->delete(route('events.favorite.destroy', ['event' => $event->id]));
+        $this->actingAs($user)->delete(route('events.favorite.destroy', ['event' => $event]));
 
         $this->assertDatabaseHas('favorites', [
             'user_id' => $someoneElse->id,
@@ -133,7 +133,7 @@ class FavoriteTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->post(route('events.favorite.store', ['event' => 999999]))
+            ->post(route('events.favorite.store', ['event' => 'no-such-race']))
             ->assertNotFound();
 
         $this->assertDatabaseCount('favorites', 0);
@@ -166,13 +166,13 @@ class FavoriteTest extends TestCase
         $user = User::factory()->create();
         $event = Event::factory()->create();
 
-        $this->actingAs($user)->get(route('events.show', ['event' => $event->id]))->assertInertia(
+        $this->actingAs($user)->get(route('events.show', ['event' => $event]))->assertInertia(
             fn ($page) => $page->where('isFavorite', false)
         );
 
         Favorite::factory()->for($user)->forEvent($event->id)->create();
 
-        $this->actingAs($user)->get(route('events.show', ['event' => $event->id]))->assertInertia(
+        $this->actingAs($user)->get(route('events.show', ['event' => $event]))->assertInertia(
             fn ($page) => $page->where('isFavorite', true)
         );
     }

@@ -31,7 +31,7 @@ class EventControllerTest extends TestCase
     {
         $event = Event::factory()->create();
 
-        $this->get(route('events.show', ['event' => $event->id]))->assertOk();
+        $this->get(route('events.show', ['event' => $event]))->assertOk();
     }
 
     public function test_the_events_page_sends_the_fields_the_cards_render(): void
@@ -134,7 +134,7 @@ class EventControllerTest extends TestCase
     {
         $event = Event::factory()->unpublished()->create();
 
-        $this->get(route('events.show', ['event' => $event->id]))->assertNotFound();
+        $this->get(route('events.show', ['event' => $event]))->assertNotFound();
     }
 
     public function test_every_event_of_the_catalogue_has_its_own_page(): void
@@ -142,13 +142,36 @@ class EventControllerTest extends TestCase
         $this->seed(EventSeeder::class);
 
         foreach (Event::all() as $event) {
-            $this->get(route('events.show', ['event' => $event->id]))->assertOk();
+            $this->get(route('events.show', ['event' => $event]))->assertOk();
+        }
+    }
+
+    public function test_an_event_page_lives_at_its_slug(): void
+    {
+        $event = Event::factory()->create(['slug' => 'crete-marathon']);
+
+        $this->assertSame(url('/events/crete-marathon'), route('events.show', $event));
+        $this->get('/events/crete-marathon')->assertOk();
+        $this->get('/el/events/crete-marathon')->assertOk();
+    }
+
+    public function test_an_id_is_not_an_address_for_an_event(): void
+    {
+        $event = Event::factory()->create();
+
+        $this->get("/events/{$event->id}")->assertNotFound();
+    }
+
+    public function test_addresses_that_are_not_slugs_return_a_404_instead_of_an_error(): void
+    {
+        foreach (['abc', 'a%20b', '123456789012345678901234567890', 'Crete-Marathon'] as $segment) {
+            $this->get("/events/{$segment}")->assertNotFound();
         }
     }
 
     public function test_visiting_an_unknown_event_returns_a_404(): void
     {
-        $response = $this->get(route('events.show', ['event' => 999999]));
+        $response = $this->get(route('events.show', ['event' => 'no-such-race']));
         $response->assertNotFound();
     }
 }

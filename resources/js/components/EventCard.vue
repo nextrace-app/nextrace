@@ -46,7 +46,7 @@ const fullDate = computed(() => formatDate(props.event.date));
                 <div class="min-w-0">
                     <h3 class="text-base leading-snug font-semibold">
                         <Link
-                            :href="localeRoute(eventsShow(event.id))"
+                            :href="localeRoute(eventsShow(event.slug))"
                             class="rounded-sm outline-none after:absolute after:inset-0 after:content-['']"
                         >
                             {{ event.name }}
@@ -60,7 +60,7 @@ const fullDate = computed(() => formatDate(props.event.date));
                     </p>
                 </div>
                 <FavoriteButton
-                    :event-id="event.id"
+                    :event-slug="event.slug"
                     :favorited="favorited"
                     class="relative z-10 shrink-0"
                 />

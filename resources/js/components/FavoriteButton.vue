@@ -11,7 +11,7 @@ import {
 } from '@/routes/events/favorite';
 
 const props = defineProps<{
-    eventId: number;
+    eventSlug: string;
     favorited: boolean;
 }>();
 
@@ -40,8 +40,8 @@ function toggle() {
     }
 
     const route = isFavorite.value
-        ? unfavorite(props.eventId)
-        : favorite(props.eventId);
+        ? unfavorite(props.eventSlug)
+        : favorite(props.eventSlug);
 
     isFavorite.value = !isFavorite.value;
 

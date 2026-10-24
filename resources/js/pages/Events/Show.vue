@@ -77,7 +77,7 @@ const map = computed(() => mapUrl(props.event));
                                 >{{ categoryLabel(event.category) }}</Badge
                             >
                             <FavoriteButton
-                                :event-id="event.id"
+                                :event-slug="event.slug"
                                 :favorited="isFavorite"
                                 class="shrink-0 text-foreground"
                             />
