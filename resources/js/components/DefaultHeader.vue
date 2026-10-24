@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { buttonVariants } from '@/components/ui/button';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { useLocale } from '@/composables/useLocale';
-import { dashboard, home, login, logout, register } from '@/routes';
+import { home, login, logout, register } from '@/routes';
 import { index as events } from '@/routes/events';
 import { index as favorites } from '@/routes/favorites';
 import { show as profile } from '@/routes/profile';
@@ -27,7 +27,6 @@ const navLinks = computed(() =>
         ? [
               { key: 'races', route: events() },
               { key: 'favorites', route: favorites() },
-              { key: 'dashboard', route: dashboard() },
               { key: 'profile', route: profile() },
           ]
         : [

@@ -113,7 +113,7 @@ return [
             'subtitle' => 'Running events across Greece, starting with Crete.',
             'eyebrow' => 'Race calendar',
             'month_count' => '{count} race | {count} races',
-            'count' => '{count} events shown',
+            'count' => '{count} event shown | {count} events shown',
             'empty' => 'There are no upcoming races yet. Check back soon.',
             'no_matches' => 'No races match these filters.',
         ],
@@ -210,6 +210,8 @@ return [
         'favorite' => [
             'add' => 'Add to favorites',
             'remove' => 'Remove from favorites',
+            'add_named' => 'Add {name} to favorites',
+            'remove_named' => 'Remove {name} from favorites',
         ],
     ],
 

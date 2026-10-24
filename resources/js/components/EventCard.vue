@@ -90,6 +90,7 @@ const statusLabel = computed(() =>
                 </div>
                 <FavoriteButton
                     :event-slug="event.slug"
+                    :event-name="event.name"
                     :favorited="favorited"
                     class="relative z-10 shrink-0"
                 />

@@ -230,6 +230,7 @@ const hasContact = computed(
                         </div>
                         <FavoriteButton
                             :event-slug="event.slug"
+                            :event-name="event.name"
                             :favorited="isFavorite"
                             class="shrink-0 text-foreground"
                         />

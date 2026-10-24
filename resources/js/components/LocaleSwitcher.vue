@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 import { Check, Globe } from '@lucide/vue';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -44,7 +44,7 @@ const open = ref(false);
             </DialogHeader>
             <ul class="flex flex-col gap-1">
                 <li v-for="code in supportedLocales" :key="code">
-                    <Link
+                    <a
                         :href="localeSwitchUrl(page.url, code)"
                         :aria-current="code === locale ? 'true' : undefined"
                         :lang="code"
@@ -55,7 +55,6 @@ const open = ref(false);
                                 ? 'border-primary font-medium'
                                 : 'border-border'
                         "
-                        @click="open = false"
                     >
                         <span>{{ t(`nav.locales.${code}`) }}</span>
                         <Check
@@ -63,7 +62,7 @@ const open = ref(false);
                             class="size-4"
                             aria-hidden="true"
                         />
-                    </Link>
+                    </a>
                 </li>
             </ul>
         </DialogContent>

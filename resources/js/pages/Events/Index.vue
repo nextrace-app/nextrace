@@ -266,9 +266,11 @@ const selectClass =
                         role="status"
                     >
                         {{
-                            t('events.index.count', {
-                                count: visibleEvents.length,
-                            })
+                            t(
+                                'events.index.count',
+                                { count: visibleEvents.length },
+                                visibleEvents.length,
+                            )
                         }}
                     </p>
 

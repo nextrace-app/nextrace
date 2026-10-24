@@ -12,6 +12,7 @@ import {
 
 const props = defineProps<{
     eventSlug: string;
+    eventName?: string;
     favorited: boolean;
 }>();
 
@@ -28,9 +29,13 @@ watch(
     (favorited) => (isFavorite.value = favorited),
 );
 
-const label = computed(() =>
-    isFavorite.value ? t('events.favorite.remove') : t('events.favorite.add'),
-);
+const label = computed(() => {
+    const action = isFavorite.value ? 'remove' : 'add';
+
+    return props.eventName
+        ? t(`events.favorite.${action}_named`, { name: props.eventName })
+        : t(`events.favorite.${action}`);
+});
 
 function toggle() {
     if (!page.props.auth.user) {
