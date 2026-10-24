@@ -83,9 +83,11 @@ class EventSeederTest extends TestCase
     public function test_an_event_created_afterwards_gets_a_free_id(): void
     {
         $this->seed(EventSeeder::class);
+        $seededIds = Event::query()->pluck('id');
 
         $event = Event::factory()->create();
 
-        $this->assertSame(count(EventSeeder::catalogue()) + 1, $event->id);
+        $this->assertFalse($seededIds->contains($event->id));
+        $this->assertSame(count(EventSeeder::catalogue()) + 1, Event::query()->count());
     }
 }

@@ -9,7 +9,6 @@ use App\Models\Region;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -87,10 +86,6 @@ class EventSeeder extends Seeder
                 'start_time_known' => false,
             ]);
         }
-
-        // Inserting explicit ids leaves the sequence behind, so the next event
-        // created without one would collide with a seeded race.
-        DB::statement("select setval(pg_get_serial_sequence('events', 'id'), (select max(id) from events))");
     }
 
     private function distanceClass(string $category): DistanceClass

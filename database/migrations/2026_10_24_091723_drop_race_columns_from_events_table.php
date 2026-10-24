@@ -15,7 +15,6 @@ return new class extends Migration
         Schema::table('events', function (Blueprint $table) {
             $table->date('starts_on')->nullable(false)->change();
             $table->index('starts_on');
-            $table->index('region_id');
 
             $table->dropIndex(['category', 'starts_at']);
             $table->dropIndex(['starts_at']);
@@ -35,16 +34,15 @@ return new class extends Migration
             $table->timestamp('ends_at')->nullable();
         });
 
-        DB::statement('
-            update events set
-                category = coalesce(main.name ->> \'en\', \'\'),
-                distance_meters = coalesce(main.distance_meters, 0),
-                starts_at = coalesce(main.starts_at, events.starts_on),
-                ends_at = events.ends_on
-            from events as e
-            left join races as main on main.event_id = e.id and main.is_main
-            where events.id = e.id
-        ');
+        DB::statement("
+            update events
+            left join races as main on main.event_id = events.id and main.is_main
+            set
+                events.category = coalesce(json_unquote(json_extract(main.name, '$.en')), ''),
+                events.distance_meters = coalesce(main.distance_meters, 0),
+                events.starts_at = coalesce(main.starts_at, events.starts_on),
+                events.ends_at = events.ends_on
+        ");
 
         Schema::table('events', function (Blueprint $table) {
             $table->string('category')->nullable(false)->change();
@@ -54,7 +52,6 @@ return new class extends Migration
             $table->index('starts_at');
             $table->index(['category', 'starts_at']);
             $table->dropIndex(['starts_on']);
-            $table->dropIndex(['region_id']);
         });
     }
 };

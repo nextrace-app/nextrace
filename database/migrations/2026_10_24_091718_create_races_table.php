@@ -26,7 +26,8 @@ return new class extends Migration
             $table->unsignedTinyInteger('team_size')->nullable();
 
             // The local wall-clock time of the start; midnight with start_time_known false means the time is not announced.
-            $table->timestamp('starts_at');
+            // A datetime, so the session time zone does not shift it the way it would a timestamp.
+            $table->dateTime('starts_at');
             $table->boolean('start_time_known')->default(true);
             $table->jsonb('start_location')->nullable();
             $table->jsonb('finish_location')->nullable();
