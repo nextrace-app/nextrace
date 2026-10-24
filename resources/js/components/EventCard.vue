@@ -16,14 +16,37 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const { localeRoute } = useLocale();
-const { formatDate, formatDistance, formatNumber, categoryLabel } =
-    useEventFormat();
+const {
+    formatDate,
+    formatDateRange,
+    formatDistance,
+    formatNumber,
+    categoryLabel,
+} = useEventFormat();
+
+const maxChips = 4;
 
 const day = computed(() => formatDate(props.event.date, { day: 'numeric' }));
 const month = computed(() =>
     formatDate(props.event.date, { month: 'short' }).replace('.', ''),
 );
-const fullDate = computed(() => formatDate(props.event.date));
+const fullDate = computed(() =>
+    formatDateRange(props.event.date, props.event.ends_on),
+);
+const otherRaces = computed(() =>
+    props.event.races.filter((race) => !race.is_main),
+);
+const chips = computed(() => otherRaces.value.slice(0, maxChips));
+const hiddenRaces = computed(
+    () => otherRaces.value.length - chips.value.length,
+);
+const statusLabel = computed(() =>
+    props.event.status === 'postponed' ||
+    props.event.status === 'cancelled' ||
+    props.event.status === 'completed'
+        ? t(`events.status.${props.event.status}`)
+        : null,
+);
 </script>
 
 <template>
@@ -88,10 +111,36 @@ const fullDate = computed(() => formatDate(props.event.date));
                 </li>
             </ul>
 
-            <div>
+            <div class="flex flex-wrap items-center gap-1.5">
                 <Badge variant="secondary">{{
                     categoryLabel(event.category)
                 }}</Badge>
+                <Badge
+                    v-for="race in chips"
+                    :key="race.id"
+                    variant="outline"
+                    data-test="race-chip"
+                    >{{ formatDistance(race.distance_meters) }}</Badge
+                >
+                <Badge
+                    v-if="hiddenRaces > 0"
+                    variant="outline"
+                    :aria-label="t('events.more_races', { count: hiddenRaces })"
+                    >{{ t('events.more_races', { count: hiddenRaces }) }}</Badge
+                >
+                <Badge
+                    v-if="statusLabel"
+                    variant="destructive"
+                    data-test="event-status"
+                    >{{ statusLabel }}</Badge
+                >
+                <Badge
+                    v-if="!event.date_confirmed"
+                    variant="outline"
+                    class="border-amber-500/60 text-amber-700 dark:text-amber-400"
+                    data-test="date-unconfirmed"
+                    >{{ t('events.status.date_unconfirmed') }}</Badge
+                >
             </div>
         </div>
     </article>

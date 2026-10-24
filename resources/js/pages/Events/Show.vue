@@ -2,14 +2,28 @@
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import {
     ArrowLeft,
+    BadgeCheck,
+    Building2,
     Calendar,
+    Camera,
     Clock,
     ExternalLink,
+    FileText,
+    Flag,
+    Globe,
+    Link2,
+    Mail,
     Map,
     MapPin,
+    Phone,
     Route,
+    Ticket,
+    Timer,
+    Trophy,
+    TriangleAlert,
     Users,
 } from '@lucide/vue';
+import type { Component } from 'vue';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Badge } from '@/components/ui/badge';
@@ -17,7 +31,7 @@ import { Button } from '@/components/ui/button';
 import { useEventFormat } from '@/composables/useEventFormat';
 import { useLocale } from '@/composables/useLocale';
 import { index as eventsIndex } from '@/routes/events';
-import type { Event } from '@/types';
+import type { Event, LinkType } from '@/types';
 
 const props = defineProps<{
     event: Event;
@@ -28,18 +42,87 @@ const { t } = useI18n();
 const page = usePage();
 const seo = computed(() => page.props.seo);
 const { localeRoute } = useLocale();
-const { formatDate, formatDistance, formatNumber, categoryLabel, mapUrl } =
-    useEventFormat();
+const {
+    formatDate,
+    formatDateRange,
+    formatDateTimeString,
+    formatDistance,
+    formatDuration,
+    formatNumber,
+    formatPrice,
+    formatTime,
+    categoryLabel,
+    mapUrl,
+} = useEventFormat();
 
 const fullDate = computed(() =>
-    formatDate(props.event.date, {
-        weekday: 'long',
+    props.event.ends_on
+        ? formatDateRange(props.event.date, props.event.ends_on)
+        : formatDate(props.event.date, {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+          }),
+);
+const map = computed(() => mapUrl(props.event));
+
+const banner = computed(() => {
+    if (props.event.status === 'cancelled') {
+        return 'banner_cancelled';
+    }
+
+    if (props.event.status === 'postponed') {
+        return 'banner_postponed';
+    }
+
+    return props.event.date_confirmed ? null : 'banner_unconfirmed';
+});
+
+const linkIcons: Record<LinkType, Component> = {
+    website: Globe,
+    facebook: Link2,
+    instagram: Camera,
+    regulations: FileText,
+    route: Route,
+    results: Trophy,
+    photos: Camera,
+    timing: Timer,
+    other: Link2,
+};
+
+function raceStart(race: Event['races'][number]): string {
+    const date = formatDate(race.date, {
+        weekday: 'short',
         day: 'numeric',
         month: 'long',
         year: 'numeric',
-    }),
+    });
+
+    return race.time ? `${date}, ${formatTime(race.date, race.time)}` : date;
+}
+
+function priceRange(price: Event['races'][number]['prices'][number]): string {
+    if (price.valid_until) {
+        return t('events.races.until', { date: formatDate(price.valid_until) });
+    }
+
+    return price.valid_from
+        ? t('events.races.from', { date: formatDate(price.valid_from) })
+        : '';
+}
+
+function registrationDate(value: string): string {
+    return formatDateTimeString(value, {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
+}
+
+const hasContact = computed(
+    () => props.event.contact.email || props.event.contact.phone,
 );
-const map = computed(() => mapUrl(props.event));
 </script>
 
 <template>
@@ -71,11 +154,22 @@ const map = computed(() => mapUrl(props.event));
                     />
                     <div class="relative flex flex-col gap-4">
                         <div class="flex items-start justify-between gap-4">
-                            <Badge
-                                variant="secondary"
-                                data-test="event-category"
-                                >{{ categoryLabel(event.category) }}</Badge
-                            >
+                            <div class="flex flex-wrap items-center gap-2">
+                                <Badge
+                                    variant="secondary"
+                                    data-test="event-category"
+                                    >{{ categoryLabel(event.category) }}</Badge
+                                >
+                                <Badge
+                                    v-if="event.races.length > 1"
+                                    variant="secondary"
+                                    >{{
+                                        t('events.races.count', {
+                                            count: event.races.length,
+                                        })
+                                    }}</Badge
+                                >
+                            </div>
                             <FavoriteButton
                                 :event-slug="event.slug"
                                 :favorited="isFavorite"
@@ -103,7 +197,7 @@ const map = computed(() => mapUrl(props.event));
                                 }}</time>
                             </li>
                             <li
-                                v-if="event.time"
+                                v-if="event.time && !event.ends_on"
                                 class="flex items-center gap-2"
                             >
                                 <Clock
@@ -151,6 +245,24 @@ const map = computed(() => mapUrl(props.event));
                 </header>
 
                 <div class="flex flex-col gap-6 p-5 sm:p-8">
+                    <div
+                        v-if="banner"
+                        role="alert"
+                        class="flex items-start gap-3 rounded-lg border p-4 text-sm"
+                        :class="
+                            event.status === 'scheduled'
+                                ? 'border-amber-500/50 bg-amber-500/10 text-amber-900 dark:text-amber-200'
+                                : 'border-destructive/50 bg-destructive/10 text-destructive'
+                        "
+                        data-test="event-banner"
+                    >
+                        <TriangleAlert
+                            class="mt-0.5 size-4 shrink-0"
+                            aria-hidden="true"
+                        />
+                        <p>{{ t(`events.status.${banner}`) }}</p>
+                    </div>
+
                     <div
                         v-if="event.registration_url || map"
                         class="flex flex-col gap-3 sm:flex-row"
@@ -201,6 +313,401 @@ const map = computed(() => mapUrl(props.event));
                         <p v-else class="text-muted-foreground">
                             {{ t('events.no_description') }}
                         </p>
+                    </section>
+
+                    <section v-if="event.races.length > 0" data-test="races">
+                        <h2 class="mb-3 text-lg font-semibold">
+                            {{ t('events.races.title') }}
+                        </h2>
+                        <ul class="flex flex-col gap-3">
+                            <li
+                                v-for="race in event.races"
+                                :key="race.id"
+                                class="rounded-lg border p-4"
+                                data-test="race"
+                            >
+                                <div
+                                    class="flex flex-wrap items-center justify-between gap-2"
+                                >
+                                    <h3 class="font-semibold">
+                                        {{ race.name }}
+                                    </h3>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <Badge v-if="race.is_main">{{
+                                            t('events.races.main')
+                                        }}</Badge>
+                                        <Badge variant="secondary">{{
+                                            formatDistance(race.distance_meters)
+                                        }}</Badge>
+                                        <Badge variant="outline">{{
+                                            t(
+                                                `events.races.discipline.${race.discipline}`,
+                                            )
+                                        }}</Badge>
+                                        <Badge
+                                            v-if="race.terrain"
+                                            variant="outline"
+                                            >{{
+                                                t(
+                                                    `events.races.terrain.${race.terrain}`,
+                                                )
+                                            }}</Badge
+                                        >
+                                        <Badge
+                                            v-if="race.certification"
+                                            variant="outline"
+                                            class="gap-1"
+                                        >
+                                            <BadgeCheck aria-hidden="true" />
+                                            {{
+                                                t(
+                                                    `events.races.certifications.${race.certification}`,
+                                                )
+                                            }}
+                                        </Badge>
+                                        <Badge
+                                            v-if="race.status === 'cancelled'"
+                                            variant="destructive"
+                                            >{{
+                                                t('events.races.cancelled')
+                                            }}</Badge
+                                        >
+                                    </div>
+                                </div>
+
+                                <dl
+                                    class="mt-3 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2"
+                                >
+                                    <div class="flex flex-col">
+                                        <dt class="text-muted-foreground">
+                                            {{ t('events.races.start') }}
+                                        </dt>
+                                        <dd>
+                                            <time :datetime="race.date">{{
+                                                raceStart(race)
+                                            }}</time>
+                                        </dd>
+                                    </div>
+                                    <div
+                                        v-if="race.time_limit_minutes"
+                                        class="flex flex-col"
+                                    >
+                                        <dt class="text-muted-foreground">
+                                            {{ t('events.races.time_limit') }}
+                                        </dt>
+                                        <dd>
+                                            {{
+                                                formatDuration(
+                                                    race.time_limit_minutes,
+                                                )
+                                            }}
+                                        </dd>
+                                    </div>
+                                    <div
+                                        v-if="race.min_age"
+                                        class="flex flex-col"
+                                    >
+                                        <dt class="text-muted-foreground">
+                                            {{ t('events.races.min_age') }}
+                                        </dt>
+                                        <dd>
+                                            {{
+                                                t(
+                                                    'events.races.min_age_value',
+                                                    {
+                                                        age: race.min_age,
+                                                    },
+                                                )
+                                            }}
+                                        </dd>
+                                    </div>
+                                    <div
+                                        v-if="race.participant_limit"
+                                        class="flex flex-col"
+                                    >
+                                        <dt class="text-muted-foreground">
+                                            {{
+                                                t(
+                                                    'events.races.participant_limit',
+                                                )
+                                            }}
+                                        </dt>
+                                        <dd>
+                                            {{
+                                                formatNumber(
+                                                    race.participant_limit,
+                                                )
+                                            }}
+                                        </dd>
+                                    </div>
+                                    <div
+                                        v-if="race.elevation_gain_m"
+                                        class="flex flex-col"
+                                    >
+                                        <dt class="text-muted-foreground">
+                                            {{ t('events.races.elevation') }}
+                                        </dt>
+                                        <dd>
+                                            {{
+                                                formatNumber(
+                                                    race.elevation_gain_m,
+                                                )
+                                            }}
+                                            m
+                                        </dd>
+                                    </div>
+                                    <div
+                                        v-if="race.prices.length > 0"
+                                        class="flex flex-col sm:col-span-2"
+                                    >
+                                        <dt class="text-muted-foreground">
+                                            {{ t('events.races.prices') }}
+                                        </dt>
+                                        <dd>
+                                            <ul
+                                                class="mt-1 flex flex-wrap gap-2"
+                                            >
+                                                <li
+                                                    v-for="(
+                                                        price, index
+                                                    ) in race.prices"
+                                                    :key="index"
+                                                    class="rounded-md bg-muted px-2.5 py-1"
+                                                    data-test="race-price"
+                                                >
+                                                    <span class="font-medium">{{
+                                                        price.amount === 0
+                                                            ? t(
+                                                                  'events.races.free',
+                                                              )
+                                                            : formatPrice(
+                                                                  price.amount,
+                                                                  price.currency,
+                                                              )
+                                                    }}</span>
+                                                    <span
+                                                        v-if="
+                                                            price.label ||
+                                                            priceRange(price)
+                                                        "
+                                                        class="text-muted-foreground"
+                                                    >
+                                                        &middot;
+                                                        {{
+                                                            [
+                                                                price.label,
+                                                                priceRange(
+                                                                    price,
+                                                                ),
+                                                            ]
+                                                                .filter(Boolean)
+                                                                .join(', ')
+                                                        }}
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </dd>
+                                    </div>
+                                </dl>
+
+                                <Button
+                                    v-if="race.registration_url"
+                                    as-child
+                                    variant="outline"
+                                    size="sm"
+                                    class="mt-3 w-full sm:w-auto"
+                                >
+                                    <a
+                                        :href="race.registration_url"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <Ticket aria-hidden="true" />
+                                        {{ t('events.races.register') }}
+                                    </a>
+                                </Button>
+                            </li>
+                        </ul>
+                    </section>
+
+                    <section data-test="facts">
+                        <h2 class="mb-3 text-lg font-semibold">
+                            {{ t('events.facts.title') }}
+                        </h2>
+                        <dl class="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
+                            <div v-if="event.organizer" class="flex gap-2">
+                                <Building2
+                                    class="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                                    aria-hidden="true"
+                                />
+                                <div>
+                                    <dt class="text-muted-foreground">
+                                        {{ t('events.facts.organizer') }}
+                                    </dt>
+                                    <dd>
+                                        <a
+                                            v-if="event.organizer.website"
+                                            :href="event.organizer.website"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="underline-offset-4 hover:underline"
+                                            >{{ event.organizer.name }}</a
+                                        >
+                                        <template v-else>{{
+                                            event.organizer.name
+                                        }}</template>
+                                    </dd>
+                                </div>
+                            </div>
+                            <div v-if="event.venue" class="flex gap-2">
+                                <MapPin
+                                    class="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                                    aria-hidden="true"
+                                />
+                                <div>
+                                    <dt class="text-muted-foreground">
+                                        {{ t('events.facts.venue') }}
+                                    </dt>
+                                    <dd>{{ event.venue }}</dd>
+                                </div>
+                            </div>
+                            <div v-if="event.region" class="flex gap-2">
+                                <Flag
+                                    class="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                                    aria-hidden="true"
+                                />
+                                <div>
+                                    <dt class="text-muted-foreground">
+                                        {{ t('events.facts.region') }}
+                                    </dt>
+                                    <dd>{{ event.region.name }}</dd>
+                                </div>
+                            </div>
+                            <div v-if="event.series" class="flex gap-2">
+                                <Trophy
+                                    class="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                                    aria-hidden="true"
+                                />
+                                <div>
+                                    <dt class="text-muted-foreground">
+                                        {{ t('events.facts.series') }}
+                                    </dt>
+                                    <dd>
+                                        {{ event.series.name }}
+                                        <template v-if="event.edition_number">
+                                            &middot;
+                                            {{
+                                                t('events.facts.edition', {
+                                                    number: event.edition_number,
+                                                })
+                                            }}
+                                        </template>
+                                    </dd>
+                                </div>
+                            </div>
+                            <div class="flex gap-2" data-test="registration">
+                                <Ticket
+                                    class="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                                    aria-hidden="true"
+                                />
+                                <div>
+                                    <dt class="text-muted-foreground">
+                                        {{ t('events.facts.registration') }}
+                                    </dt>
+                                    <dd>
+                                        {{
+                                            t(
+                                                `events.registration_status.${event.registration.status}`,
+                                            )
+                                        }}
+                                        <span
+                                            v-if="event.registration.opens_at"
+                                            class="block text-muted-foreground"
+                                            >{{
+                                                t(
+                                                    'events.facts.registration_opens',
+                                                    {
+                                                        date: registrationDate(
+                                                            event.registration
+                                                                .opens_at,
+                                                        ),
+                                                    },
+                                                )
+                                            }}</span
+                                        >
+                                        <span
+                                            v-if="event.registration.closes_at"
+                                            class="block text-muted-foreground"
+                                            >{{
+                                                t(
+                                                    'events.facts.registration_closes',
+                                                    {
+                                                        date: registrationDate(
+                                                            event.registration
+                                                                .closes_at,
+                                                        ),
+                                                    },
+                                                )
+                                            }}</span
+                                        >
+                                    </dd>
+                                </div>
+                            </div>
+                            <div v-if="hasContact" class="flex gap-2">
+                                <Mail
+                                    class="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                                    aria-hidden="true"
+                                />
+                                <div class="min-w-0">
+                                    <dt class="text-muted-foreground">
+                                        {{ t('events.facts.contact') }}
+                                    </dt>
+                                    <dd class="break-words">
+                                        <a
+                                            v-if="event.contact.email"
+                                            :href="`mailto:${event.contact.email}`"
+                                            class="block underline-offset-4 hover:underline"
+                                            >{{ event.contact.email }}</a
+                                        >
+                                        <a
+                                            v-if="event.contact.phone"
+                                            :href="`tel:${event.contact.phone.replace(/\s+/g, '')}`"
+                                            class="flex items-center gap-1 underline-offset-4 hover:underline"
+                                        >
+                                            <Phone
+                                                class="size-3"
+                                                aria-hidden="true"
+                                            />{{ event.contact.phone }}</a
+                                        >
+                                    </dd>
+                                </div>
+                            </div>
+                        </dl>
+
+                        <ul
+                            v-if="event.links.length > 0"
+                            class="mt-4 flex flex-wrap gap-2"
+                            :aria-label="t('events.facts.links')"
+                        >
+                            <li v-for="link in event.links" :key="link.url">
+                                <Button as-child variant="outline" size="sm">
+                                    <a
+                                        :href="link.url"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <component
+                                            :is="linkIcons[link.type]"
+                                            aria-hidden="true"
+                                        />
+                                        {{
+                                            link.label ||
+                                            t(`events.link_types.${link.type}`)
+                                        }}
+                                    </a>
+                                </Button>
+                            </li>
+                        </ul>
                     </section>
                 </div>
             </article>

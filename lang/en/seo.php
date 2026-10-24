@@ -19,6 +19,7 @@ return [
     'event' => [
         'title' => ':name: :distance race in :city',
         'description' => ':name is a :distance running race in :city, :country, on :date.',
+        'distances' => '{1} One distance.|[2,*] :count distances to choose from.',
         'description_with_details' => ':name, :distance in :city on :date. :details',
     ],
 

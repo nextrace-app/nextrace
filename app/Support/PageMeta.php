@@ -2,7 +2,10 @@
 
 namespace App\Support;
 
+use App\Enums\EventStatus;
+use App\Enums\RaceStatus;
 use App\Models\Event;
+use App\Models\Race;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -66,6 +69,11 @@ class PageMeta
         $this->description = $details === ''
             ? __('seo.event.description', ['name' => $name, 'distance' => $distance, 'city' => $event->city, 'country' => $country, 'date' => $date])
             : __('seo.event.description_with_details', ['name' => $name, 'distance' => $distance, 'city' => $event->city, 'date' => $date, 'details' => $details]);
+
+        if ($event->races->count() > 1) {
+            $this->description .= ' '.trans_choice('seo.event.distances', $event->races->count(), ['count' => $event->races->count()]);
+        }
+
         $this->type = 'article';
         $this->image = $event->image_url;
         $this->jsonLd = $this->eventJsonLd($event, $name, $country, $start);
@@ -182,7 +190,7 @@ class PageMeta
             'description' => $this->description,
             'startDate' => self::schemaDate($start),
             'endDate' => $event->ends_on ? $event->ends_on->toDateString() : null,
-            'eventStatus' => 'https://schema.org/EventScheduled',
+            'eventStatus' => self::eventStatus($event->status),
             'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
             'location' => $location,
             'image' => $event->image_url,
@@ -192,6 +200,76 @@ class PageMeta
                 '@type' => 'Offer',
                 'url' => $event->registration_url ?? $event->mainRace?->registration_url,
             ] : null,
+            'organizer' => $this->organizerJsonLd($event),
+            'subEvent' => $event->races->isEmpty() ? null : $event->races->map(fn (Race $race) => $this->raceJsonLd($event, $race, $name, $location, $url))->values()->all(),
+        ];
+
+        return array_filter($data, fn (mixed $value) => $value !== null);
+    }
+
+    /**
+     * The schema.org event status of an event.
+     */
+    public static function eventStatus(EventStatus|RaceStatus $status): string
+    {
+        return match ($status->value) {
+            'postponed' => 'https://schema.org/EventPostponed',
+            'cancelled' => 'https://schema.org/EventCancelled',
+            default => 'https://schema.org/EventScheduled',
+        };
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function organizerJsonLd(Event $event): ?array
+    {
+        if ($event->organizer === null) {
+            return null;
+        }
+
+        return array_filter([
+            '@type' => 'Organization',
+            'name' => $event->organizer->translated('name'),
+            'url' => $event->organizer->website,
+        ], fn (mixed $value) => $value !== null && $value !== '');
+    }
+
+    /**
+     * One race of the event as a schema.org sub event.
+     *
+     * @param  array<string, mixed>  $location
+     * @return array<string, mixed>
+     */
+    private function raceJsonLd(Event $event, Race $race, string $eventName, array $location, string $url): array
+    {
+        $locale = app()->getLocale();
+        $registrationUrl = $race->registration_url ?? $event->registration_url;
+
+        $offers = $race->prices->map(fn ($price) => array_filter([
+            '@type' => 'Offer',
+            'name' => $price->translatedOrNull('label', $locale),
+            'price' => $price->amount_cents / 100,
+            'priceCurrency' => $price->currency,
+            'validFrom' => $price->valid_from?->toDateString(),
+            'validThrough' => $price->valid_until?->toDateString(),
+            'url' => $registrationUrl,
+        ], fn (mixed $value) => $value !== null && $value !== ''))->values()->all();
+
+        if ($offers === [] && $registrationUrl !== null) {
+            $offers = [['@type' => 'Offer', 'url' => $registrationUrl]];
+        }
+
+        $data = [
+            '@type' => 'SportsEvent',
+            'name' => $race->translated('name', $locale),
+            'description' => "{$eventName}: {$race->formattedDistance()}",
+            'startDate' => self::schemaDate($race->starts_at),
+            'eventStatus' => self::eventStatus($event->status === EventStatus::Scheduled ? $race->status : $event->status),
+            'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
+            'location' => $location,
+            'url' => $url,
+            'offers' => $offers === [] ? null : $offers,
         ];
 
         return array_filter($data, fn (mixed $value) => $value !== null);

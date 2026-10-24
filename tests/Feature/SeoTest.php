@@ -3,6 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Event;
+use App\Models\Organizer;
+use App\Models\Race;
+use App\Models\RacePrice;
 use App\Support\PageMeta;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -204,5 +207,93 @@ class SeoTest extends TestCase
 
         $this->assertStringNotContainsString('Hidden Draft Race', $this->get(route('events.index'))->getContent());
         $this->assertStringNotContainsString((string) route('events.show', $draft), $this->get('/sitemap.xml')->getContent());
+    }
+
+    public function test_every_race_is_a_sub_event_with_offers_and_the_event_has_an_organizer(): void
+    {
+        $organizer = Organizer::factory()->create(['name' => ['en' => 'Crete Runners', 'el' => 'Δρομείς Κρήτης'], 'website' => 'https://runners.example.com']);
+        $event = $this->event(['organizer_id' => $organizer->id]);
+
+        $tenK = Race::factory()->for($event)->create([
+            'name' => ['en' => '10 km', 'el' => '10 χλμ'],
+            'distance_meters' => 10000,
+            'starts_at' => '2027-04-18 10:30:00',
+            'registration_url' => 'https://example.com/register-10k',
+        ]);
+        RacePrice::factory()->for($tenK)->create(['amount_cents' => 1550, 'currency' => 'EUR', 'valid_from' => '2027-01-01', 'valid_until' => '2027-03-31']);
+        RacePrice::factory()->for($tenK)->create(['amount_cents' => 0, 'currency' => 'EUR', 'valid_from' => null, 'valid_until' => null]);
+        Race::factory()->for($event)->startTimeUnknown()->create(['distance_meters' => 5000, 'starts_at' => '2027-04-18 00:00:00']);
+
+        $html = $this->get(route('events.show', $event))->assertOk()->getContent();
+        $data = $this->jsonLd($html);
+
+        $this->assertCount(3, $data['subEvent']);
+        $this->assertSame('Crete Runners', $data['organizer']['name']);
+        $this->assertSame('Organization', $data['organizer']['@type']);
+        $this->assertSame('https://runners.example.com', $data['organizer']['url']);
+        $this->assertStringContainsString('3 distances to choose from.', $html);
+
+        $sub = collect($data['subEvent'])->firstWhere('name', '10 km');
+        $this->assertSame('SportsEvent', $sub['@type']);
+        $this->assertSame('2027-04-18T10:30:00+03:00', $sub['startDate']);
+        $this->assertStringContainsString('10 km', $sub['description']);
+        $this->assertSame('https://schema.org/EventScheduled', $sub['eventStatus']);
+        $this->assertCount(2, $sub['offers']);
+        $paid = collect($sub['offers'])->firstWhere('price', 15.5);
+        $this->assertSame('EUR', $paid['priceCurrency']);
+        $this->assertSame('2027-01-01', $paid['validFrom']);
+        $this->assertSame('2027-03-31', $paid['validThrough']);
+        $this->assertSame('https://example.com/register-10k', $paid['url']);
+
+        $plain = collect($data['subEvent'])->first(fn (array $race) => $race['startDate'] === '2027-04-18' && str_contains($race['description'], '5 km'));
+        $this->assertNotNull($plain);
+    }
+
+    public function test_a_single_race_event_keeps_its_description_and_one_sub_event(): void
+    {
+        $data = $this->jsonLd($this->get(route('events.show', $this->event()))->assertOk()->getContent());
+
+        $this->assertCount(1, $data['subEvent']);
+        $this->assertArrayNotHasKey('organizer', $data);
+        $this->assertStringNotContainsString('distances', $data['description']);
+    }
+
+    public function test_the_event_status_is_mapped_to_schema_org(): void
+    {
+        $cases = [
+            'scheduled' => 'https://schema.org/EventScheduled',
+            'postponed' => 'https://schema.org/EventPostponed',
+            'cancelled' => 'https://schema.org/EventCancelled',
+        ];
+
+        foreach ($cases as $status => $expected) {
+            $event = $this->event(['status' => $status, 'name' => ['en' => "Race {$status}", 'el' => "Αγώνας {$status}"]]);
+            $data = $this->jsonLd($this->get(route('events.show', $event))->assertOk()->getContent());
+
+            $this->assertSame($expected, $data['eventStatus']);
+            $this->assertSame($expected, $data['subEvent'][0]['eventStatus']);
+        }
+    }
+
+    public function test_sub_event_text_is_escaped_too(): void
+    {
+        $event = $this->event();
+        Race::factory()->for($event)->create(['name' => ['en' => '</script><i>&', 'el' => 'x'], 'distance_meters' => 3000]);
+
+        $html = $this->get(route('events.show', $event))->assertOk()->getContent();
+
+        $this->assertStringNotContainsString('</script><i>', $html);
+        $this->assertContains('</script><i>&', array_column($this->jsonLd($html)['subEvent'], 'name'));
+    }
+
+    public function test_the_sitemap_lists_a_multi_race_event_once_per_locale(): void
+    {
+        $event = $this->event();
+        Race::factory()->for($event)->create(['distance_meters' => 5000]);
+
+        $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
+
+        $this->assertSame(1, substr_count($xml, '<loc>'.route('events.show', $event).'</loc>'));
+        $this->assertSame(1, substr_count($xml, '<loc>'.route('el.events.show', $event).'</loc>'));
     }
 }

@@ -5,7 +5,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Button } from '@/components/ui/button';
 import { useEventFormat } from '@/composables/useEventFormat';
-import type { Event } from '@/types';
+import type { DistanceClass, Event } from '@/types';
 
 const props = defineProps<{
     events: Event[];
@@ -15,10 +15,21 @@ const props = defineProps<{
 const { t } = useI18n();
 const page = usePage();
 const seo = computed(() => page.props.seo);
-const { categoryLabel } = useEventFormat();
+const { categoryLabel, formatDate } = useEventFormat();
 
 const category = ref('');
 const city = ref('');
+const distance = ref('');
+const region = ref('');
+const month = ref('');
+
+const distanceFilters = ['5k', '10k', 'half_marathon', 'marathon', 'ultra'];
+
+function distanceFilterOf(distanceClass: DistanceClass | null): string {
+    return distanceClass !== null && distanceFilters.includes(distanceClass)
+        ? distanceClass
+        : 'kids_other';
+}
 
 const categories = computed(() => [
     ...new Set(props.events.map((event) => event.category)),
@@ -26,23 +37,70 @@ const categories = computed(() => [
 const cities = computed(() =>
     [...new Set(props.events.map((event) => event.city))].sort(),
 );
+const distances = computed(() => {
+    const present = new Set(
+        props.events.flatMap((event) =>
+            event.races.map((race) => distanceFilterOf(race.distance_class)),
+        ),
+    );
+
+    return [...distanceFilters, 'kids_other'].filter((item) =>
+        present.has(item),
+    );
+});
+const regions = computed(() => {
+    const unique = new Map<string, string>();
+
+    props.events.forEach((event) => {
+        if (event.region) {
+            unique.set(event.region.slug, event.region.name);
+        }
+    });
+
+    return [...unique].sort((a, b) => a[1].localeCompare(b[1]));
+});
+const months = computed(() =>
+    [...new Set(props.events.map((event) => event.date.slice(0, 7)))].sort(),
+);
 
 const visibleEvents = computed(() =>
     props.events.filter(
         (event) =>
             (category.value === '' || event.category === category.value) &&
-            (city.value === '' || event.city === city.value),
+            (city.value === '' || event.city === city.value) &&
+            (distance.value === '' ||
+                event.races.some(
+                    (race) =>
+                        distanceFilterOf(race.distance_class) ===
+                        distance.value,
+                )) &&
+            (region.value === '' || event.region?.slug === region.value) &&
+            (month.value === '' || event.date.startsWith(month.value)),
     ),
 );
-const isFiltered = computed(() => category.value !== '' || city.value !== '');
+const isFiltered = computed(
+    () =>
+        category.value !== '' ||
+        city.value !== '' ||
+        distance.value !== '' ||
+        region.value !== '' ||
+        month.value !== '',
+);
+
+function monthLabel(value: string): string {
+    return formatDate(`${value}-01`, { month: 'long', year: 'numeric' });
+}
 
 function resetFilters() {
     category.value = '';
     city.value = '';
+    distance.value = '';
+    region.value = '';
+    month.value = '';
 }
 
 const selectClass =
-    'h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-52';
+    'h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:w-44';
 </script>
 
 <template>
@@ -63,11 +121,65 @@ const selectClass =
 
             <form
                 v-if="events.length > 0"
-                class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end"
+                class="mb-6 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-end"
                 role="search"
                 :aria-label="t('events.filters.label')"
                 @submit.prevent
             >
+                <label class="flex flex-col gap-1.5 text-sm font-medium">
+                    {{ t('events.distance_filter') }}
+                    <select
+                        v-model="distance"
+                        :class="selectClass"
+                        data-test="filter-distance"
+                    >
+                        <option value="">{{ t('events.filters.all') }}</option>
+                        <option
+                            v-for="item in distances"
+                            :key="item"
+                            :value="item"
+                        >
+                            {{ t(`events.distance_classes.${item}`) }}
+                        </option>
+                    </select>
+                </label>
+                <label
+                    v-if="regions.length > 1"
+                    class="flex flex-col gap-1.5 text-sm font-medium"
+                >
+                    {{ t('events.region_filter') }}
+                    <select
+                        v-model="region"
+                        :class="selectClass"
+                        data-test="filter-region"
+                    >
+                        <option value="">{{ t('events.filters.all') }}</option>
+                        <option
+                            v-for="[slug, name] in regions"
+                            :key="slug"
+                            :value="slug"
+                        >
+                            {{ name }}
+                        </option>
+                    </select>
+                </label>
+                <label class="flex flex-col gap-1.5 text-sm font-medium">
+                    {{ t('events.month_filter') }}
+                    <select
+                        v-model="month"
+                        :class="selectClass"
+                        data-test="filter-month"
+                    >
+                        <option value="">{{ t('events.filters.all') }}</option>
+                        <option
+                            v-for="item in months"
+                            :key="item"
+                            :value="item"
+                        >
+                            {{ monthLabel(item) }}
+                        </option>
+                    </select>
+                </label>
                 <label class="flex flex-col gap-1.5 text-sm font-medium">
                     {{ t('events.filters.category') }}
                     <select v-model="category" :class="selectClass">
