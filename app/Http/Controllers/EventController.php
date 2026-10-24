@@ -12,11 +12,11 @@ use Inertia\Response;
 class EventController extends Controller
 {
     /**
-     * The published events, the race coming up first.
+     * The published events that are not over yet, the one coming up first.
      */
     public function index(Request $request): Response
     {
-        $events = Event::query()->published()->orderBy('starts_at')->get();
+        $events = Event::query()->published()->upcoming()->chronological()->withDetails()->get();
 
         return Inertia::render('Events/Index', [
             'events' => EventResource::collection($events)->resolve(),
@@ -31,6 +31,8 @@ class EventController extends Controller
     {
         // A draft has no page of its own until it is published.
         abort_unless($event->isPublished(), 404);
+
+        $event->load(['mainRace', 'races.prices', 'links', 'series', 'organizer', 'region']);
 
         $meta->forEvent($event);
 

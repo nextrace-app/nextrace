@@ -48,6 +48,23 @@ class FavoriteTest extends TestCase
         );
     }
 
+    public function test_a_past_event_stays_among_the_favorites_and_the_favorite_ids(): void
+    {
+        $this->travelTo('2026-10-24');
+
+        $user = User::factory()->create();
+        $past = Event::factory()->startingAt('2026-03-01 09:00:00')->create();
+        Favorite::factory()->for($user)->forEvent($past->id)->create();
+
+        $this->actingAs($user)->get(route('favorites.index'))->assertInertia(
+            fn ($page) => $page->where('events.0.id', $past->id)->count('events', 1)
+        );
+
+        $this->actingAs($user)->get(route('events.index'))->assertInertia(
+            fn ($page) => $page->count('events', 0)->where('favorites', [$past->id])
+        );
+    }
+
     public function test_the_favorites_page_is_empty_without_favorites(): void
     {
         $user = User::factory()->create();
@@ -66,7 +83,7 @@ class FavoriteTest extends TestCase
         Favorite::factory()->for($user)->forEvent($kept->id)->create();
         Favorite::factory()->for($user)->forEvent($deleted->id)->create();
 
-        $deleted->delete();
+        $deleted->forceDelete();
 
         $this->assertDatabaseCount('favorites', 1);
 

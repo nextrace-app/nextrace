@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\Event;
+use App\Models\EventLink;
+use App\Models\Race;
 use App\Models\User;
 use Database\Seeders\EventSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,13 +38,17 @@ class EventControllerTest extends TestCase
 
     public function test_the_events_page_sends_the_fields_the_cards_render(): void
     {
-        Event::factory()->create([
+        $this->travelTo('2026-10-24');
+
+        Event::factory()->withMainRace([
+            'distance_class' => 'marathon',
+            'distance_meters' => 42200,
+            'starts_at' => '2026-11-08 09:00:00',
+        ])->create([
             'slug' => 'athens-marathon',
             'name' => ['el' => 'Μαραθώνιος Αθήνας', 'en' => 'Athens Marathon'],
             'description' => ['el' => 'Η αυθεντική διαδρομή.', 'en' => 'The authentic route.'],
-            'category' => 'Marathon',
-            'distance_meters' => 42200,
-            'starts_at' => '2026-11-08 09:00:00',
+            'starts_on' => '2026-11-08',
             'city' => 'Athens',
             'country' => 'GR',
             'participants' => 18000,
@@ -66,15 +72,16 @@ class EventControllerTest extends TestCase
 
     public function test_the_events_page_sends_the_time_only_when_it_is_not_midnight_and_the_links(): void
     {
-        Event::factory()->create([
-            'starts_at' => '2026-12-06 08:00:00',
+        $this->travelTo('2026-10-24');
+
+        Event::factory()->withMainRace(['distance_meters' => 70000, 'starts_at' => '2026-12-06 08:00:00'])->create([
+            'starts_on' => '2026-12-06',
             'latitude' => '35.3387000',
             'longitude' => '25.1442000',
             'registration_url' => 'https://example.com/register',
-            'distance_meters' => 70000,
         ]);
-        Event::factory()->create([
-            'starts_at' => '2026-12-12 00:00:00',
+        Event::factory()->withMainRace(['starts_at' => '2026-12-12 00:00:00', 'start_time_known' => false])->create([
+            'starts_on' => '2026-12-12',
             'latitude' => null,
             'longitude' => null,
             'registration_url' => null,
@@ -109,8 +116,8 @@ class EventControllerTest extends TestCase
 
     public function test_the_events_page_lists_the_race_coming_up_first(): void
     {
-        $later = Event::factory()->create(['starts_at' => now()->addMonths(2)]);
-        $sooner = Event::factory()->create(['starts_at' => now()->addWeek()]);
+        $later = Event::factory()->startingAt(now()->addMonths(2))->create();
+        $sooner = Event::factory()->startingAt(now()->addWeek())->create();
 
         $this->get(route('events.index'))->assertInertia(
             fn ($page) => $page
@@ -135,6 +142,90 @@ class EventControllerTest extends TestCase
         $event = Event::factory()->unpublished()->create();
 
         $this->get(route('events.show', ['event' => $event]))->assertNotFound();
+    }
+
+    public function test_events_on_the_same_day_are_ordered_by_the_start_of_their_main_race(): void
+    {
+        $this->travelTo('2026-10-24');
+
+        $afternoon = Event::factory()->startingAt('2026-12-06 17:00:00')->create();
+        $morning = Event::factory()->startingAt('2026-12-06 08:00:00')->create();
+
+        $this->get(route('events.index'))->assertInertia(
+            fn ($page) => $page->where('events.0.id', $morning->id)->where('events.1.id', $afternoon->id)
+        );
+    }
+
+    public function test_a_past_event_is_kept_off_the_events_page(): void
+    {
+        $this->travelTo('2026-10-24 12:00:00');
+
+        Event::factory()->startingAt('2026-10-23 09:00:00')->create();
+        $coming = Event::factory()->startingAt('2026-10-25 09:00:00')->create();
+
+        $this->get(route('events.index'))->assertInertia(
+            fn ($page) => $page->where('events.0.id', $coming->id)->count('events', 1)
+        );
+    }
+
+    public function test_an_event_happening_today_is_still_listed(): void
+    {
+        $this->travelTo('2026-10-24 20:00:00');
+
+        $today = Event::factory()->startingAt('2026-10-24 08:00:00')->create();
+
+        $this->get(route('events.index'))->assertInertia(
+            fn ($page) => $page->where('events.0.id', $today->id)->count('events', 1)
+        );
+    }
+
+    public function test_the_day_is_the_day_in_greece(): void
+    {
+        // 22:30 UTC on the 24th is already the 25th in Athens.
+        $this->travelTo('2026-10-24 22:30:00');
+
+        Event::factory()->startingAt('2026-10-24 08:00:00')->create();
+
+        $this->get(route('events.index'))->assertInertia(fn ($page) => $page->count('events', 0));
+    }
+
+    public function test_a_multi_day_event_stays_listed_until_its_last_day(): void
+    {
+        $this->travelTo('2026-10-24');
+
+        $running = Event::factory()->startingAt('2026-10-23 09:00:00')->create(['ends_on' => '2026-10-25']);
+        Event::factory()->startingAt('2026-10-21 09:00:00')->create(['ends_on' => '2026-10-23']);
+
+        $this->get(route('events.index'))->assertInertia(
+            fn ($page) => $page->where('events.0.id', $running->id)->count('events', 1)
+        );
+    }
+
+    public function test_the_page_of_a_past_event_still_works(): void
+    {
+        $this->travelTo('2026-10-24');
+
+        $past = Event::factory()->startingAt('2026-03-01 09:00:00')->create();
+
+        $this->get(route('events.show', $past))->assertOk();
+        $this->get(route('events.index'))->assertInertia(fn ($page) => $page->count('events', 0));
+    }
+
+    public function test_the_event_page_sends_the_races_links_and_details(): void
+    {
+        $event = Event::factory()->create(['registration_status' => 'open', 'date_confirmed' => false]);
+        Race::factory()->for($event)->create(['slug' => 'five', 'distance_meters' => 5000]);
+        EventLink::factory()->for($event)->create(['url' => 'https://example.com/site']);
+
+        $this->get(route('events.show', $event))->assertInertia(
+            fn ($page) => $page
+                ->component('Events/Show')
+                ->count('event.races', 2)
+                ->where('event.races.1.slug', 'five')
+                ->where('event.links.0.url', 'https://example.com/site')
+                ->where('event.registration.status', 'open')
+                ->where('event.date_confirmed', false)
+        );
     }
 
     public function test_every_event_of_the_catalogue_has_its_own_page(): void

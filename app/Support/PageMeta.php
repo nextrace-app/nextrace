@@ -56,8 +56,9 @@ class PageMeta
     {
         $locale = app()->getLocale();
         $name = $event->translated('name', $locale);
-        $distance = $this->distance($event);
-        $date = $event->starts_at->locale($locale)->isoFormat('LL');
+        $start = $event->mainRace?->starts_at ?? $event->starts_on;
+        $distance = $event->mainRace?->formattedDistance() ?? '';
+        $date = $start->copy()->locale($locale)->isoFormat('LL');
         $country = Intl::getDisplayRegion("-{$event->country}", $locale);
         $details = Str::of($event->translated('description', $locale))->squish()->limit(110, '…', true)->toString();
 
@@ -67,7 +68,7 @@ class PageMeta
             : __('seo.event.description_with_details', ['name' => $name, 'distance' => $distance, 'city' => $event->city, 'date' => $date, 'details' => $details]);
         $this->type = 'article';
         $this->image = $event->image_url;
-        $this->jsonLd = $this->eventJsonLd($event, $name, $country);
+        $this->jsonLd = $this->eventJsonLd($event, $name, $country, $start);
 
         return $this;
     }
@@ -146,17 +147,10 @@ class PageMeta
         return in_array(explode('/', trim(Locale::unprefixedPath(request()), '/'))[0], self::PRIVATE_SEGMENTS, true);
     }
 
-    private function distance(Event $event): string
-    {
-        $kilometres = rtrim(rtrim(number_format($event->distance_meters / 1000, 1, '.', ''), '0'), '.');
-
-        return "{$kilometres} km";
-    }
-
     /**
      * @return array<string, mixed>
      */
-    private function eventJsonLd(Event $event, string $name, string $country): array
+    private function eventJsonLd(Event $event, string $name, string $country, CarbonInterface $start): array
     {
         $locale = app()->getLocale();
         $url = Locale::alternates(request())[$locale];
@@ -186,17 +180,17 @@ class PageMeta
             '@type' => 'SportsEvent',
             'name' => $name,
             'description' => $this->description,
-            'startDate' => self::schemaDate($event->starts_at),
-            'endDate' => $event->ends_at ? self::schemaDate($event->ends_at) : null,
+            'startDate' => self::schemaDate($start),
+            'endDate' => $event->ends_on ? $event->ends_on->toDateString() : null,
             'eventStatus' => 'https://schema.org/EventScheduled',
             'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
             'location' => $location,
             'image' => $event->image_url,
             'url' => $url,
             'inLanguage' => $locale,
-            'offers' => $event->registration_url ? [
+            'offers' => ($event->registration_url ?? $event->mainRace?->registration_url) ? [
                 '@type' => 'Offer',
-                'url' => $event->registration_url,
+                'url' => $event->registration_url ?? $event->mainRace?->registration_url,
             ] : null,
         ];
 

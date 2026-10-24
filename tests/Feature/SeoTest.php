@@ -12,13 +12,12 @@ class SeoTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function event(array $attributes = []): Event
+    private function event(array $attributes = [], array $race = []): Event
     {
-        return Event::factory()->create([
+        return Event::factory()->withMainRace(['distance_meters' => 21100, 'starts_at' => '2027-04-18 09:30:00', ...$race])->create([
             'name' => ['en' => 'Heraklion Half Marathon', 'el' => 'Ημιμαραθώνιος Ηρακλείου'],
             'description' => ['en' => 'A fast course by the sea.', 'el' => 'Γρήγορη διαδρομή δίπλα στη θάλασσα.'],
-            'distance_meters' => 21100,
-            'starts_at' => '2027-04-18 09:30:00',
+            'starts_on' => '2027-04-18',
             'city' => 'Heraklion',
             'country' => 'GR',
             'latitude' => 35.3387,
@@ -140,13 +139,13 @@ class SeoTest extends TestCase
     {
         $event = $this->event([
             'description' => ['en' => '', 'el' => ''],
-            'starts_at' => '2027-04-18 00:00:00',
-            'ends_at' => '2027-04-19 00:00:00',
+            'starts_on' => '2027-04-18',
+            'ends_on' => '2027-04-19',
             'latitude' => null,
             'longitude' => null,
             'image_url' => null,
             'registration_url' => null,
-        ]);
+        ], ['starts_at' => '2027-04-18 00:00:00', 'start_time_known' => false]);
 
         $html = $this->get(route('events.show', $event))->assertOk()->getContent();
         $data = $this->jsonLd($html);

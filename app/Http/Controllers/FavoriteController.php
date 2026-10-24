@@ -17,7 +17,7 @@ class FavoriteController extends Controller
     public function index(Request $request): Response
     {
         return Inertia::render('Favorites/Index', [
-            'events' => EventResource::collection($request->user()->favoriteEvents)->resolve(),
+            'events' => EventResource::collection($request->user()->favoriteEvents()->withDetails()->get())->resolve(),
         ]);
     }
 
