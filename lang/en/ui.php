@@ -22,6 +22,12 @@ return [
         'profile' => 'Profile',
         'logout' => 'Log out',
         'language' => 'Language',
+        'theme' => [
+            'label' => 'Theme',
+            'light' => 'Light',
+            'dark' => 'Dark',
+            'system' => 'System',
+        ],
         'chooseLanguage' => 'Choose a language',
         'chooseLanguageDescription' => 'The site will reload in the language you pick.',
         'locales' => [

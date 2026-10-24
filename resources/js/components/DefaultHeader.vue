@@ -76,6 +76,7 @@ const handleLogout = () => router.flushAll();
                     {{ t('nav.register') }}
                 </Link>
             </template>
+            <ThemeToggle />
             <LocaleSwitcher />
         </nav>
     </header>

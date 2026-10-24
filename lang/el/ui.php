@@ -22,6 +22,12 @@ return [
         'profile' => 'Προφίλ',
         'logout' => 'Αποσύνδεση',
         'language' => 'Γλώσσα',
+        'theme' => [
+            'label' => 'Θέμα',
+            'light' => 'Φωτεινό',
+            'dark' => 'Σκούρο',
+            'system' => 'Σύστημα',
+        ],
         'chooseLanguage' => 'Επιλέξτε γλώσσα',
         'chooseLanguageDescription' => 'Ο ιστότοπος θα φορτώσει ξανά στη γλώσσα που θα επιλέξετε.',
         'locales' => [
