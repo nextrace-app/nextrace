@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import {
     ArrowLeft,
     Calendar,
@@ -25,6 +25,8 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+const page = usePage();
+const seo = computed(() => page.props.seo);
 const { localeRoute } = useLocale();
 const { formatDate, formatDistance, formatNumber, categoryLabel, mapUrl } =
     useEventFormat();
@@ -41,7 +43,7 @@ const map = computed(() => mapUrl(props.event));
 </script>
 
 <template>
-    <Head :title="event.name" />
+    <Head :title="seo.title ?? event.name" />
 
     <div class="min-h-screen bg-background py-6 lg:py-8">
         <DefaultHeader />

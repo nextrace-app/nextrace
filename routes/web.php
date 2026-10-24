@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\RobotsController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Middleware\RememberLocale;
 use App\Support\Locale;
 use Illuminate\Support\Facades\Route;
 
@@ -42,3 +45,7 @@ Route::get('.well-known/passkey-endpoints', function () {
         'manage' => route('security.edit'),
     ]);
 })->name('well-known.passkeys');
+
+// Crawler files - outside locale prefix
+Route::get('sitemap.xml', SitemapController::class)->name('sitemap')->withoutMiddleware(RememberLocale::class);
+Route::get('robots.txt', RobotsController::class)->name('robots')->withoutMiddleware(RememberLocale::class);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\EventResource;
 use App\Models\Event;
+use App\Support\PageMeta;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -26,10 +27,12 @@ class EventController extends Controller
     /**
      * The page of a single event.
      */
-    public function show(Request $request, Event $event): Response
+    public function show(Request $request, Event $event, PageMeta $meta): Response
     {
         // A draft has no page of its own until it is published.
         abort_unless($event->isPublished(), 404);
+
+        $meta->forEvent($event);
 
         return Inertia::render('Events/Show', [
             'event' => (new EventResource($event))->resolve(),

@@ -23,6 +23,7 @@ declare module '@inertiajs/core' {
             locale: string;
             defaultLocale: string;
             supportedLocales: string[];
+            seo: { title: string | null };
             translations: Translations;
             [key: string]: unknown;
         };

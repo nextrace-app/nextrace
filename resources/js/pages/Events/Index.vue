@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import { CalendarX } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -13,6 +13,8 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+const page = usePage();
+const seo = computed(() => page.props.seo);
 const { categoryLabel } = useEventFormat();
 
 const category = ref('');
@@ -44,7 +46,7 @@ const selectClass =
 </script>
 
 <template>
-    <Head :title="t('nav.events')" />
+    <Head :title="seo.title ?? t('nav.events')" />
 
     <div class="min-h-screen bg-background py-6 lg:py-8">
         <DefaultHeader />

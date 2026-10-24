@@ -38,6 +38,8 @@
         @endforeach
         <link rel="alternate" hreflang="x-default" href="{{ $localeAlternates[$defaultLocale] }}">
 
+        @include('partials.seo')
+
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -46,7 +48,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.ts', "resources/js/pages/{$page['component']}.vue"])
         <x-inertia::head>
-            <title>{{ config('app.name', 'Laravel') }}</title>
+            <title>{{ $seo['title'] ? $seo['title'].' - ' : '' }}{{ config('app.name', 'Laravel') }}</title>
         </x-inertia::head>
     </head>
     <body class="font-sans antialiased">

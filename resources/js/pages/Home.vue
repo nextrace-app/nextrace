@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Button } from '@/components/ui/button';
 import { useLocale } from '@/composables/useLocale';
 import { index as eventsIndex } from '@/routes/events';
 
 const { t } = useI18n();
+const page = usePage();
+const seo = computed(() => page.props.seo);
 const { localeRoute } = useLocale();
 </script>
 
 <template>
-    <Head :title="t('home.title')" />
+    <Head :title="seo.title ?? t('home.title')" />
 
     <div class="min-h-screen bg-background py-6 lg:py-8">
         <DefaultHeader />

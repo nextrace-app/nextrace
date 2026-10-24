@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Support\Locale;
+use App\Support\PageMeta;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->scoped(PageMeta::class);
     }
 
     /**
@@ -38,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('app', fn (ViewInstance $view) => $view->with([
             'localeAlternates' => Locale::alternates(),
             'defaultLocale' => Locale::default(),
+            'seo' => app(PageMeta::class)->toArray(),
         ]));
     }
 
