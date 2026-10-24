@@ -1,35 +1,30 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { useI18n } from 'vue-i18n';
 import { Button } from '@/components/ui/button';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { useLocale } from '@/composables/useLocale';
 import { toUrl } from '@/lib/utils';
-import { edit as editAppearance } from '@/routes/appearance';
 import { show as showProfile } from '@/routes/profile';
-import { edit as editSecurity } from '@/routes/security';
 import type { NavItem } from '@/types';
 
+const { t } = useI18n();
 const { isCurrentOrParentUrl } = useCurrentUrl();
 const { localeRoute } = useLocale();
 
 const items: NavItem[] = [
     {
-        title: 'Profile',
+        title: t('nav.profile'),
         href: localeRoute(showProfile()),
-    },
-    {
-        title: 'Security',
-        href: localeRoute(editSecurity()),
-    },
-    {
-        title: 'Appearance',
-        href: localeRoute(editAppearance()),
     },
 ];
 </script>
 
 <template>
-    <nav class="flex flex-col space-y-1 space-x-0" aria-label="Profile">
+    <nav
+        class="flex flex-col space-y-1 space-x-0"
+        :aria-label="t('nav.profile')"
+    >
         <Button
             v-for="item in items"
             :key="toUrl(item.href)"
