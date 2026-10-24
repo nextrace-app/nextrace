@@ -49,7 +49,7 @@ class EventControllerTest extends TestCase
             'image_url' => 'https://example.com/athens.jpg',
         ]);
 
-        $this->get(route('en.events.index'))->assertInertia(
+        $this->get(route('events.index'))->assertInertia(
             fn ($page) => $page
                 ->component('Events/Index')
                 ->where('events.0.slug', 'athens-marathon')
@@ -80,7 +80,7 @@ class EventControllerTest extends TestCase
             'registration_url' => null,
         ]);
 
-        $this->get(route('en.events.index'))->assertInertia(
+        $this->get(route('events.index'))->assertInertia(
             fn ($page) => $page
                 ->where('events.0.time', '08:00')
                 ->where('events.0.latitude', 35.3387)
@@ -100,7 +100,7 @@ class EventControllerTest extends TestCase
             'city' => 'Athens',
         ]);
 
-        $this->get(route('events.index'))->assertInertia(
+        $this->get(route('el.events.index'))->assertInertia(
             fn ($page) => $page
                 ->where('events.0.name', 'Μαραθώνιος Αθήνας')
                 ->where('events.0.location', 'Athens, Ελλάδα')

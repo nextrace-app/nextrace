@@ -17,7 +17,7 @@ class FavoriteTest extends TestCase
         $event = Event::factory()->create();
 
         $this->post(route('events.favorite.store', ['event' => $event->id]))->assertRedirect(route('login'));
-        $this->post(route('en.events.favorite.store', ['event' => $event->id]))->assertRedirect(route('en.login'));
+        $this->post(route('el.events.favorite.store', ['event' => $event->id]))->assertRedirect(route('el.login'));
 
         $this->assertDatabaseCount('favorites', 0);
     }
@@ -25,7 +25,7 @@ class FavoriteTest extends TestCase
     public function test_the_favorites_page_is_only_for_signed_in_users(): void
     {
         $this->get(route('favorites.index'))->assertRedirect(route('login'));
-        $this->get(route('en.favorites.index'))->assertRedirect(route('en.login'));
+        $this->get(route('el.favorites.index'))->assertRedirect(route('el.login'));
     }
 
     public function test_the_favorites_page_lists_the_events_of_the_current_user_newest_first(): void

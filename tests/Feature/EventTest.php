@@ -58,12 +58,12 @@ class EventTest extends TestCase
             'name' => ['el' => 'Μαραθώνιος Αθήνας', 'en' => 'Athens Marathon'],
         ]);
 
-        $this->assertSame('Μαραθώνιος Αθήνας', $event->translated('name'));
-        $this->assertSame('Athens Marathon', $event->translated('name', 'en'));
-
-        $this->app->setLocale('en');
-
         $this->assertSame('Athens Marathon', $event->translated('name'));
+        $this->assertSame('Μαραθώνιος Αθήνας', $event->translated('name', 'el'));
+
+        $this->app->setLocale('el');
+
+        $this->assertSame('Μαραθώνιος Αθήνας', $event->translated('name'));
     }
 
     public function test_translated_text_falls_back_when_a_locale_is_missing(): void

@@ -15,13 +15,13 @@ class TranslationTest extends TestCase
     public function test_validation_errors_are_translated_for_the_default_locale(): void
     {
         $this->post(route('login'), ['email' => '', 'password' => ''])
-            ->assertSessionHasErrors(['email' => 'Το πεδίο email είναι υποχρεωτικό.']);
+            ->assertSessionHasErrors(['email' => 'The email field is required.']);
     }
 
     public function test_validation_errors_are_translated_for_a_prefixed_locale(): void
     {
-        $this->post(route('en.login'), ['email' => '', 'password' => ''])
-            ->assertSessionHasErrors(['email' => 'The email field is required.']);
+        $this->post(route('el.login'), ['email' => '', 'password' => ''])
+            ->assertSessionHasErrors(['email' => 'Το πεδίο email είναι υποχρεωτικό.']);
     }
 
     public function test_failed_login_is_reported_in_the_locale_of_the_request(): void
@@ -29,20 +29,20 @@ class TranslationTest extends TestCase
         $user = User::factory()->create();
 
         $this->post(route('login'), ['email' => $user->email, 'password' => 'wrong-password'])
-            ->assertSessionHasErrors(['email' => 'Τα στοιχεία σύνδεσης δεν ταιριάζουν με τα δεδομένα μας.']);
-
-        $this->post(route('en.login'), ['email' => $user->email, 'password' => 'wrong-password'])
             ->assertSessionHasErrors(['email' => 'These credentials do not match our records.']);
+
+        $this->post(route('el.login'), ['email' => $user->email, 'password' => 'wrong-password'])
+            ->assertSessionHasErrors(['email' => 'Τα στοιχεία σύνδεσης δεν ταιριάζουν με τα δεδομένα μας.']);
     }
 
     public function test_interface_translations_are_shared_with_the_frontend(): void
     {
         $this->get(route('home'))->assertInertia(
-            fn ($page) => $page->where('translations.nav.events', 'Εκδηλώσεις')
+            fn ($page) => $page->where('translations.nav.events', 'Events')
         );
 
-        $this->get(route('en.home'))->assertInertia(
-            fn ($page) => $page->where('translations.nav.events', 'Events')
+        $this->get(route('el.home'))->assertInertia(
+            fn ($page) => $page->where('translations.nav.events', 'Εκδηλώσεις')
         );
     }
 

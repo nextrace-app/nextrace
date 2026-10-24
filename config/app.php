@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'el'),
+    'locale' => env('APP_LOCALE', 'en'),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
@@ -89,7 +89,7 @@ return [
     | is the immutable site default: the one locale served without a URL prefix.
     */
 
-    'default_locale' => env('APP_LOCALE', 'el'),
+    'default_locale' => env('APP_LOCALE', 'en'),
 
     'supported_locales' => ['el', 'en'],
 
