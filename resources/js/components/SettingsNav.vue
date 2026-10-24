@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { Button } from '@/components/ui/button';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
 import { useLocale } from '@/composables/useLocale';
@@ -9,27 +11,31 @@ import { edit as editProfile } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
 import type { NavItem } from '@/types';
 
+const { t } = useI18n();
 const { isCurrentOrParentUrl } = useCurrentUrl();
 const { localeRoute } = useLocale();
 
-const items: NavItem[] = [
+const items = computed<NavItem[]>(() => [
     {
-        title: 'Profile',
+        title: t('settings.nav.profile'),
         href: localeRoute(editProfile()),
     },
     {
-        title: 'Security',
+        title: t('settings.nav.security'),
         href: localeRoute(editSecurity()),
     },
     {
-        title: 'Appearance',
+        title: t('settings.nav.appearance'),
         href: localeRoute(editAppearance()),
     },
-];
+]);
 </script>
 
 <template>
-    <nav class="flex flex-col space-y-1 space-x-0" aria-label="Settings">
+    <nav
+        class="flex flex-col space-y-1 space-x-0"
+        :aria-label="t('settings.nav.label')"
+    >
         <Button
             v-for="item in items"
             :key="toUrl(item.href)"

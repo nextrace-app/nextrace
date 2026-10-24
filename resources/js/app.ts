@@ -2,7 +2,6 @@ import { createInertiaApp, router } from '@inertiajs/vue3';
 import { initializeTheme } from '@/composables/useAppearance';
 import { createAppI18n } from '@/i18n';
 import type { Translations } from '@/i18n';
-import AppLayout from '@/layouts/AppLayout.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { initializeFlashToast } from '@/lib/flashToast';
@@ -26,14 +25,16 @@ createInertiaApp({
             case name === 'Events/Index':
             case name === 'Favorites/Index':
             case name === 'Profile':
+            case name === 'Dashboard':
+            case name === 'Error':
             case name === 'Events/Show':
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):
-                return [AppLayout, SettingsLayout];
+                return SettingsLayout;
             default:
-                return AppLayout;
+                return null;
         }
     },
     progress: {

@@ -360,18 +360,24 @@ const selectClass =
                 </aside>
             </div>
 
-            <button
+            <!-- Sticky inside the page rather than fixed to the screen, so at the
+                 end of the list it rests below the last card, clear of the footer. -->
+            <div
                 v-if="hasPins"
-                type="button"
-                class="fixed bottom-5 left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-bold whitespace-nowrap text-background shadow-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring lg:hidden"
-                :aria-expanded="showMap"
-                aria-controls="events-map"
-                data-test="toggle-map"
-                @click="showMap = !showMap"
+                class="pointer-events-none sticky bottom-0 z-20 mt-4 flex justify-center pb-5 lg:hidden"
             >
-                <MapPin class="size-4" aria-hidden="true" />
-                {{ showMap ? t('events.map.hide') : t('events.map.show') }}
-            </button>
+                <button
+                    type="button"
+                    class="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-bold whitespace-nowrap text-background shadow-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring"
+                    :aria-expanded="showMap"
+                    aria-controls="events-map"
+                    data-test="toggle-map"
+                    @click="showMap = !showMap"
+                >
+                    <MapPin class="size-4" aria-hidden="true" />
+                    {{ showMap ? t('events.map.hide') : t('events.map.show') }}
+                </button>
+            </div>
         </main>
     </DefaultShell>
 </template>

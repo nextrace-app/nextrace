@@ -1,47 +1,46 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
-import { dashboard } from '@/routes';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { Button } from '@/components/ui/button';
+import { useLocale } from '@/composables/useLocale';
+import { index as eventsIndex } from '@/routes/events';
+import { index as favoritesIndex } from '@/routes/favorites';
 
-defineOptions({
-    layout: {
-        breadcrumbs: [
-            {
-                title: 'Dashboard',
-                href: dashboard(),
-            },
-        ],
-    },
-});
+const { t } = useI18n();
+const { localeRoute } = useLocale();
+const page = usePage();
+const user = computed(() => page.props.auth.user);
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head :title="t('account.dashboard.title')" />
 
-    <div
-        class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
-    >
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+    <DefaultShell>
+        <main class="mx-auto w-full max-w-6xl px-4 pt-8 pb-12 sm:px-6 lg:px-8">
             <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
+                class="rounded-3xl border bg-card p-6 text-card-foreground sm:p-10"
             >
-                <PlaceholderPattern />
+                <h1 class="text-3xl font-extrabold tracking-tight">
+                    {{ t('account.dashboard.welcome', { name: user.name }) }}
+                </h1>
+                <p class="mt-2 text-muted-foreground">
+                    {{ t('account.dashboard.lead') }}
+                </p>
+
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <Button as-child>
+                        <Link :href="localeRoute(eventsIndex())">
+                            {{ t('account.dashboard.races') }}
+                        </Link>
+                    </Button>
+                    <Button as-child variant="outline">
+                        <Link :href="localeRoute(favoritesIndex())">
+                            {{ t('account.dashboard.favorites') }}
+                        </Link>
+                    </Button>
+                </div>
             </div>
-            <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-            >
-                <PlaceholderPattern />
-            </div>
-            <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-            >
-                <PlaceholderPattern />
-            </div>
-        </div>
-        <div
-            class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border"
-        >
-            <PlaceholderPattern />
-        </div>
-    </div>
+        </main>
+    </DefaultShell>
 </template>

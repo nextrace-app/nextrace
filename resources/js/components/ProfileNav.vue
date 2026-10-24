@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Button } from '@/components/ui/button';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
@@ -12,12 +13,12 @@ const { t } = useI18n();
 const { isCurrentOrParentUrl } = useCurrentUrl();
 const { localeRoute } = useLocale();
 
-const items: NavItem[] = [
+const items = computed<NavItem[]>(() => [
     {
         title: t('nav.profile'),
         href: localeRoute(showProfile()),
     },
-];
+]);
 </script>
 
 <template>

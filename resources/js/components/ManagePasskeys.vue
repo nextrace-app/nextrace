@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { router } from '@inertiajs/vue3';
 import { KeyRound } from '@lucide/vue';
+import { useI18n } from 'vue-i18n';
 import Heading from '@/components/Heading.vue';
 import PasskeyItem from '@/components/PasskeyItem.vue';
 import PasskeyRegister from '@/components/PasskeyRegister.vue';
@@ -18,6 +19,7 @@ withDefaults(defineProps<Props>(), {
     passkeys: () => [],
 });
 
+const { t } = useI18n();
 const { localeUrl } = useLocale();
 
 const handleDelete = (id: number, onError: () => void) => {
@@ -36,8 +38,8 @@ const handleRegisterSuccess = () => {
     <div v-if="canManagePasskeys" class="space-y-6">
         <Heading
             variant="small"
-            title="Passkeys"
-            description="Manage your passkeys for passwordless sign-in"
+            :title="t('settings.passkeys.title')"
+            :description="t('settings.passkeys.description')"
         />
 
         <div class="overflow-hidden rounded-lg border border-border">
@@ -56,9 +58,11 @@ const handleRegisterSuccess = () => {
                 >
                     <KeyRound class="h-7 w-7 text-muted-foreground" />
                 </div>
-                <p class="font-medium">No passkeys yet</p>
+                <p class="font-medium">
+                    {{ t('settings.passkeys.empty_title') }}
+                </p>
                 <p class="mt-1 text-sm text-muted-foreground">
-                    Add a passkey to sign in without a password
+                    {{ t('settings.passkeys.empty_text') }}
                 </p>
             </div>
         </div>

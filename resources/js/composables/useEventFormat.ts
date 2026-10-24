@@ -24,7 +24,7 @@ export function useEventFormat() {
         }).format(new Date(`${date}T00:00:00Z`));
 
     const formatDistance = (meters: number): string =>
-        `${new Intl.NumberFormat(locale.value, { maximumFractionDigits: 1 }).format(meters / 1000)} km`;
+        `${new Intl.NumberFormat(locale.value, { maximumFractionDigits: 3 }).format(meters / 1000)} ${t('events.distance_unit')}`;
 
     const formatNumber = (count: number): string =>
         new Intl.NumberFormat(locale.value).format(count);
