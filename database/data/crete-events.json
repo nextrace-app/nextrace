@@ -1,13 +1,147 @@
 [
     {
         "slug": "minoikos-athlos",
-        "name": {"el": "Μινωικός Άθλος", "en": "Minoan Feat Ultramarathon"},
-        "description": {"en": "International 70 km ultramarathon from the archaeological site of Phaistos to Knossos, with a 23 km relay."},
+        "name": {"el": "Μινωικός Άθλος", "en": "Minoan Athlos Ultramarathon"},
+        "description": {"en": "International 70 km ultramarathon from the archaeological site of Phaistos to Knossos, with a 3x23 km relay and a 140 km cycling event. Organised by the Marathon Runners Association of Crete Ikaros. Start 08:00 at Phaistos, 9-hour time limit."},
         "category": "Ultra",
         "distance_meters": 70000,
-        "starts_at": "2026-12-06 00:00:00",
+        "starts_at": "2026-12-06 08:00:00",
         "city": "Heraklion",
-        "source_url": "https://running.life/el/event/minoikos-athlos",
-        "registration_url": null
+        "registration_url": "https://racetime.gr/registrations/register.php?event=24-minoikos-athlos&lang=gr",
+        "source_url": "https://cretanmarathon.com/24os-minoikos-athlos-2026/"
+    },
+    {
+        "slug": "chania-night-run",
+        "name": {"el": "Νυχτερινός Αγώνας Δρόμου Χανίων", "en": "Chania Night Run"},
+        "description": {"en": "Night race through Chania with 5 km and 10 km distances and age categories. Start time and registration are still to be announced."},
+        "category": "10K",
+        "distance_meters": 10000,
+        "starts_at": "2026-12-12 00:00:00",
+        "city": "Chania",
+        "registration_url": null,
+        "source_url": "https://www.trexalito.gr/2026/08/12-2026-12-5km-10km.html"
+    },
+    {
+        "slug": "keri-cross-country-race",
+        "name": {"el": "Κέρη Cross Country Race", "en": "Keri Cross Country Race"},
+        "description": {"en": "Cross country race in the Keri forest near Gazi, Heraklion: 10.2 km at 08:30, 5 km at 10:00, a 1600 m Keri Mile trail race and a free 1000 m kids race at 11:45."},
+        "category": "Trail",
+        "distance_meters": 10200,
+        "starts_at": "2026-12-20 08:30:00",
+        "city": "Heraklion",
+        "registration_url": "https://www.trexalito.gr/p/go-keri-2026.html",
+        "source_url": "https://www.trexalito.gr/2026/10/dasos-keris-irakliou-cross-country-race-2026.html"
+    },
+    {
+        "slug": "cretan-backyard-ultra",
+        "name": {"el": "Cretan Backyard Ultra", "en": "Cretan Backyard Ultra"},
+        "description": {"en": "Backyard ultra in Voritsi, Heraklion: one 6.706 km loop every hour, day and night, until a single runner is left. Start 11:00 in the central square."},
+        "category": "Ultra",
+        "distance_meters": 6706,
+        "starts_at": "2027-01-16 11:00:00",
+        "city": "Voritsi",
+        "registration_url": "https://www.trexalito.gr/p/go-backyard-2027.html",
+        "source_url": "https://www.trexalito.gr/2026/09/5o-cretan-backyard-ultra-voritsi-2027.html"
+    },
+    {
+        "slug": "retzakas-trail-run",
+        "name": {"el": "Ρέτζακας Trail Run", "en": "Retzakas Trail Run"},
+        "description": {"en": "Trail run in the hinterland of Inachori, Chania, to the Retzakas waterfall: 24.7 km Challenge at 10:00, 6.8 km Entry at 10:30 and a children's 1450 m trail. Start and finish at the old primary school of Plokamiana."},
+        "category": "Trail",
+        "distance_meters": 24700,
+        "starts_at": "2027-02-07 10:00:00",
+        "city": "Plokamiana",
+        "registration_url": null,
+        "source_url": "https://www.trexalito.gr/2026/10/retzakas-trail-run-2027.html"
+    },
+    {
+        "slug": "malles-nature-run",
+        "name": {"el": "Malles Nature Run", "en": "Malles Nature Run"},
+        "description": {"en": "Nature run in Malles, Lasithi, with 10 km and 5 km races at 10:30 and a 750 m kids race. Organised by the Cultural Association of Malles with the Ierapetra Health Runners Association. Online registration closes 1 February 2027."},
+        "category": "10K",
+        "distance_meters": 10000,
+        "starts_at": "2027-02-07 10:30:00",
+        "city": "Malles",
+        "registration_url": null,
+        "source_url": "https://www.trexalito.gr/2026/10/malles-nature-run-2027.html"
+    },
+    {
+        "slug": "fodele-run",
+        "name": {"el": "Τρέχω για την Καρδιά του Παιδιού - Fodele Run", "en": "Fodele Run - Run for the Child's Heart"},
+        "description": {"en": "Charity run in Fodele, Heraklion, in aid of the Panhellenic Association The Heart of the Child: 10.5 km on dirt and asphalt and a 7 km asphalt route. Start times are still to be announced."},
+        "category": "10K",
+        "distance_meters": 10500,
+        "starts_at": "2027-02-14 00:00:00",
+        "city": "Fodele",
+        "registration_url": null,
+        "source_url": "https://www.trexalito.gr/2026/10/12os-fodele-run-2027-trexw-gia-tin-kardia-tou-paidiou-prokirixi.html"
+    },
+    {
+        "slug": "venizeleios-dromos-ikaros",
+        "name": {"el": "Βενιζέλειος Δρόμος & Ίκαρος", "en": "Venizelos Race and Ikaros City Run"},
+        "description": {"en": "Chania's historic 10 km Venizelos race together with the Ikaros city run, organised by Athletic Club Kydon. Registration details are still to be announced."},
+        "category": "10K",
+        "distance_meters": 10000,
+        "starts_at": "2027-03-14 00:00:00",
+        "city": "Chania",
+        "registration_url": null,
+        "source_url": "https://www.trexalito.gr/2026/06/77os-venizeleios-dromos-ikaros-2027-xania-imerominia.html"
+    },
+    {
+        "slug": "coast-to-coast-race",
+        "name": {"el": "Coast to Coast Race", "en": "Coast to Coast Race"},
+        "description": {"en": "Certified half marathon and 5 km in Ierapetra, from Pachia Ammos beach to Minos park, with children's races and a non-competitive family run. Organised by the Ierapetra Health Runners Association. Registration closes 12 March 2027."},
+        "category": "Half Marathon",
+        "distance_meters": 21100,
+        "starts_at": "2027-03-21 09:00:00",
+        "city": "Ierapetra",
+        "registration_url": "https://www.trexalito.gr/p/go-coast-to-coast-6_01393490542.html",
+        "source_url": "https://www.trexalito.gr/2026/10/coast-to-coast-race-2027-eggrafes.html"
+    },
+    {
+        "slug": "crete-marathon",
+        "name": {"el": "Μαραθώνιος Κρήτης", "en": "Crete Marathon"},
+        "description": {"en": "International marathon in Chania, held there since 2016, with a 10 km, 5 km and 2.5 km race. The marathon starts at 07:00."},
+        "category": "Marathon",
+        "distance_meters": 42195,
+        "starts_at": "2027-04-11 07:00:00",
+        "city": "Chania",
+        "registration_url": "https://registrations.sdyh.gr/crete-marathon-2027/participant/register",
+        "source_url": "https://crete-marathon.gr/"
+    },
+    {
+        "slug": "nikiforeios-dromos",
+        "name": {"el": "Νικηφόρειος Δρόμος", "en": "Nikiforeios Run"},
+        "description": {"en": "Two-day running festival in Rethymno: a 10 km evening run on Saturday 17 April and the 23 km main race on Sunday 18 April from Kalonykti, plus a 5.5 km run or walk, a children's 2 km, a mountain bike ride and a hike."},
+        "category": "Trail",
+        "distance_meters": 23000,
+        "starts_at": "2027-04-18 09:30:00",
+        "city": "Rethymno",
+        "registration_url": null,
+        "source_url": "https://www.trexalito.gr/2026/10/nikiforeios-dromos-2027.html"
+    },
+    {
+        "slug": "lafonisios-dromos",
+        "name": {"el": "Λαφονήσιος Δρόμος", "en": "Lafonisios Run"},
+        "description": {"en": "Historic race of western Crete in Kissamos: a 21.1 km half marathon from the Xotikospilio entrance to the Chrysoskalitissa monastery, a 7.8 km popular race and a free 1.1 km children's route. Registration has not opened yet."},
+        "category": "Half Marathon",
+        "distance_meters": 21100,
+        "starts_at": "2027-04-25 00:00:00",
+        "city": "Kissamos",
+        "registration_url": null,
+        "source_url": "https://www.trexalito.gr/2026/10/lafonisios-dromos-2027-kissamos-xania-prokiriksi.html"
+    },
+    {
+        "slug": "crete-half-marathon",
+        "name": {"el": "Διεθνής Ημιμαραθώνιος Κρήτης", "en": "Crete International Half Marathon"},
+        "description": {"en": "Half marathon, 10 km and 5 km in Arkalochori, Heraklion, with children's races, organised by the Athletic Health Club ATHLISY. The 2027 date is indicative and not yet confirmed by the organiser."},
+        "category": "Half Marathon",
+        "distance_meters": 21100,
+        "starts_at": "2027-10-03 09:10:00",
+        "city": "Arkalochori",
+        "latitude": 35.1381,
+        "longitude": 25.2729,
+        "registration_url": null,
+        "source_url": "https://www.trexalito.gr/2026/10/kalentari-agonon-kritis-2027.html"
     }
 ]

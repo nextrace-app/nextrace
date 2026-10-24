@@ -102,6 +102,9 @@ class ImportEventsTest extends TestCase
 
         $this->artisan('events:import')->assertSuccessful();
 
+        $rows = json_decode((string) file_get_contents(base_path('database/data/crete-events.json')), true);
+
+        $this->assertSame(count($rows), Event::query()->whereNull('published_at')->count());
         $this->assertDatabaseHas('events', ['slug' => 'minoikos-athlos', 'published_at' => null]);
     }
 }
