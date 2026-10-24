@@ -22,6 +22,12 @@ return [
         'profile' => 'Profile',
         'logout' => 'Log out',
         'language' => 'Language',
+        'chooseLanguage' => 'Choose a language',
+        'chooseLanguageDescription' => 'The site will reload in the language you pick.',
+        'locales' => [
+            'en' => 'English',
+            'el' => 'Ελληνικά',
+        ],
     ],
 
     'home' => [

@@ -22,6 +22,12 @@ return [
         'profile' => 'Προφίλ',
         'logout' => 'Αποσύνδεση',
         'language' => 'Γλώσσα',
+        'chooseLanguage' => 'Επιλέξτε γλώσσα',
+        'chooseLanguageDescription' => 'Ο ιστότοπος θα φορτώσει ξανά στη γλώσσα που θα επιλέξετε.',
+        'locales' => [
+            'en' => 'English',
+            'el' => 'Ελληνικά',
+        ],
     ],
 
     'home' => [
