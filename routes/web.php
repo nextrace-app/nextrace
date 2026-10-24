@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FavoriteController;
-use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\RememberLocale;
 use App\Support\Locale;
@@ -46,6 +45,5 @@ Route::get('.well-known/passkey-endpoints', function () {
     ]);
 })->name('well-known.passkeys');
 
-// Crawler files - outside locale prefix
+// Crawler files - outside locale prefix (robots.txt is static: php artisan seo:robots)
 Route::get('sitemap.xml', SitemapController::class)->name('sitemap')->withoutMiddleware(RememberLocale::class);
-Route::get('robots.txt', RobotsController::class)->name('robots')->withoutMiddleware(RememberLocale::class);

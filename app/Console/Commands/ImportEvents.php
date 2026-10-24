@@ -56,7 +56,6 @@ class ImportEvents extends Command
             return self::FAILURE;
         }
 
-        /** @var array<int, array<string, mixed>>|null $rows */
         $rows = json_decode((string) file_get_contents($path), true);
 
         if (! is_array($rows) || ! array_is_list($rows)) {
@@ -323,8 +322,10 @@ class ImportEvents extends Command
         }
 
         $dates = array_map(fn (array $race) => Carbon::parse($race['starts_at'])->toDateString(), $data['races']);
-        $attributes['starts_on'] = min($dates);
-        $attributes['ends_on'] = max($dates) > min($dates) ? max($dates) : null;
+        $firstDate = collect($dates)->min();
+        $lastDate = collect($dates)->max();
+        $attributes['starts_on'] = $firstDate;
+        $attributes['ends_on'] = $lastDate > $firstDate ? $lastDate : null;
 
         $event->fill($attributes);
 
@@ -381,7 +382,7 @@ class ImportEvents extends Command
      */
     private function storeRaces(Event $event, array $races): void
     {
-        foreach (array_values($races) as $position => $data) {
+        foreach ($races as $position => $data) {
             $startsAt = Carbon::parse($data['starts_at']);
 
             $attributes = Arr::only($data, [

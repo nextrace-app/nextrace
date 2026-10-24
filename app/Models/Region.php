@@ -74,7 +74,7 @@ class Region extends Model
             $ids = [...$ids, ...$level];
         }
 
-        return $ids;
+        return array_values($ids);
     }
 
     /**

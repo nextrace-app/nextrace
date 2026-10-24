@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\EventStatus;
 use App\Enums\RegistrationStatus;
 use App\Models\Concerns\HasTranslations;
+use Carbon\CarbonImmutable;
 use Database\Factories\EventFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -29,8 +30,8 @@ use Illuminate\Support\Carbon;
  * @property int|null $organizer_id
  * @property int|null $region_id
  * @property int|null $edition_number
- * @property Carbon $starts_on
- * @property Carbon|null $ends_on
+ * @property CarbonImmutable $starts_on
+ * @property CarbonImmutable|null $ends_on
  * @property string $timezone
  * @property EventStatus $status
  * @property bool $date_confirmed
@@ -44,8 +45,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $image_url
  * @property string|null $registration_url
  * @property RegistrationStatus $registration_status
- * @property Carbon|null $registration_opens_at
- * @property Carbon|null $registration_closes_at
+ * @property CarbonImmutable|null $registration_opens_at
+ * @property CarbonImmutable|null $registration_closes_at
  * @property string|null $contact_email
  * @property string|null $contact_phone
  * @property string|null $results_url
@@ -53,11 +54,11 @@ use Illuminate\Support\Carbon;
  * @property array<string, string>|null $cancellation_policy
  * @property bool $medical_certificate_required
  * @property string|null $source_url
- * @property Carbon|null $source_verified_at
- * @property Carbon|null $published_at
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property Carbon|null $deleted_at
+ * @property CarbonImmutable|null $source_verified_at
+ * @property CarbonImmutable|null $published_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
+ * @property CarbonImmutable|null $deleted_at
  */
 #[Fillable([
     'slug',

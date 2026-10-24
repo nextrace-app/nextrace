@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Models\User;
 use App\Support\Locale;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
@@ -60,7 +61,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     private function configureNotificationUrls(): void
     {
-        ResetPassword::createUrlUsing(fn (object $notifiable, string $token) => url(route(
+        ResetPassword::createUrlUsing(fn (User $notifiable, string $token) => url(route(
             Locale::routeName('password.reset'),
             [
                 'token' => $token,
@@ -69,7 +70,7 @@ class FortifyServiceProvider extends ServiceProvider
             false
         )));
 
-        VerifyEmail::createUrlUsing(fn (object $notifiable) => URL::temporarySignedRoute(
+        VerifyEmail::createUrlUsing(fn (User $notifiable) => URL::temporarySignedRoute(
             Locale::routeName('verification.verify'),
             Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
             [

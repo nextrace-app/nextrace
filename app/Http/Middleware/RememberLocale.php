@@ -56,7 +56,7 @@ class RememberLocale
         // which shared caches have to be told about, without dropping whatever
         // the response already varies on.
         $response->headers->set('Vary', collect($response->headers->all('Vary'))
-            ->flatMap(fn (?string $value) => preg_split('/\s*,\s*/', (string) $value))
+            ->flatMap(fn (?string $value): array => preg_split('/\s*,\s*/', (string) $value) ?: [])
             ->filter()
             ->push('Cookie')
             ->unique()

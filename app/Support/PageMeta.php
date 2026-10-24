@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\Race;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use Locale as Intl;
 
@@ -59,10 +60,10 @@ class PageMeta
     {
         $locale = app()->getLocale();
         $name = $event->translated('name', $locale);
-        $start = $event->mainRace?->starts_at ?? $event->starts_on;
+        $start = $event->mainRace->starts_at ?? $event->starts_on;
         $distance = $event->mainRace?->formattedDistance() ?? '';
-        $date = $start->copy()->locale($locale)->isoFormat('LL');
-        $country = Intl::getDisplayRegion("-{$event->country}", $locale);
+        $date = $start->copy()->settings(['locale' => $locale])->isoFormat('LL');
+        $country = Intl::getDisplayRegion("-{$event->country}", $locale) ?: $event->country;
         $details = Str::of($event->translated('description', $locale))->squish()->limit(110, '…', true)->toString();
 
         $this->title = __('seo.event.title', ['name' => $name, 'distance' => $distance, 'city' => $event->city]);
@@ -90,23 +91,32 @@ class PageMeta
     {
         $key = $this->pageKey();
         $locale = app()->getLocale();
-        $ogLocales = __('seo.og_locales');
 
         return [
-            'title' => $this->title ?? ($key ? __("seo.{$key}.title") : null),
-            'description' => $this->description ?? ($key ? __("seo.{$key}.description") : __('seo.default_description')),
+            'title' => $this->title ?? ($key ? Lang::string("seo.{$key}.title") : null),
+            'description' => $this->description ?? ($key ? Lang::string("seo.{$key}.description") : Lang::string('seo.default_description')),
             'type' => $this->type,
             'image' => $this->image,
             'robots' => $this->isPrivate() ? 'noindex, nofollow' : 'index, follow',
-            'locale' => $ogLocales[$locale] ?? $locale,
+            'locale' => $this->openGraphLocale($locale),
             'localeAlternates' => array_values(array_map(
-                fn (string $other) => $ogLocales[$other] ?? $other,
-                array_diff(config('app.supported_locales'), [$locale]),
+                fn (string $other) => $this->openGraphLocale($other),
+                array_diff(config()->array('app.supported_locales'), [$locale]),
             )),
-            'siteName' => config('app.name'),
+            'siteName' => config()->string('app.name'),
             'twitterCard' => $this->image ? 'summary_large_image' : 'summary',
             'jsonLd' => $this->jsonLd === null ? null : self::encode($this->jsonLd),
         ];
+    }
+
+    /**
+     * The Open Graph locale code of an application locale, e.g. 'en' becomes 'en_US'.
+     */
+    private function openGraphLocale(string $locale): string
+    {
+        $key = "seo.og_locales.{$locale}";
+
+        return Lang::has($key) ? Lang::string($key) : $locale;
     }
 
     /**

@@ -105,7 +105,7 @@ class Race extends Model
     protected static function booted(): void
     {
         static::creating(function (Race $race): void {
-            if (! $race->is_main && ! static::mainRaceExists($race->event_id)) {
+            if (! $race->is_main && ! self::mainRaceExists($race->event_id)) {
                 $race->is_main = true;
             }
         });
@@ -121,7 +121,7 @@ class Race extends Model
         });
 
         static::deleted(function (Race $race): void {
-            if ($race->is_main && ! static::mainRaceExists($race->event_id)) {
+            if ($race->is_main && ! self::mainRaceExists($race->event_id)) {
                 static::query()
                     ->where('event_id', $race->event_id)
                     ->orderBy('sort_order')

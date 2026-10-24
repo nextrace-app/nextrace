@@ -69,13 +69,13 @@ return new class extends Migration
 
             DB::table('races')->insert([
                 'event_id' => $event->id,
-                'slug' => $class === null || $class === DistanceClass::Other ? 'race' : Str::slug(str_replace('_', '-', $class->value)),
+                'slug' => $class === DistanceClass::Other ? 'race' : Str::slug(str_replace('_', '-', $class->value)),
                 'name' => json_encode(['en' => $event->category, 'el' => $event->category], JSON_UNESCAPED_UNICODE),
                 'sort_order' => 0,
                 'is_main' => true,
                 'discipline' => RaceDiscipline::Run->value,
                 'terrain' => ($trail ? RaceTerrain::Trail : RaceTerrain::Road)->value,
-                'distance_class' => $class?->value,
+                'distance_class' => $class->value,
                 'distance_meters' => $event->distance_meters,
                 'starts_at' => $event->starts_at,
                 'start_time_known' => $startsAt->format('H:i:s') !== '00:00:00',
@@ -95,7 +95,7 @@ return new class extends Migration
         //
     }
 
-    private function distanceClass(string $category): ?DistanceClass
+    private function distanceClass(string $category): DistanceClass
     {
         return match (Str::lower($category)) {
             '5k' => DistanceClass::FiveK,

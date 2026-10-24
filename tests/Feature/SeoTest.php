@@ -63,24 +63,37 @@ class SeoTest extends TestCase
         $this->assertStringNotContainsString(route('el.events.show', $draft), $xml);
     }
 
-    public function test_robots_allows_crawling_hides_account_pages_and_points_to_the_sitemap(): void
+    public function test_the_robots_command_hides_account_pages_and_points_to_the_sitemap(): void
     {
-        $response = $this->get('/robots.txt')->assertOk();
+        config(['app.url' => 'https://example.test/']);
+        $path = tempnam(sys_get_temp_dir(), 'robots');
 
-        $this->assertStringStartsWith('text/plain', $response->headers->get('Content-Type'));
-        $body = $response->getContent();
+        $this->artisan('seo:robots', ['--path' => $path])->assertSuccessful();
+
+        $body = file_get_contents($path);
+        unlink($path);
 
         $this->assertStringContainsString("User-agent: *\nAllow: /", $body);
         foreach (['/login', '/el/login', '/register', '/el/register', '/forgot-password', '/reset-password', '/profile', '/el/profile', '/settings', '/dashboard', '/el/dashboard', '/favorites', '/el/favorites'] as $path) {
             $this->assertStringContainsString("Disallow: {$path}\n", $body);
         }
-        $this->assertStringContainsString('Sitemap: '.route('sitemap'), $body);
+        $this->assertStringContainsString("Sitemap: https://example.test/sitemap.xml\n", $body);
         $this->assertStringNotContainsString('Disallow: /events', $body);
     }
 
-    public function test_the_robots_file_is_not_redirected_for_greek_browsers(): void
+    public function test_the_static_robots_file_is_committed_and_allows_crawling(): void
     {
-        $this->withHeader('Accept-Language', 'el-GR,el;q=0.9')->get('/robots.txt')->assertOk();
+        $this->assertFileExists(public_path('robots.txt'));
+
+        $body = file_get_contents(public_path('robots.txt'));
+
+        $this->assertStringContainsString("User-agent: *\nAllow: /", $body);
+        $this->assertStringContainsString('Disallow: /el/login', $body);
+        $this->assertMatchesRegularExpression('#^Sitemap: https?://\S+/sitemap\.xml$#m', $body);
+    }
+
+    public function test_the_sitemap_is_not_redirected_for_greek_browsers(): void
+    {
         $this->withHeader('Accept-Language', 'el-GR,el;q=0.9')->get('/sitemap.xml')->assertOk();
     }
 
