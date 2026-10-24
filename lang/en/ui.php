@@ -18,6 +18,9 @@ return [
         'login' => 'Log in',
         'register' => 'Register',
         'events' => 'Events',
+        'races' => 'Races',
+        'main' => 'Main navigation',
+        'home' => 'NextRace home',
         'favorites' => 'Favorites',
         'profile' => 'Profile',
         'logout' => 'Log out',
@@ -40,10 +43,42 @@ return [
         'title' => 'Find your next race',
         'subtitle' => 'Browse the upcoming events and sign up in a couple of minutes.',
         'cta' => 'Browse events',
+        'eyebrow' => 'Race calendar / Crete',
+        'heading' => 'Find a race that feels like Crete.',
+        'lead' => 'Sea-level 10Ks, mountain trails and the Mediterranean marathon. Calm, clear and up to date.',
+        'features' => [
+            'calendar' => [
+                'title' => 'One calendar',
+                'text' => 'Every race by month, with the date, start time and distance up front.',
+            ],
+            'filters' => [
+                'title' => 'Filter in a tap',
+                'text' => 'Narrow the list by distance, region, month or category.',
+            ],
+            'favorites' => [
+                'title' => 'Keep your shortlist',
+                'text' => 'Save the races you like and come back to them later.',
+            ],
+        ],
+    ],
+
+    'footer' => [
+        'tagline' => 'Crete first, then all of Greece.',
+        'disclaimer' => 'Dates are collected from organisers. Always confirm on the official site before you travel.',
+        'copyright' => '© {year} NextRace',
+        'browse' => 'Browse',
     ],
 
     'events' => [
         'participants' => 'participants',
+        'time_tba' => 'Time TBA',
+        'map' => [
+            'title' => 'Crete, Greece',
+            'note' => 'Approximate locations.',
+            'show' => 'Show map',
+            'hide' => 'Hide map',
+            'pin' => '{name}, {city}',
+        ],
         'back' => 'Back to events',
         'register' => 'Register for this event',
         'view_map' => 'View on map',
@@ -76,6 +111,8 @@ return [
         'index' => [
             'title' => 'Upcoming races',
             'subtitle' => 'Running events across Greece, starting with Crete.',
+            'eyebrow' => 'Race calendar',
+            'month_count' => '{count} race | {count} races',
             'count' => '{count} events shown',
             'empty' => 'There are no upcoming races yet. Check back soon.',
             'no_matches' => 'No races match these filters.',

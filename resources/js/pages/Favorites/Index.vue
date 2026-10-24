@@ -18,17 +18,15 @@ const { localeRoute } = useLocale();
 <template>
     <Head :title="t('favorites.title')" />
 
-    <div class="min-h-screen bg-background py-6 lg:py-8">
-        <DefaultHeader />
-
-        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-            <h2 class="mb-6 text-2xl font-semibold">
+    <DefaultShell>
+        <main class="mx-auto w-full max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
+            <h1 class="mb-6 text-3xl font-extrabold tracking-tight">
                 {{ t('favorites.title') }}
-            </h2>
+            </h1>
 
             <div
                 v-if="props.events.length === 0"
-                class="flex flex-col items-center gap-4 rounded-xl border border-dashed py-16 text-center"
+                class="flex flex-col items-center gap-4 rounded-3xl border border-dashed bg-card py-16 text-center"
             >
                 <Heart class="size-8 text-muted-foreground" />
                 <p class="text-muted-foreground">{{ t('favorites.empty') }}</p>
@@ -39,7 +37,7 @@ const { localeRoute } = useLocale();
                 </Button>
             </div>
 
-            <div v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div v-else class="grid gap-4 lg:grid-cols-2">
                 <EventCard
                     v-for="event in props.events"
                     :key="event.id"
@@ -47,6 +45,6 @@ const { localeRoute } = useLocale();
                     :favorited="true"
                 />
             </div>
-        </div>
-    </div>
+        </main>
+    </DefaultShell>
 </template>

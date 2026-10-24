@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { MapPin, Route, Users } from '@lucide/vue';
+import { Clock, MapPin, Users } from '@lucide/vue';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,10 @@ const props = defineProps<{
     favorited: boolean;
 }>();
 
+const emit = defineEmits<{
+    hover: [slug: string | null];
+}>();
+
 const { t } = useI18n();
 const { localeRoute } = useLocale();
 const {
@@ -24,11 +28,11 @@ const {
     categoryLabel,
 } = useEventFormat();
 
-const maxChips = 4;
+const maxChips = 3;
 
 const day = computed(() => formatDate(props.event.date, { day: 'numeric' }));
-const month = computed(() =>
-    formatDate(props.event.date, { month: 'short' }).replace('.', ''),
+const weekday = computed(() =>
+    formatDate(props.event.date, { weekday: 'short' }).replace('.', ''),
 );
 const fullDate = computed(() =>
     formatDateRange(props.event.date, props.event.ends_on),
@@ -51,35 +55,37 @@ const statusLabel = computed(() =>
 
 <template>
     <article
-        class="group relative flex gap-4 rounded-xl border bg-card p-4 text-card-foreground shadow-xs transition-shadow focus-within:ring-[3px] focus-within:ring-ring/50 hover:shadow-md"
+        class="group relative grid grid-cols-[4.5rem_1fr] gap-x-4 rounded-2xl border bg-card p-4 text-card-foreground shadow-xs transition-[box-shadow,transform,border-color] focus-within:ring-[3px] focus-within:ring-ring/50 hover:border-primary hover:shadow-lg motion-safe:hover:-translate-y-0.5 sm:grid-cols-[4.5rem_1fr_9rem] sm:items-center"
         data-test="event-card"
+        @mouseenter="emit('hover', event.slug)"
+        @mouseleave="emit('hover', null)"
     >
         <div
-            class="flex size-16 shrink-0 flex-col items-center justify-center rounded-lg bg-primary text-primary-foreground"
+            class="flex flex-col items-center self-start rounded-2xl bg-secondary px-1 py-2.5 text-secondary-foreground"
             aria-hidden="true"
         >
-            <span class="text-2xl leading-none font-semibold">{{ day }}</span>
-            <span class="mt-1 text-xs tracking-wide uppercase">{{
-                month
+            <span class="text-3xl leading-none font-extrabold tracking-tight">{{
+                day
             }}</span>
+            <span
+                class="mt-1 text-[11px] font-bold tracking-widest text-muted-foreground uppercase"
+                >{{ weekday }}</span
+            >
         </div>
 
-        <div class="flex min-w-0 flex-1 flex-col gap-3">
+        <div class="flex min-w-0 flex-col gap-2.5">
             <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
-                    <h3 class="text-base leading-snug font-semibold">
+                    <h3 class="text-lg leading-snug font-bold">
                         <Link
                             :href="localeRoute(eventsShow(event.slug))"
-                            class="rounded-sm outline-none after:absolute after:inset-0 after:content-['']"
+                            class="rounded-sm outline-none after:absolute after:inset-0 after:rounded-2xl after:content-['']"
                         >
                             {{ event.name }}
                         </Link>
                     </h3>
                     <p class="mt-0.5 text-sm text-muted-foreground">
                         <time :datetime="event.date">{{ fullDate }}</time>
-                        <template v-if="event.time">
-                            &middot; {{ event.time }}
-                        </template>
                     </p>
                 </div>
                 <FavoriteButton
@@ -90,7 +96,7 @@ const statusLabel = computed(() =>
             </div>
 
             <ul
-                class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm text-muted-foreground"
+                class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground"
             >
                 <li class="flex items-center gap-1.5">
                     <MapPin class="size-4 shrink-0" aria-hidden="true" />
@@ -98,11 +104,9 @@ const statusLabel = computed(() =>
                     {{ event.city }}
                 </li>
                 <li class="flex items-center gap-1.5">
-                    <Route class="size-4 shrink-0" aria-hidden="true" />
-                    <span class="sr-only"
-                        >{{ t('events.fields.distance') }}:</span
-                    >
-                    {{ formatDistance(event.distance_meters) }}
+                    <Clock class="size-4 shrink-0" aria-hidden="true" />
+                    <span class="sr-only">{{ t('events.fields.time') }}:</span>
+                    {{ event.time ?? t('events.time_tba') }}
                 </li>
                 <li v-if="event.participants" class="flex items-center gap-1.5">
                     <Users class="size-4 shrink-0" aria-hidden="true" />
@@ -112,7 +116,15 @@ const statusLabel = computed(() =>
             </ul>
 
             <div class="flex flex-wrap items-center gap-1.5">
-                <Badge variant="secondary">{{
+                <Badge
+                    class="border-transparent bg-foreground font-bold text-background"
+                >
+                    <span class="sr-only"
+                        >{{ t('events.fields.distance') }}:</span
+                    >
+                    {{ formatDistance(event.distance_meters) }}
+                </Badge>
+                <Badge variant="secondary" class="font-semibold">{{
                     categoryLabel(event.category)
                 }}</Badge>
                 <Badge
@@ -129,6 +141,12 @@ const statusLabel = computed(() =>
                     >{{ t('events.more_races', { count: hiddenRaces }) }}</Badge
                 >
                 <Badge
+                    v-if="event.registration.status === 'open'"
+                    variant="outline"
+                    class="border-olive font-semibold text-olive"
+                    >{{ t('events.registration_status.open') }}</Badge
+                >
+                <Badge
                     v-if="statusLabel"
                     variant="destructive"
                     data-test="event-status"
@@ -137,11 +155,18 @@ const statusLabel = computed(() =>
                 <Badge
                     v-if="!event.date_confirmed"
                     variant="outline"
-                    class="border-amber-500/60 text-amber-700 dark:text-amber-400"
+                    class="border-amber-600/60 text-amber-800 dark:text-amber-400"
                     data-test="date-unconfirmed"
                     >{{ t('events.status.date_unconfirmed') }}</Badge
                 >
             </div>
+        </div>
+
+        <div
+            class="hidden h-24 overflow-hidden rounded-2xl bg-sand sm:block"
+            aria-hidden="true"
+        >
+            <ContourArt :seed="event.slug" :width="240" :height="160" />
         </div>
     </article>
 </template>

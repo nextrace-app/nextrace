@@ -29,6 +29,7 @@ import { useI18n } from 'vue-i18n';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useEventFormat } from '@/composables/useEventFormat';
+import { placeEvent } from '@/composables/useEventPlacement';
 import { useLocale } from '@/composables/useLocale';
 import { index as eventsIndex } from '@/routes/events';
 import type { Event, LinkType } from '@/types';
@@ -120,6 +121,60 @@ function registrationDate(value: string): string {
     });
 }
 
+const facts = computed(() => {
+    const items: {
+        key: string;
+        icon: Component;
+        label: string;
+        value: string;
+        datetime?: string;
+    }[] = [
+        {
+            key: 'date',
+            icon: Calendar,
+            label: t('events.fields.date'),
+            value: fullDate.value,
+            datetime: props.event.date,
+        },
+    ];
+
+    if (!props.event.ends_on) {
+        items.push({
+            key: 'time',
+            icon: Clock,
+            label: t('events.fields.time'),
+            value: props.event.time ?? t('events.time_tba'),
+        });
+    }
+
+    items.push(
+        {
+            key: 'location',
+            icon: MapPin,
+            label: t('events.fields.location'),
+            value: props.event.location,
+        },
+        {
+            key: 'distance',
+            icon: Route,
+            label: t('events.fields.distance'),
+            value: formatDistance(props.event.distance_meters),
+        },
+    );
+
+    if (props.event.participants) {
+        items.push({
+            key: 'participants',
+            icon: Users,
+            label: t('events.participants'),
+            value: formatNumber(props.event.participants),
+        });
+    }
+
+    return items;
+});
+const hasPin = computed(() => placeEvent(props.event) !== null);
+
 const hasContact = computed(
     () => props.event.contact.email || props.event.contact.phone,
 );
@@ -128,123 +183,102 @@ const hasContact = computed(
 <template>
     <Head :title="seo.title ?? event.name" />
 
-    <div class="min-h-screen bg-background py-6 lg:py-8">
-        <DefaultHeader />
-
-        <main class="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
+    <DefaultShell>
+        <main class="mx-auto w-full max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
             <Link
                 :href="localeRoute(eventsIndex())"
-                class="mb-6 inline-flex items-center gap-1 rounded-sm text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                class="inline-flex items-center gap-1 rounded-full py-1.5 pr-2 text-sm font-bold text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
                 <ArrowLeft class="size-4" aria-hidden="true" />
                 {{ t('events.back') }}
             </Link>
 
-            <article
-                class="overflow-hidden rounded-xl border bg-card shadow-xs"
-            >
-                <header
-                    class="relative bg-primary px-5 py-8 text-primary-foreground sm:px-8 sm:py-10"
+            <header>
+                <div
+                    class="relative mt-3 h-44 overflow-hidden rounded-3xl border bg-sand sm:h-60"
                 >
                     <img
                         v-if="event.image"
                         :src="event.image"
                         :alt="event.name"
-                        class="absolute inset-0 h-full w-full object-cover opacity-15"
+                        class="absolute inset-0 h-full w-full object-cover opacity-30"
                     />
-                    <div class="relative flex flex-col gap-4">
-                        <div class="flex items-start justify-between gap-4">
-                            <div class="flex flex-wrap items-center gap-2">
-                                <Badge
-                                    variant="secondary"
-                                    data-test="event-category"
-                                    >{{ categoryLabel(event.category) }}</Badge
-                                >
-                                <Badge
-                                    v-if="event.races.length > 1"
-                                    variant="secondary"
-                                    >{{
-                                        t('events.races.count', {
-                                            count: event.races.length,
-                                        })
-                                    }}</Badge
-                                >
-                            </div>
-                            <FavoriteButton
-                                :event-slug="event.slug"
-                                :favorited="isFavorite"
-                                class="shrink-0 text-foreground"
-                            />
+                    <ContourArt
+                        v-else
+                        :seed="event.slug"
+                        :width="1000"
+                        :height="260"
+                    />
+                    <div
+                        class="absolute inset-x-4 top-4 flex items-start justify-between gap-3"
+                    >
+                        <div class="flex flex-wrap items-center gap-2">
+                            <Badge
+                                class="border-transparent bg-foreground font-bold text-background"
+                                data-test="event-category"
+                                >{{ categoryLabel(event.category) }}</Badge
+                            >
+                            <Badge
+                                v-if="event.races.length > 1"
+                                variant="secondary"
+                                >{{
+                                    t('events.races.count', {
+                                        count: event.races.length,
+                                    })
+                                }}</Badge
+                            >
                         </div>
-                        <h1
-                            class="text-2xl leading-tight font-semibold text-balance sm:text-4xl"
-                        >
-                            {{ event.name }}
-                        </h1>
-                        <ul
-                            class="flex flex-col gap-2 text-sm sm:flex-row sm:flex-wrap sm:gap-x-6 sm:text-base"
-                        >
-                            <li class="flex items-center gap-2">
-                                <Calendar
-                                    class="size-4 shrink-0"
-                                    aria-hidden="true"
-                                />
-                                <span class="sr-only"
-                                    >{{ t('events.fields.date') }}:</span
-                                >
-                                <time :datetime="event.date">{{
-                                    fullDate
-                                }}</time>
-                            </li>
-                            <li
-                                v-if="event.time && !event.ends_on"
-                                class="flex items-center gap-2"
-                            >
-                                <Clock
-                                    class="size-4 shrink-0"
-                                    aria-hidden="true"
-                                />
-                                <span class="sr-only"
-                                    >{{ t('events.fields.time') }}:</span
-                                >
-                                {{ event.time }}
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <MapPin
-                                    class="size-4 shrink-0"
-                                    aria-hidden="true"
-                                />
-                                <span class="sr-only"
-                                    >{{ t('events.fields.location') }}:</span
-                                >
-                                {{ event.location }}
-                            </li>
-                            <li class="flex items-center gap-2">
-                                <Route
-                                    class="size-4 shrink-0"
-                                    aria-hidden="true"
-                                />
-                                <span class="sr-only"
-                                    >{{ t('events.fields.distance') }}:</span
-                                >
-                                {{ formatDistance(event.distance_meters) }}
-                            </li>
-                            <li
-                                v-if="event.participants"
-                                class="flex items-center gap-2"
-                            >
-                                <Users
-                                    class="size-4 shrink-0"
-                                    aria-hidden="true"
-                                />
-                                {{ formatNumber(event.participants) }}
-                                {{ t('events.participants') }}
-                            </li>
-                        </ul>
+                        <FavoriteButton
+                            :event-slug="event.slug"
+                            :favorited="isFavorite"
+                            class="shrink-0 text-foreground"
+                        />
                     </div>
-                </header>
+                </div>
 
-                <div class="flex flex-col gap-6 p-5 sm:p-8">
+                <h1
+                    class="mt-6 max-w-3xl text-3xl leading-[1.08] font-extrabold tracking-tight text-balance sm:text-5xl"
+                >
+                    {{ event.name }}
+                </h1>
+
+                <ul class="mt-5 flex flex-wrap gap-3">
+                    <li
+                        v-for="fact in facts"
+                        :key="fact.key"
+                        class="flex min-w-0 items-center gap-3 rounded-2xl border bg-card py-3 pr-4 pl-3 max-sm:w-full"
+                    >
+                        <span
+                            class="grid size-10 shrink-0 place-items-center rounded-xl bg-secondary text-primary"
+                        >
+                            <component
+                                :is="fact.icon"
+                                class="size-5"
+                                aria-hidden="true"
+                            />
+                        </span>
+                        <span class="min-w-0">
+                            <span
+                                class="block text-[11px] leading-tight font-bold tracking-widest text-muted-foreground uppercase"
+                                >{{ fact.label }}</span
+                            >
+                            <span class="block font-bold">
+                                <time
+                                    v-if="fact.datetime"
+                                    :datetime="fact.datetime"
+                                    >{{ fact.value }}</time
+                                >
+                                <template v-else>{{ fact.value }}</template>
+                            </span>
+                        </span>
+                    </li>
+                </ul>
+            </header>
+
+            <div
+                class="grid gap-8 pt-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12"
+            >
+                <div class="flex min-w-0 flex-col gap-8">
                     <div
                         v-if="banner"
                         role="alert"
@@ -262,46 +296,8 @@ const hasContact = computed(
                         />
                         <p>{{ t(`events.status.${banner}`) }}</p>
                     </div>
-
-                    <div
-                        v-if="event.registration_url || map"
-                        class="flex flex-col gap-3 sm:flex-row"
-                    >
-                        <Button
-                            v-if="event.registration_url"
-                            as-child
-                            size="lg"
-                            class="w-full sm:w-auto"
-                        >
-                            <a
-                                :href="event.registration_url"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                {{ t('events.register') }}
-                                <ExternalLink aria-hidden="true" />
-                            </a>
-                        </Button>
-                        <Button
-                            v-if="map"
-                            as-child
-                            variant="outline"
-                            size="lg"
-                            class="w-full sm:w-auto"
-                        >
-                            <a
-                                :href="map"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <Map aria-hidden="true" />
-                                {{ t('events.view_map') }}
-                            </a>
-                        </Button>
-                    </div>
-
                     <section>
-                        <h2 class="mb-2 text-lg font-semibold">
+                        <h2 class="mb-2 text-xl font-extrabold tracking-tight">
                             {{ t('events.about') }}
                         </h2>
                         <p
@@ -314,16 +310,15 @@ const hasContact = computed(
                             {{ t('events.no_description') }}
                         </p>
                     </section>
-
                     <section v-if="event.races.length > 0" data-test="races">
-                        <h2 class="mb-3 text-lg font-semibold">
+                        <h2 class="mb-3 text-xl font-extrabold tracking-tight">
                             {{ t('events.races.title') }}
                         </h2>
                         <ul class="flex flex-col gap-3">
                             <li
                                 v-for="race in event.races"
                                 :key="race.id"
-                                class="rounded-lg border p-4"
+                                class="rounded-2xl border bg-card p-5"
                                 data-test="race"
                             >
                                 <div
@@ -529,9 +524,8 @@ const hasContact = computed(
                             </li>
                         </ul>
                     </section>
-
                     <section data-test="facts">
-                        <h2 class="mb-3 text-lg font-semibold">
+                        <h2 class="mb-3 text-xl font-extrabold tracking-tight">
                             {{ t('events.facts.title') }}
                         </h2>
                         <dl class="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
@@ -710,7 +704,71 @@ const hasContact = computed(
                         </ul>
                     </section>
                 </div>
-            </article>
+
+                <aside
+                    class="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start"
+                >
+                    <div
+                        class="flex flex-col gap-3 rounded-2xl border bg-card p-5"
+                    >
+                        <Button
+                            v-if="event.registration_url"
+                            as-child
+                            size="lg"
+                            class="w-full"
+                        >
+                            <a
+                                :href="event.registration_url"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                {{ t('events.register') }}
+                                <ExternalLink aria-hidden="true" />
+                            </a>
+                        </Button>
+                        <p
+                            v-else
+                            class="text-sm text-muted-foreground"
+                            data-test="registration-unavailable"
+                        >
+                            {{
+                                t(
+                                    `events.registration_status.${event.registration.status}`,
+                                )
+                            }}
+                        </p>
+                        <Button
+                            v-if="map"
+                            as-child
+                            variant="outline"
+                            size="lg"
+                            class="w-full"
+                        >
+                            <a
+                                :href="map"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <Map aria-hidden="true" />
+                                {{ t('events.view_map') }}
+                            </a>
+                        </Button>
+                    </div>
+
+                    <div
+                        v-if="hasPin"
+                        class="rounded-2xl border bg-secondary p-4"
+                    >
+                        <h2 class="mb-2 text-sm font-bold">
+                            {{ t('events.fields.location') }}
+                        </h2>
+                        <EventMap :events="[event]" :active-slug="event.slug" />
+                        <p class="mt-2 text-sm text-muted-foreground">
+                            {{ t('events.map.note') }}
+                        </p>
+                    </div>
+                </aside>
+            </div>
         </main>
-    </div>
+    </DefaultShell>
 </template>

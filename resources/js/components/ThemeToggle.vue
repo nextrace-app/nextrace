@@ -26,19 +26,19 @@ const options = [
     <DropdownMenu>
         <DropdownMenuTrigger as-child>
             <Button
-                variant="ghost"
+                variant="secondary"
                 size="icon"
-                class="size-8"
+                class="size-10"
                 :aria-label="t('nav.theme.label')"
                 :title="t('nav.theme.label')"
                 data-test="theme-toggle"
             >
                 <Moon
                     v-if="resolvedAppearance === 'dark'"
-                    class="size-4"
+                    class="size-[18px]"
                     aria-hidden="true"
                 />
-                <Sun v-else class="size-4" aria-hidden="true" />
+                <Sun v-else class="size-[18px]" aria-hidden="true" />
             </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">

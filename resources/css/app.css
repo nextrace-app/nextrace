@@ -9,13 +9,19 @@
 
 @theme inline {
     --font-sans:
-        Instrument Sans, ui-sans-serif, system-ui, sans-serif,
-        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
+        Manrope, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
-    --radius-lg: var(--radius);
-    --radius-md: calc(var(--radius) - 2px);
-    --radius-sm: calc(var(--radius) - 4px);
+    --radius-sm: calc(var(--radius) - 12px);
+    --radius-md: calc(var(--radius) - 6px);
+    --radius-lg: calc(var(--radius) - 4px);
+    --radius-xl: var(--radius);
+    --radius-2xl: calc(var(--radius) + 8px);
+
+    --color-olive: var(--olive);
+    --color-land: var(--land);
+    --color-contour: var(--cn);
+    --color-sand: var(--sand);
 
     --color-background: var(--background);
     --color-foreground: var(--foreground);
@@ -83,83 +89,92 @@
     body,
     html {
         --font-sans:
-            'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+            'Manrope', ui-sans-serif, system-ui, sans-serif,
             'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
             'Noto Color Emoji';
     }
 }
 
 :root {
-    --background: hsl(0 0% 100%);
-    --foreground: hsl(0 0% 3.9%);
-    --card: hsl(0 0% 100%);
-    --card-foreground: hsl(0 0% 3.9%);
-    --popover: hsl(0 0% 100%);
-    --popover-foreground: hsl(0 0% 3.9%);
-    --primary: hsl(0 0% 9%);
-    --primary-foreground: hsl(0 0% 98%);
-    --secondary: hsl(0 0% 92.1%);
-    --secondary-foreground: hsl(0 0% 9%);
-    --muted: hsl(0 0% 96.1%);
-    --muted-foreground: hsl(0 0% 45.1%);
-    --accent: hsl(0 0% 96.1%);
-    --accent-foreground: hsl(0 0% 9%);
-    --destructive: hsl(0 84.2% 60.2%);
-    --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(0 0% 92.8%);
-    --input: hsl(0 0% 89.8%);
-    --ring: hsl(0 0% 3.9%);
-    --chart-1: hsl(12 76% 61%);
-    --chart-2: hsl(173 58% 39%);
-    --chart-3: hsl(197 37% 24%);
-    --chart-4: hsl(43 74% 66%);
-    --chart-5: hsl(27 87% 67%);
-    --radius: 0.5rem;
-    --sidebar-background: hsl(0 0% 98%);
-    --sidebar-foreground: hsl(240 5.3% 26.1%);
-    --sidebar-primary: hsl(0 0% 10%);
-    --sidebar-primary-foreground: hsl(0 0% 98%);
-    --sidebar-accent: hsl(0 0% 94%);
-    --sidebar-accent-foreground: hsl(0 0% 30%);
-    --sidebar-border: hsl(0 0% 91%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
-    --sidebar: hsl(0 0% 98%);
+    /* Galini: whitewash, sea teal and olive. */
+    --background: #f7f5f0;
+    --foreground: #22313a;
+    --card: #ffffff;
+    --card-foreground: #22313a;
+    --popover: #ffffff;
+    --popover-foreground: #22313a;
+    --primary: #1f7a78;
+    --primary-foreground: #ffffff;
+    --secondary: #e3efec;
+    --secondary-foreground: #22313a;
+    --muted: #efeadd;
+    --muted-foreground: #5a696f;
+    --accent: #e3efec;
+    --accent-foreground: #22313a;
+    --destructive: #b42318;
+    --destructive-foreground: #ffffff;
+    --border: #e4e0d6;
+    --input: #cdc8ba;
+    --ring: #1f7a78;
+    --olive: #5e6b2e;
+    --land: #e7e3d8;
+    --cn: #9cc7c2;
+    --sand: #efeadd;
+    --chart-1: #1f7a78;
+    --chart-2: #5e6b2e;
+    --chart-3: #22313a;
+    --chart-4: #c98a2b;
+    --chart-5: #9cc7c2;
+    --radius: 1.25rem;
+    --sidebar-background: #efeadd;
+    --sidebar-foreground: #22313a;
+    --sidebar-primary: #1f7a78;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #e3efec;
+    --sidebar-accent-foreground: #22313a;
+    --sidebar-border: #e4e0d6;
+    --sidebar-ring: #1f7a78;
+    --sidebar: #efeadd;
 }
 
 .dark {
-    --background: hsl(0 0% 3.9%);
-    --foreground: hsl(0 0% 98%);
-    --card: hsl(0 0% 3.9%);
-    --card-foreground: hsl(0 0% 98%);
-    --popover: hsl(0 0% 3.9%);
-    --popover-foreground: hsl(0 0% 98%);
-    --primary: hsl(0 0% 98%);
-    --primary-foreground: hsl(0 0% 9%);
-    --secondary: hsl(0 0% 14.9%);
-    --secondary-foreground: hsl(0 0% 98%);
-    --muted: hsl(0 0% 16.08%);
-    --muted-foreground: hsl(0 0% 63.9%);
-    --accent: hsl(0 0% 14.9%);
-    --accent-foreground: hsl(0 0% 98%);
-    --destructive: hsl(0 84% 60%);
-    --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(0 0% 14.9%);
-    --input: hsl(0 0% 14.9%);
-    --ring: hsl(0 0% 83.1%);
-    --chart-1: hsl(220 70% 50%);
-    --chart-2: hsl(160 60% 45%);
-    --chart-3: hsl(30 80% 55%);
-    --chart-4: hsl(280 65% 60%);
-    --chart-5: hsl(340 75% 55%);
-    --sidebar-background: hsl(0 0% 7%);
-    --sidebar-foreground: hsl(0 0% 95.9%);
-    --sidebar-primary: hsl(360, 100%, 100%);
-    --sidebar-primary-foreground: hsl(0 0% 100%);
-    --sidebar-accent: hsl(0 0% 15.9%);
-    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-    --sidebar-border: hsl(0 0% 15.9%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
-    --sidebar: hsl(240 5.9% 10%);
+    --background: #0f1719;
+    --foreground: #e9f1ef;
+    --card: #172326;
+    --card-foreground: #e9f1ef;
+    --popover: #172326;
+    --popover-foreground: #e9f1ef;
+    --primary: #5cc3bc;
+    --primary-foreground: #06201f;
+    --secondary: #1e3234;
+    --secondary-foreground: #e9f1ef;
+    --muted: #1a2a2c;
+    --muted-foreground: #9db0ad;
+    --accent: #1e3234;
+    --accent-foreground: #e9f1ef;
+    --destructive: #e5645a;
+    --destructive-foreground: #1b0a08;
+    --border: #263538;
+    --input: #3a5054;
+    --ring: #5cc3bc;
+    --olive: #b4c46b;
+    --land: #1c2d30;
+    --cn: #2f5a58;
+    --sand: #1a2a2c;
+    --chart-1: #5cc3bc;
+    --chart-2: #b4c46b;
+    --chart-3: #e9f1ef;
+    --chart-4: #e0a84e;
+    --chart-5: #2f5a58;
+    --sidebar-background: #121d1f;
+    --sidebar-foreground: #e9f1ef;
+    --sidebar-primary: #5cc3bc;
+    --sidebar-primary-foreground: #06201f;
+    --sidebar-accent: #1e3234;
+    --sidebar-accent-foreground: #e9f1ef;
+    --sidebar-border: #263538;
+    --sidebar-ring: #5cc3bc;
+    --sidebar: #121d1f;
 }
 
 @layer base {
@@ -168,6 +183,10 @@
     }
     body {
         @apply bg-background text-foreground;
+    }
+
+    :focus-visible {
+        outline-color: var(--ring);
     }
 
     /* Tailwind's preflight resets buttons to the default arrow cursor. */

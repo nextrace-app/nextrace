@@ -25,14 +25,14 @@ const open = ref(false);
     <Dialog v-model:open="open">
         <DialogTrigger as-child>
             <Button
-                variant="ghost"
+                variant="secondary"
                 size="icon"
-                class="size-8"
+                class="size-10"
                 :aria-label="t('nav.language')"
                 :title="t('nav.language')"
                 data-test="locale-switcher"
             >
-                <Globe class="size-4" aria-hidden="true" />
+                <Globe class="size-[18px]" aria-hidden="true" />
             </Button>
         </DialogTrigger>
         <DialogContent class="sm:max-w-sm">

@@ -10,11 +10,9 @@ const { t } = useI18n();
 <template>
     <Head :title="t('profile.title')" />
 
-    <div class="min-h-screen bg-background py-6 lg:py-8">
-        <DefaultHeader />
-
+    <DefaultShell>
         <div
-            class="mx-auto flex w-full max-w-6xl flex-col px-4 sm:px-6 lg:flex-row lg:space-x-12 lg:px-8"
+            class="mx-auto flex w-full max-w-6xl flex-col px-4 pt-8 sm:px-6 lg:flex-row lg:space-x-12 lg:px-8"
         >
             <aside class="w-full max-w-xl lg:w-48">
                 <ProfileNav />
@@ -23,9 +21,9 @@ const { t } = useI18n();
             <Separator class="my-6 lg:hidden" />
 
             <div class="flex-1 md:max-w-2xl">
-                <h2 class="mb-6 text-2xl font-semibold">
+                <h1 class="mb-6 text-3xl font-extrabold tracking-tight">
                     {{ t('profile.title') }}
-                </h2>
+                </h1>
 
                 <div class="space-y-12">
                     <ProfilePageForm />
@@ -38,5 +36,5 @@ const { t } = useI18n();
         <!-- The layouts with a sidebar mount their own; this page carries the
              public header instead, and still flashes a toast when saving. -->
         <Toaster />
-    </div>
+    </DefaultShell>
 </template>
