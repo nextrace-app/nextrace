@@ -1,0 +1,13 @@
+[
+    {
+        "slug": "minoikos-athlos",
+        "name": {"el": "Μινωικός Άθλος", "en": "Minoan Feat Ultramarathon"},
+        "description": {"en": "International 70 km ultramarathon from the archaeological site of Phaistos to Knossos, with a 23 km relay."},
+        "category": "Ultra",
+        "distance_meters": 70000,
+        "starts_at": "2026-12-06 00:00:00",
+        "city": "Heraklion",
+        "source_url": "https://running.life/el/event/minoikos-athlos",
+        "registration_url": null
+    }
+]
