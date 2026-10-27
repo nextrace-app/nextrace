@@ -29,10 +29,7 @@ const navLinks = computed(() =>
               { key: 'favorites', route: favorites() },
               { key: 'profile', route: profile() },
           ]
-        : [
-              { key: 'races', route: events() },
-              { key: 'register', route: register() },
-          ],
+        : [{ key: 'races', route: events() }],
 );
 </script>
 
@@ -87,13 +84,22 @@ const navLinks = computed(() =>
             <div class="ml-auto flex items-center gap-2">
                 <ThemeToggle />
                 <LocaleSwitcher />
-                <Link
-                    v-if="!user"
-                    :href="localeRoute(login())"
-                    :class="buttonVariants({ variant: 'outline', size: 'sm' })"
-                >
-                    {{ t('nav.login') }}
-                </Link>
+                <template v-if="!user">
+                    <Link
+                        :href="localeRoute(login())"
+                        :class="
+                            buttonVariants({ variant: 'outline', size: 'sm' })
+                        "
+                    >
+                        {{ t('nav.login') }}
+                    </Link>
+                    <Link
+                        :href="localeRoute(register())"
+                        :class="buttonVariants({ size: 'sm' })"
+                    >
+                        {{ t('nav.register') }}
+                    </Link>
+                </template>
             </div>
         </div>
     </header>
