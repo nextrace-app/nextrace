@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, usePage } from '@inertiajs/vue3';
-import { CalendarX, MapPin } from '@lucide/vue';
-import { computed, ref } from 'vue';
+import { CalendarX, ChevronLeft, ChevronRight, MapPin } from '@lucide/vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Button } from '@/components/ui/button';
 import { useEventFormat } from '@/composables/useEventFormat';
@@ -104,6 +104,29 @@ function resetFilters() {
 const sortedEvents = computed(() =>
     [...visibleEvents.value].sort((a, b) => a.date.localeCompare(b.date)),
 );
+
+const perPage = 10;
+const currentPage = ref(1);
+const pageCount = computed(() =>
+    Math.max(1, Math.ceil(sortedEvents.value.length / perPage)),
+);
+const pagedEvents = computed(() =>
+    sortedEvents.value.slice(
+        (currentPage.value - 1) * perPage,
+        currentPage.value * perPage,
+    ),
+);
+
+watch(visibleEvents, () => {
+    currentPage.value = 1;
+});
+
+function goToPage(value: number) {
+    currentPage.value = Math.min(Math.max(1, value), pageCount.value);
+    document
+        .getElementById('events-list')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
 const hoverSlug = ref<string | null>(null);
 const showMap = ref(false);
@@ -248,16 +271,63 @@ const selectClass =
                 <div class="min-w-0">
                     <div
                         v-if="visibleEvents.length > 0"
-                        class="flex flex-col gap-3"
+                        id="events-list"
+                        class="flex scroll-mt-24 flex-col gap-3"
                     >
                         <EventCard
-                            v-for="event in sortedEvents"
+                            v-for="event in pagedEvents"
                             :key="event.id"
                             :event="event"
                             :favorited="favorites.includes(event.id)"
                             @hover="hoverSlug = $event"
                         />
                     </div>
+
+                    <nav
+                        v-if="pageCount > 1"
+                        class="mt-6 flex items-center justify-center gap-1.5"
+                        :aria-label="t('events.pagination.label')"
+                        data-test="pagination"
+                    >
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            :disabled="currentPage === 1"
+                            :aria-label="t('events.pagination.previous')"
+                            @click="goToPage(currentPage - 1)"
+                        >
+                            <ChevronLeft class="size-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                            v-for="number in pageCount"
+                            :key="number"
+                            type="button"
+                            :variant="
+                                number === currentPage ? 'default' : 'outline'
+                            "
+                            size="icon"
+                            :aria-current="
+                                number === currentPage ? 'page' : undefined
+                            "
+                            :aria-label="
+                                t('events.pagination.page', { number })
+                            "
+                            @click="goToPage(number)"
+                        >
+                            {{ number }}
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            :disabled="currentPage === pageCount"
+                            :aria-label="t('events.pagination.next')"
+                            @click="goToPage(currentPage + 1)"
+                        >
+                            <ChevronRight class="size-4" aria-hidden="true" />
+                        </Button>
+                    </nav>
 
                     <div
                         v-else

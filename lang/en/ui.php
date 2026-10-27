@@ -108,6 +108,12 @@ return [
             'all' => 'All',
             'reset' => 'Clear filters',
         ],
+        'pagination' => [
+            'label' => 'Pagination',
+            'previous' => 'Previous page',
+            'next' => 'Next page',
+            'page' => 'Page {number}',
+        ],
         'index' => [
             'title' => 'Upcoming races',
             'subtitle' => 'Running events across Greece, starting with Crete.',
