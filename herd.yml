@@ -1,0 +1,6 @@
+integrations:
+  forge:
+    nextrace-develop.on-forge.com:
+      org-slug: stelios-baglaridis
+      server-id: 992463
+      site-id: 3232103
