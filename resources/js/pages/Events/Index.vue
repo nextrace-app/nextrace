@@ -11,6 +11,7 @@ import type { DistanceClass, Event } from '@/types';
 const props = defineProps<{
     events: Event[];
     favorites: number[];
+    perPage: number;
 }>();
 
 const { t } = useI18n();
@@ -105,15 +106,14 @@ const sortedEvents = computed(() =>
     [...visibleEvents.value].sort((a, b) => a.date.localeCompare(b.date)),
 );
 
-const perPage = 10;
 const currentPage = ref(1);
 const pageCount = computed(() =>
-    Math.max(1, Math.ceil(sortedEvents.value.length / perPage)),
+    Math.max(1, Math.ceil(sortedEvents.value.length / props.perPage)),
 );
 const pagedEvents = computed(() =>
     sortedEvents.value.slice(
-        (currentPage.value - 1) * perPage,
-        currentPage.value * perPage,
+        (currentPage.value - 1) * props.perPage,
+        currentPage.value * props.perPage,
     ),
 );
 

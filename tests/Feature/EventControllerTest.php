@@ -8,6 +8,7 @@ use App\Models\Race;
 use App\Models\User;
 use Database\Seeders\EventSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class EventControllerTest extends TestCase
@@ -27,6 +28,13 @@ class EventControllerTest extends TestCase
 
         $response = $this->get(route('events.index'));
         $response->assertOk();
+    }
+
+    public function test_the_events_page_sends_the_configured_page_size(): void
+    {
+        config(['events.per_page' => 5]);
+
+        $this->get(route('events.index'))->assertInertia(fn (Assert $page) => $page->where('perPage', 5));
     }
 
     public function test_guests_can_visit_an_event_page(): void

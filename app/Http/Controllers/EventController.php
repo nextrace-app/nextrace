@@ -21,6 +21,7 @@ class EventController extends Controller
         return Inertia::render('Events/Index', [
             'events' => EventResource::collection($events)->resolve(),
             'favorites' => $request->user()?->favoriteEventIds() ?? [],
+            'perPage' => config('events.per_page'),
         ]);
     }
 
