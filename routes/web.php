@@ -3,6 +3,7 @@
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\SocialAuthController;
 use App\Http\Middleware\RememberLocale;
 use App\Support\Locale;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,13 @@ Route::get('.well-known/passkey-endpoints', function () {
         'manage' => route('security.edit'),
     ]);
 })->name('well-known.passkeys');
+
+// Google sign-in - outside locale prefix, since Google accepts one fixed callback URL
+// RememberLocale would bounce them onto a prefixed URL that does not exist.
+Route::middleware('guest')->withoutMiddleware(RememberLocale::class)->prefix('auth/google')->name('auth.google.')->group(function () {
+    Route::get('redirect', [SocialAuthController::class, 'redirect'])->name('redirect');
+    Route::get('callback', [SocialAuthController::class, 'callback'])->name('callback');
+});
 
 // Crawler files - outside locale prefix (robots.txt is static: php artisan seo:robots)
 Route::get('sitemap.xml', SitemapController::class)->name('sitemap')->withoutMiddleware(RememberLocale::class);

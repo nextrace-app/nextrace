@@ -11,6 +11,10 @@ import { useLocale } from '@/composables/useLocale';
 import { confirm as confirmStore, confirmOptions } from '@/routes/passkey';
 import { store } from '@/routes/password/confirm';
 
+defineProps<{
+    hasPassword: boolean;
+}>();
+
 const { t } = useI18n();
 const { localeRoute } = useLocale();
 
@@ -35,7 +39,12 @@ defineOptions({
         :separator="t('auth.confirm.separator')"
     />
 
+    <p v-if="!hasPassword" class="mt-4 text-sm text-muted-foreground">
+        {{ t('auth.confirm.no_password') }}
+    </p>
+
     <Form
+        v-else
         v-bind="localeRoute(store.form())"
         reset-on-success
         v-slot="{ errors, processing }"

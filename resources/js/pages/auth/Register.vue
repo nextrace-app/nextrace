@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
+import GoogleButton from '@/components/GoogleButton.vue';
 import InputError from '@/components/InputError.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import TextLink from '@/components/TextLink.vue';
@@ -29,6 +30,8 @@ defineOptions({
 
 <template>
     <Head :title="t('auth.register.title')" />
+
+    <GoogleButton class="mb-6" />
 
     <Form
         v-bind="localeRoute(store.form())"

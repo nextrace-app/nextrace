@@ -250,6 +250,10 @@ return [
     ],
 
     'auth' => [
+        'google' => [
+            'continue' => 'Continue with Google',
+            'separator' => 'or',
+        ],
         'login' => [
             'title' => 'Log in to your account',
             'description' => 'Enter your email and password below to log in',
@@ -279,6 +283,7 @@ return [
             'submit' => 'Reset password',
         ],
         'confirm' => [
+            'no_password' => 'You signed in with Google and have no password yet. To set one, log out and use "Forgot your password?" on the log in page.',
             'title' => 'Confirm password',
             'description' => 'This is a secure area of the application. Please confirm your password before continuing.',
             'submit' => 'Confirm password',

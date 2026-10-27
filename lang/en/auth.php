@@ -16,5 +16,6 @@ return [
     'failed' => 'These credentials do not match our records.',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'google_unverified' => 'Google has not verified this email address, so we could not sign you in with it.',
 
 ];
