@@ -16,7 +16,24 @@ const { localeRoute } = useLocale();
 <template>
     <Head :title="t(`error.title.${props.status}`)" />
 
-    <DefaultShell>
+    <!-- While the site is down there is nowhere to go, so no header or footer. -->
+    <main
+        v-if="props.status === 503"
+        class="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-16 text-center text-foreground"
+    >
+        <div class="mb-10 flex items-center gap-2.5 text-2xl">
+            <AppLogoIcon class="size-10 shrink-0" />
+            <AppWordmark />
+        </div>
+        <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">
+            {{ t(`error.title.${props.status}`) }}
+        </h1>
+        <p class="mt-3 max-w-md text-muted-foreground">
+            {{ t(`error.text.${props.status}`) }}
+        </p>
+    </main>
+
+    <DefaultShell v-else>
         <main
             class="mx-auto flex w-full max-w-xl flex-col items-center px-4 py-16 text-center sm:py-24"
         >
@@ -32,7 +49,7 @@ const { localeRoute } = useLocale();
             <p class="mt-3 text-muted-foreground">
                 {{ t(`error.text.${props.status}`) }}
             </p>
-            <Button v-if="props.status !== 503" as-child class="mt-8">
+            <Button as-child class="mt-8">
                 <Link :href="localeRoute(eventsIndex())">
                     {{ t('error.back') }}
                 </Link>
