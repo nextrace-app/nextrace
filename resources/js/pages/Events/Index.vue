@@ -100,25 +100,10 @@ function resetFilters() {
     month.value = '';
 }
 
-// Events grouped under their month, in date order, for the timeline.
-const monthGroups = computed(() => {
-    const groups: { key: string; events: Event[] }[] = [];
-
-    [...visibleEvents.value]
-        .sort((a, b) => a.date.localeCompare(b.date))
-        .forEach((event) => {
-            const key = event.date.slice(0, 7);
-            const last = groups[groups.length - 1];
-
-            if (last?.key === key) {
-                last.events.push(event);
-            } else {
-                groups.push({ key, events: [event] });
-            }
-        });
-
-    return groups;
-});
+// Visible events in date order.
+const sortedEvents = computed(() =>
+    [...visibleEvents.value].sort((a, b) => a.date.localeCompare(b.date)),
+);
 
 const hoverSlug = ref<string | null>(null);
 const showMap = ref(false);
@@ -261,56 +246,18 @@ const selectClass =
                 class="grid gap-6 pt-6 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-10"
             >
                 <div class="min-w-0">
-                    <p
-                        class="mb-4 font-semibold text-muted-foreground"
-                        role="status"
-                    >
-                        {{
-                            t(
-                                'events.index.count',
-                                { count: visibleEvents.length },
-                                visibleEvents.length,
-                            )
-                        }}
-                    </p>
-
-                    <ol
+                    <div
                         v-if="visibleEvents.length > 0"
-                        class="relative flex flex-col gap-8 pl-7 before:absolute before:top-2 before:bottom-0 before:left-[7px] before:w-0.5 before:bg-border before:content-['']"
+                        class="flex flex-col gap-3"
                     >
-                        <li
-                            v-for="group in monthGroups"
-                            :key="group.key"
-                            class="relative"
-                            data-test="month-group"
-                        >
-                            <h2
-                                class="relative mb-3.5 flex flex-wrap items-baseline gap-x-2 text-2xl leading-tight font-extrabold tracking-tight capitalize before:absolute before:top-[0.35rem] before:-left-7 before:size-4 before:rounded-full before:border-[3px] before:border-primary before:bg-background before:content-['']"
-                            >
-                                {{ monthLabel(group.key) }}
-                                <span
-                                    class="text-sm font-medium tracking-normal text-muted-foreground normal-case"
-                                    >&middot;
-                                    {{
-                                        t(
-                                            'events.index.month_count',
-                                            { count: group.events.length },
-                                            group.events.length,
-                                        )
-                                    }}</span
-                                >
-                            </h2>
-                            <div class="flex flex-col gap-3">
-                                <EventCard
-                                    v-for="event in group.events"
-                                    :key="event.id"
-                                    :event="event"
-                                    :favorited="favorites.includes(event.id)"
-                                    @hover="hoverSlug = $event"
-                                />
-                            </div>
-                        </li>
-                    </ol>
+                        <EventCard
+                            v-for="event in sortedEvents"
+                            :key="event.id"
+                            :event="event"
+                            :favorited="favorites.includes(event.id)"
+                            @hover="hoverSlug = $event"
+                        />
+                    </div>
 
                     <div
                         v-else

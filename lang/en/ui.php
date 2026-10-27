@@ -112,8 +112,6 @@ return [
             'title' => 'Upcoming races',
             'subtitle' => 'Running events across Greece, starting with Crete.',
             'eyebrow' => 'Race calendar',
-            'month_count' => '{count} race | {count} races',
-            'count' => '{count} event shown | {count} events shown',
             'empty' => 'There are no upcoming races yet. Check back soon.',
             'no_matches' => 'No races match these filters.',
         ],
