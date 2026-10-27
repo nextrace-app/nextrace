@@ -22,13 +22,23 @@
         {{-- Inline style to set the HTML background color based on our theme in app.css --}}
         <style>
             html {
-                background-color: oklch(1 0 0);
+                background-color: #f7f5f0;
             }
 
             html.dark {
-                background-color: oklch(0.145 0 0);
+                background-color: #0f1719;
             }
         </style>
+
+        {{-- Every language this page exists in, so search engines serve the
+             right one and do not read them as duplicate content. --}}
+        <link rel="canonical" href="{{ $localeAlternates[app()->getLocale()] }}">
+        @foreach ($localeAlternates as $alternateLocale => $alternateUrl)
+            <link rel="alternate" hreflang="{{ $alternateLocale }}" href="{{ $alternateUrl }}">
+        @endforeach
+        <link rel="alternate" hreflang="x-default" href="{{ $localeAlternates[$defaultLocale] }}">
+
+        @include('partials.seo')
 
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -38,7 +48,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.ts', "resources/js/pages/{$page['component']}.vue"])
         <x-inertia::head>
-            <title>{{ config('app.name', 'Laravel') }}</title>
+            <title>{{ $seo['title'] ? $seo['title'].' - ' : '' }}{{ config('app.name', 'Laravel') }}</title>
         </x-inertia::head>
     </head>
     <body class="font-sans antialiased">

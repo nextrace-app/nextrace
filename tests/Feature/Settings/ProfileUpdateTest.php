@@ -27,6 +27,7 @@ class ProfileUpdateTest extends TestCase
 
         $response = $this
             ->actingAs($user)
+            ->from(route('profile.edit'))
             ->patch(route('profile.update'), [
                 'name' => 'Test User',
                 'email' => 'test@example.com',
@@ -43,12 +44,43 @@ class ProfileUpdateTest extends TestCase
         $this->assertNull($user->email_verified_at);
     }
 
+    public function test_saving_returns_to_the_page_the_form_was_submitted_from(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->from(route('profile.show'))
+            ->patch(route('profile.update'), ['name' => 'Test User', 'email' => $user->email])
+            ->assertRedirect(route('profile.show'));
+
+        $this->actingAs($user)
+            ->from(route('profile.edit'))
+            ->patch(route('profile.update'), ['name' => 'Test User', 'email' => $user->email])
+            ->assertRedirect(route('profile.edit'));
+    }
+
+    public function test_saving_keeps_the_visitor_in_their_locale(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->from(route('el.profile.show'))
+            ->patch(route('el.profile.update'), ['name' => 'Test User', 'email' => $user->email])
+            ->assertRedirect(route('el.profile.show'));
+
+        $this->actingAs($user)
+            ->from(route('el.profile.edit'))
+            ->patch(route('el.profile.update'), ['name' => 'Test User', 'email' => $user->email])
+            ->assertRedirect(route('el.profile.edit'));
+    }
+
     public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged()
     {
         $user = User::factory()->create();
 
         $response = $this
             ->actingAs($user)
+            ->from(route('profile.edit'))
             ->patch(route('profile.update'), [
                 'name' => 'Test User',
                 'email' => $user->email,
@@ -77,6 +109,18 @@ class ProfileUpdateTest extends TestCase
 
         $this->assertGuest();
         $this->assertNull($user->fresh());
+    }
+
+    public function test_deleting_an_account_returns_to_the_home_page_of_its_locale(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->from(route('el.profile.show'))
+            ->delete(route('el.profile.destroy'), ['password' => 'password'])
+            ->assertRedirect(route('el.home'));
+
+        $this->assertGuest();
     }
 
     public function test_correct_password_must_be_provided_to_delete_account()

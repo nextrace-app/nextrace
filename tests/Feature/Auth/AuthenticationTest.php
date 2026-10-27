@@ -29,7 +29,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect(route('profile.show', absolute: false));
     }
 
     public function test_users_with_two_factor_enabled_are_redirected_to_two_factor_challenge()
@@ -63,6 +63,20 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertGuest();
+    }
+
+    public function test_login_returns_the_user_to_the_page_they_were_heading_for(): void
+    {
+        $user = User::factory()->create();
+
+        // The profile is where a plain sign in lands, not a destination that
+        // overrides the page the visitor was asking for.
+        $this->get(route('favorites.index'))->assertRedirect(route('login'));
+
+        $this->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertRedirect(route('favorites.index'));
     }
 
     public function test_users_can_logout()

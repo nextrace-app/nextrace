@@ -10,8 +10,11 @@
 /resources/js/actions
 /resources/js/routes
 /resources/js/wayfinder
+/resources/js/auto-imports.d.ts
+/resources/js/components.d.ts
 /vendor
 .DS_Store
+*.sqlite*
 .env
 .env.backup
 .env.production

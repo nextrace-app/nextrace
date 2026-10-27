@@ -1,0 +1,1077 @@
+[
+    {
+        "slug": "minoikos-athlos-2026",
+        "previous_slugs": [
+            "minoikos-athlos"
+        ],
+        "series": {
+            "slug": "minoikos-athlos",
+            "name": {
+                "el": "Μινωικός Άθλος",
+                "en": "Minoan Athlos Ultramarathon"
+            },
+            "organizer_slug": "ikaros-cretan-marathon-runners"
+        },
+        "organizer": {
+            "slug": "ikaros-cretan-marathon-runners",
+            "name": {
+                "en": "Marathon Runners Association of Crete Ikaros",
+                "el": "Σύλλογος Μαραθωνοδρόμων Κρήτης «Ίκαρος»"
+            },
+            "email": "marathoncreta@gmail.com",
+            "phone": "6955547666",
+            "website": "https://cretanmarathon.com"
+        },
+        "region": "heraklion",
+        "edition_number": 24,
+        "name": {
+            "el": "Μινωικός Άθλος",
+            "en": "Minoan Athlos Ultramarathon"
+        },
+        "description": {
+            "en": "International 70 km ultramarathon from the archaeological site of Phaistos to Knossos, with a 3x23 km relay and a 140 km cycling event. Organised by the Marathon Runners Association of Crete Ikaros. Start 08:00 at Phaistos, 9-hour time limit.",
+            "el": "Διεθνής αγώνας υπεραπόστασης 70 χλμ. από τον αρχαιολογικό χώρο της Φαιστού έως την Κνωσό, με σκυταλοδρομία 3x23 χλμ. και ποδηλατική διαδρομή 140 χλμ. Διοργάνωση: Σύλλογος Μαραθωνοδρόμων Κρήτης «Ίκαρος». Εκκίνηση στις 08:00 από τη Φαιστό, με χρονικό όριο 9 ωρών."
+        },
+        "city": "Heraklion",
+        "venue": {
+            "en": "Start: Phaistos archaeological site. Finish: Knossos archaeological site.",
+            "el": "Εκκίνηση: αρχαιολογικός χώρος Φαιστού. Τερματισμός: αρχαιολογικός χώρος Κνωσού."
+        },
+        "registration": {
+            "closes_at": "2026-11-29",
+            "url": "https://racetime.gr/registrations/register.php?event=24-minoikos-athlos&lang=gr"
+        },
+        "links": [
+            {
+                "type": "website",
+                "url": "https://cretanmarathon.com"
+            }
+        ],
+        "source_url": "https://cretanmarathon.com/24os-minoikos-athlos-2026/",
+        "published": true,
+        "races": [
+            {
+                "slug": "70km",
+                "name": {
+                    "en": "70 km ultramarathon",
+                    "el": "Υπερμαραθώνιος 70 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 70000,
+                "distance_class": "ultra",
+                "terrain": "road",
+                "time_limit_minutes": 540,
+                "starts_at": "2026-12-06 08:00:00",
+                "prices": [
+                    {
+                        "amount_cents": 7000,
+                        "currency": "EUR"
+                    }
+                ]
+            },
+            {
+                "slug": "relay-3x23km",
+                "name": {
+                    "en": "3x23 km relay",
+                    "el": "Σκυταλοδρομία 3x23 χλμ."
+                },
+                "distance_meters": 69000,
+                "distance_class": "ultra",
+                "discipline": "relay",
+                "team_size": 3,
+                "starts_at": "2026-12-06 08:00:00"
+            },
+            {
+                "slug": "cycling-140km",
+                "name": {
+                    "en": "140 km cycling",
+                    "el": "Ποδηλατική διαδρομή 140 χλμ."
+                },
+                "distance_meters": 140000,
+                "distance_class": "other",
+                "discipline": "cycle",
+                "starts_at": "2026-12-06 07:00:00",
+                "prices": [
+                    {
+                        "amount_cents": 3000,
+                        "currency": "EUR"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "chania-night-run-2026",
+        "previous_slugs": [
+            "chania-night-run"
+        ],
+        "series": {
+            "slug": "chania-night-run",
+            "name": {
+                "el": "Νυχτερινός Αγώνας Δρόμου Χανίων",
+                "en": "Chania Night Run"
+            }
+        },
+        "region": "chania",
+        "edition_number": 12,
+        "name": {
+            "el": "Νυχτερινός Αγώνας Δρόμου Χανίων",
+            "en": "Chania Night Run"
+        },
+        "description": {
+            "en": "Night race through Chania with 5 km and 10 km distances and age categories. Start time and registration are still to be announced.",
+            "el": "Νυχτερινός αγώνας στα Χανιά με διαδρομές 5 και 10 χλμ. και κατηγορίες ηλικίας. Η ώρα εκκίνησης και οι εγγραφές θα ανακοινωθούν σύντομα."
+        },
+        "city": "Chania",
+        "registration": {
+            "status": "not_open"
+        },
+        "source_url": "https://www.trexalito.gr/2026/08/12-2026-12-5km-10km.html",
+        "published": true,
+        "races": [
+            {
+                "slug": "10km",
+                "name": {
+                    "en": "10 km",
+                    "el": "10 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 10000,
+                "distance_class": "10k",
+                "starts_at": "2026-12-12 00:00:00",
+                "start_time_known": false
+            },
+            {
+                "slug": "5km",
+                "name": {
+                    "en": "5 km",
+                    "el": "5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "starts_at": "2026-12-12 00:00:00",
+                "start_time_known": false
+            }
+        ]
+    },
+    {
+        "slug": "keri-cross-country-race-2026",
+        "previous_slugs": [
+            "keri-cross-country-race"
+        ],
+        "series": {
+            "slug": "keri-cross-country-race",
+            "name": {
+                "el": "Κέρη Cross Country Race",
+                "en": "Keri Cross Country Race"
+            }
+        },
+        "region": "heraklion",
+        "edition_number": 6,
+        "name": {
+            "el": "Κέρη Cross Country Race",
+            "en": "Keri Cross Country Race"
+        },
+        "description": {
+            "en": "Cross country race in the Keri forest near Gazi, Heraklion: 10.2 km at 08:30, 5 km at 10:00, a 1600 m Keri Mile trail race and a free 1000 m kids race at 11:45.",
+            "el": "Αγώνας cross country στο δάσος της Κέρης κοντά στο Γάζι Ηρακλείου: 10,2 χλμ. στις 08:30, 5 χλμ. στις 10:00, Keri Mile Trail Race 1600 μ. και δωρεάν παιδικός αγώνας 1000 μ. στις 11:45."
+        },
+        "city": "Heraklion",
+        "venue": {
+            "en": "Keri forest near Gazi",
+            "el": "Δάσος Κέρης κοντά στο Γάζι"
+        },
+        "date_confirmed": false,
+        "registration": {
+            "url": "https://www.trexalito.gr/p/go-keri-2026.html"
+        },
+        "source_url": "https://www.trexalito.gr/2026/10/dasos-keris-irakliou-cross-country-race-2026.html",
+        "published": false,
+        "races": [
+            {
+                "slug": "10km",
+                "name": {
+                    "en": "10.2 km",
+                    "el": "10,2 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 10200,
+                "distance_class": "10k",
+                "terrain": "cross_country",
+                "starts_at": "2026-12-20 08:30:00"
+            },
+            {
+                "slug": "5km",
+                "name": {
+                    "en": "5 km",
+                    "el": "5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "terrain": "cross_country",
+                "starts_at": "2026-12-20 10:00:00"
+            },
+            {
+                "slug": "keri-mile",
+                "name": {
+                    "en": "Keri Mile Trail Race",
+                    "el": "Keri Mile Trail Race"
+                },
+                "distance_meters": 1600,
+                "distance_class": "other",
+                "terrain": "cross_country",
+                "starts_at": "2026-12-20 11:45:00"
+            },
+            {
+                "slug": "kids-1km",
+                "name": {
+                    "en": "Kids 1 km",
+                    "el": "Παιδικός αγώνας 1000 μ."
+                },
+                "distance_meters": 1000,
+                "distance_class": "kids",
+                "terrain": "cross_country",
+                "starts_at": "2026-12-20 11:45:00",
+                "prices": [
+                    {
+                        "amount_cents": 0,
+                        "currency": "EUR"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "cretan-backyard-ultra-2027",
+        "previous_slugs": [
+            "cretan-backyard-ultra"
+        ],
+        "series": {
+            "slug": "cretan-backyard-ultra",
+            "name": {
+                "el": "Cretan Backyard Ultra",
+                "en": "Cretan Backyard Ultra"
+            }
+        },
+        "region": "heraklion",
+        "edition_number": 5,
+        "name": {
+            "el": "Cretan Backyard Ultra",
+            "en": "Cretan Backyard Ultra"
+        },
+        "description": {
+            "en": "Backyard ultra in Voritsi, Heraklion: one 6.706 km loop every hour, day and night, until a single runner is left. Start 11:00 in the central square.",
+            "el": "Backyard ultra στο Βορίτσι Ηρακλείου: ένας γύρος 6,706 χλμ. κάθε ώρα, μέρα και νύχτα, μέχρι να μείνει ένας δρομέας. Εκκίνηση στις 11:00 στην κεντρική πλατεία."
+        },
+        "city": "Voritsi",
+        "registration": {
+            "url": "https://www.trexalito.gr/p/go-backyard-2027.html"
+        },
+        "source_url": "https://www.trexalito.gr/2026/09/5o-cretan-backyard-ultra-voritsi-2027.html",
+        "published": true,
+        "races": [
+            {
+                "slug": "backyard-ultra",
+                "name": {
+                    "en": "Backyard ultra (6.706 km loop every hour)",
+                    "el": "Backyard ultra (γύρος 6,706 χλμ. κάθε ώρα)"
+                },
+                "is_main": true,
+                "distance_meters": 6706,
+                "distance_class": "ultra",
+                "terrain": "trail",
+                "discipline": "run",
+                "start_location": {
+                    "en": "Central square of Voritsi",
+                    "el": "Κεντρική πλατεία Βορίτσι"
+                },
+                "starts_at": "2027-01-16 11:00:00",
+                "prices": [
+                    {
+                        "amount_cents": 6000,
+                        "currency": "EUR",
+                        "valid_until": "2026-10-01"
+                    },
+                    {
+                        "amount_cents": 7000,
+                        "currency": "EUR",
+                        "valid_from": "2026-10-02",
+                        "valid_until": "2027-01-06"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "retzakas-trail-run-2027",
+        "previous_slugs": [
+            "retzakas-trail-run"
+        ],
+        "series": {
+            "slug": "retzakas-trail-run",
+            "name": {
+                "el": "Ρέτζακας Trail Run",
+                "en": "Retzakas Trail Run"
+            }
+        },
+        "region": "chania",
+        "edition_number": 6,
+        "name": {
+            "el": "Ρέτζακας Trail Run",
+            "en": "Retzakas Trail Run"
+        },
+        "description": {
+            "en": "Trail run in the hinterland of Inachori, Chania, to the Retzakas waterfall: 24.7 km Challenge at 10:00, 6.8 km Entry at 10:30 and a children's 1450 m trail. Start and finish at the old primary school of Plokamiana.",
+            "el": "Αγώνας ορεινού τρεξίματος στην ενδοχώρα του Ιναχωρίου Χανίων, προς τον καταρράκτη Ρέτζακα: Challenge 24,7 χλμ. στις 10:00, Entry 6,8 χλμ. στις 10:30 και παιδική διαδρομή 1450 μ. Εκκίνηση και τερματισμός στο παλιό δημοτικό σχολείο Πλοκαμιανών."
+        },
+        "city": "Plokamiana (Inachori)",
+        "date_confirmed": false,
+        "source_url": "https://www.trexalito.gr/2026/10/retzakas-trail-run-2027.html",
+        "published": false,
+        "races": [
+            {
+                "slug": "challenge",
+                "name": {
+                    "en": "Challenge 24.7 km",
+                    "el": "Challenge 24,7 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 24700,
+                "distance_class": "other",
+                "terrain": "trail",
+                "elevation_gain_m": 1290,
+                "starts_at": "2027-02-07 10:00:00",
+                "prices": [
+                    {
+                        "amount_cents": 3000,
+                        "currency": "EUR"
+                    }
+                ]
+            },
+            {
+                "slug": "entry",
+                "name": {
+                    "en": "Entry 6.8 km",
+                    "el": "Entry 6,8 χλμ."
+                },
+                "distance_meters": 6800,
+                "distance_class": "other",
+                "terrain": "trail",
+                "elevation_gain_m": 420,
+                "starts_at": "2027-02-07 10:30:00",
+                "prices": [
+                    {
+                        "amount_cents": 1500,
+                        "currency": "EUR"
+                    }
+                ]
+            },
+            {
+                "slug": "kids-trail",
+                "name": {
+                    "en": "Kids trail 1.45 km",
+                    "el": "Παιδική διαδρομή 1450 μ."
+                },
+                "distance_meters": 1450,
+                "distance_class": "kids",
+                "terrain": "trail",
+                "starts_at": "2027-02-07 00:00:00",
+                "start_time_known": false,
+                "prices": [
+                    {
+                        "amount_cents": 0,
+                        "currency": "EUR"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "malles-nature-run-2027",
+        "previous_slugs": [
+            "malles-nature-run"
+        ],
+        "series": {
+            "slug": "malles-nature-run",
+            "name": {
+                "el": "Malles Nature Run",
+                "en": "Malles Nature Run"
+            },
+            "organizer_slug": "cultural-association-of-malles"
+        },
+        "organizer": {
+            "slug": "cultural-association-of-malles",
+            "name": {
+                "en": "Cultural Association of Malles",
+                "el": "Πολιτιστικός Σύλλογος Μαλλών"
+            }
+        },
+        "region": "lasithi",
+        "edition_number": 2,
+        "name": {
+            "el": "Malles Nature Run",
+            "en": "Malles Nature Run"
+        },
+        "description": {
+            "en": "Nature run in Malles, Lasithi, with 10 km and 5 km races at 10:30 and a 750 m kids race. Organised by the Cultural Association of Malles with the Ierapetra Health Runners Association. Online registration closes 1 February 2027.",
+            "el": "Αγώνας στη φύση στους Μάλλες Λασιθίου με διαδρομές 10 και 5 χλμ. στις 10:30 και παιδικό αγώνα 750 μ. Διοργάνωση: Πολιτιστικός Σύλλογος Μαλλών, σε συνεργασία με τον Σύλλογο Δρομέων Υγείας Ιεράπετρας. Οι ηλεκτρονικές εγγραφές λήγουν την 1η Φεβρουαρίου 2027."
+        },
+        "city": "Malles",
+        "registration": {
+            "closes_at": "2027-02-01"
+        },
+        "source_url": "https://www.trexalito.gr/2026/10/malles-nature-run-2027.html",
+        "published": true,
+        "races": [
+            {
+                "slug": "10km",
+                "name": {
+                    "en": "10 km",
+                    "el": "10 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 10000,
+                "distance_class": "10k",
+                "starts_at": "2027-02-07 10:30:00",
+                "prices": [
+                    {
+                        "amount_cents": 1500,
+                        "currency": "EUR"
+                    }
+                ]
+            },
+            {
+                "slug": "5km",
+                "name": {
+                    "en": "5 km",
+                    "el": "5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "starts_at": "2027-02-07 10:30:00",
+                "prices": [
+                    {
+                        "amount_cents": 1500,
+                        "currency": "EUR"
+                    }
+                ]
+            },
+            {
+                "slug": "kids-750m",
+                "name": {
+                    "en": "Kids 750 m",
+                    "el": "Παιδικός αγώνας 750 μ."
+                },
+                "distance_meters": 750,
+                "distance_class": "kids",
+                "min_age": 6,
+                "starts_at": "2027-02-07 10:15:00",
+                "prices": [
+                    {
+                        "amount_cents": 0,
+                        "currency": "EUR"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "fodele-run-2027",
+        "previous_slugs": [
+            "fodele-run"
+        ],
+        "series": {
+            "slug": "fodele-run",
+            "name": {
+                "el": "Τρέχω για την Καρδιά του Παιδιού - Fodele Run",
+                "en": "Fodele Run - Run for the Child's Heart"
+            }
+        },
+        "region": "heraklion",
+        "edition_number": 12,
+        "name": {
+            "el": "Τρέχω για την Καρδιά του Παιδιού - Fodele Run",
+            "en": "Fodele Run - Run for the Child's Heart"
+        },
+        "description": {
+            "en": "Charity run in Fodele, Heraklion, in aid of the Panhellenic Association The Heart of the Child: 10.5 km on dirt and asphalt and a 7 km asphalt route. Start times are still to be announced. Children's races are free.",
+            "el": "Φιλανθρωπικός αγώνας στο Φόδελε Ηρακλείου υπέρ του Πανελλήνιου Συλλόγου «Η Καρδιά του Παιδιού»: 10,5 χλμ. σε χώμα και άσφαλτο και διαδρομή 7 χλμ. σε άσφαλτο. Οι ώρες εκκίνησης θα ανακοινωθούν. Οι παιδικοί αγώνες είναι δωρεάν."
+        },
+        "city": "Fodele",
+        "source_url": "https://www.trexalito.gr/2026/10/12os-fodele-run-2027-trexw-gia-tin-kardia-tou-paidiou-prokirixi.html",
+        "published": true,
+        "races": [
+            {
+                "slug": "10-5km",
+                "name": {
+                    "en": "10.5 km (dirt and asphalt)",
+                    "el": "10,5 χλμ. (χώμα και άσφαλτος)"
+                },
+                "is_main": true,
+                "distance_meters": 10500,
+                "distance_class": "10k",
+                "terrain": "mixed",
+                "starts_at": "2027-02-14 00:00:00",
+                "start_time_known": false,
+                "prices": [
+                    {
+                        "amount_cents": 1200,
+                        "currency": "EUR"
+                    }
+                ]
+            },
+            {
+                "slug": "7km",
+                "name": {
+                    "en": "7 km (asphalt)",
+                    "el": "7 χλμ. (άσφαλτος)"
+                },
+                "distance_meters": 7000,
+                "distance_class": "other",
+                "terrain": "road",
+                "starts_at": "2027-02-14 00:00:00",
+                "start_time_known": false,
+                "prices": [
+                    {
+                        "amount_cents": 1200,
+                        "currency": "EUR"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "venizeleios-dromos-ikaros-2027",
+        "previous_slugs": [
+            "venizeleios-dromos-ikaros"
+        ],
+        "series": {
+            "slug": "venizeleios-dromos-ikaros",
+            "name": {
+                "el": "Βενιζέλειος Δρόμος & Ίκαρος",
+                "en": "Venizelos Race and Ikaros City Run"
+            },
+            "organizer_slug": "athletic-club-kydon"
+        },
+        "organizer": {
+            "slug": "athletic-club-kydon",
+            "name": {
+                "en": "Athletic Club Kydon",
+                "el": "Αθλητικός Όμιλος Κύδων"
+            }
+        },
+        "region": "chania",
+        "edition_number": 77,
+        "name": {
+            "el": "Βενιζέλειος Δρόμος & Ίκαρος",
+            "en": "Venizelos Race and Ikaros City Run"
+        },
+        "description": {
+            "en": "Chania's historic 10 km Venizelos race together with the Ikaros city run, organised by Athletic Club Kydon. Registration details are still to be announced.",
+            "el": "Ο ιστορικός Βενιζέλειος Δρόμος 10 χλμ. των Χανίων μαζί με τον Δρόμο Πόλης «Ίκαρος», σε διοργάνωση του Αθλητικού Ομίλου Κύδων. Οι λεπτομέρειες εγγραφής θα ανακοινωθούν."
+        },
+        "city": "Chania",
+        "source_url": "https://www.trexalito.gr/2026/06/77os-venizeleios-dromos-ikaros-2027-xania-imerominia.html",
+        "published": true,
+        "races": [
+            {
+                "slug": "venizelos-race",
+                "name": {
+                    "en": "Venizelos Race 10 km",
+                    "el": "Βενιζέλειος Δρόμος 10 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 10000,
+                "distance_class": "10k",
+                "starts_at": "2027-03-14 00:00:00",
+                "start_time_known": false
+            }
+        ]
+    },
+    {
+        "slug": "coast-to-coast-race-2027",
+        "previous_slugs": [
+            "coast-to-coast-race"
+        ],
+        "series": {
+            "slug": "coast-to-coast-race",
+            "name": {
+                "el": "Coast to Coast Race",
+                "en": "Coast to Coast Race"
+            },
+            "organizer_slug": "ierapetra-health-runners"
+        },
+        "organizer": {
+            "slug": "ierapetra-health-runners",
+            "name": {
+                "en": "Ierapetra Health Runners Association",
+                "el": "Σύλλογος Δρομέων Υγείας Ιεράπετρας"
+            },
+            "website": "https://coast-to-coast.gr"
+        },
+        "region": "lasithi",
+        "edition_number": 6,
+        "name": {
+            "el": "Coast to Coast Race",
+            "en": "Coast to Coast Race"
+        },
+        "description": {
+            "en": "Certified half marathon and 5 km in Ierapetra, from Pachia Ammos beach to Minos park, with children's races and a non-competitive family run. Organised by the Ierapetra Health Runners Association. Registration closes 12 March 2027.",
+            "el": "Πιστοποιημένος ημιμαραθώνιος και αγώνας 5 χλμ. στην Ιεράπετρα, από την παραλία Παχιά Άμμος έως το πάρκο Μίνως, με παιδικούς αγώνες και μη ανταγωνιστικό Family Run. Διοργάνωση: Σύλλογος Δρομέων Υγείας Ιεράπετρας. Οι εγγραφές λήγουν στις 12 Μαρτίου 2027."
+        },
+        "city": "Ierapetra",
+        "venue": {
+            "en": "Start: Pachia Ammos beach. Finish: Minos park.",
+            "el": "Εκκίνηση: παραλία Παχιά Άμμος. Τερματισμός: πάρκο Μίνως."
+        },
+        "registration": {
+            "closes_at": "2027-03-12",
+            "url": "https://www.trexalito.gr/p/go-coast-to-coast-6_01393490542.html"
+        },
+        "links": [
+            {
+                "type": "website",
+                "url": "https://coast-to-coast.gr"
+            }
+        ],
+        "source_url": "https://www.trexalito.gr/2026/10/coast-to-coast-race-2027-eggrafes.html",
+        "published": true,
+        "races": [
+            {
+                "slug": "half-marathon",
+                "name": {
+                    "en": "Half marathon 21.1 km",
+                    "el": "Ημιμαραθώνιος 21,1 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 21100,
+                "distance_class": "half_marathon",
+                "time_limit_minutes": 180,
+                "min_age": 18,
+                "start_location": {
+                    "en": "Pachia Ammos beach",
+                    "el": "Παραλία Παχιά Άμμος"
+                },
+                "finish_location": {
+                    "en": "Minos park",
+                    "el": "Πάρκο Μίνως"
+                },
+                "starts_at": "2027-03-21 09:00:00",
+                "prices": [
+                    {
+                        "amount_cents": 2500,
+                        "currency": "EUR"
+                    }
+                ]
+            },
+            {
+                "slug": "5km",
+                "name": {
+                    "en": "5 km",
+                    "el": "5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "time_limit_minutes": 90,
+                "min_age": 12,
+                "start_location": {
+                    "en": "Pachia Ammos beach",
+                    "el": "Παραλία Παχιά Άμμος"
+                },
+                "finish_location": {
+                    "en": "Minos park",
+                    "el": "Πάρκο Μίνως"
+                },
+                "starts_at": "2027-03-21 11:40:00",
+                "prices": [
+                    {
+                        "amount_cents": 1200,
+                        "currency": "EUR"
+                    }
+                ]
+            },
+            {
+                "slug": "health-walk-5km",
+                "name": {
+                    "en": "5 km health walk",
+                    "el": "Περίπατος υγείας 5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "discipline": "walk",
+                "is_competitive": false,
+                "starts_at": "2027-03-21 11:40:00"
+            },
+            {
+                "slug": "kids-1000m",
+                "name": {
+                    "en": "Kids 1000 m",
+                    "el": "Παιδικός αγώνας 1000 μ."
+                },
+                "distance_meters": 1000,
+                "distance_class": "kids",
+                "starts_at": "2027-03-21 09:40:00",
+                "prices": [
+                    {
+                        "amount_cents": 500,
+                        "currency": "EUR"
+                    }
+                ]
+            },
+            {
+                "slug": "kids-500m",
+                "name": {
+                    "en": "Kids 500 m",
+                    "el": "Παιδικός αγώνας 500 μ."
+                },
+                "distance_meters": 500,
+                "distance_class": "kids",
+                "starts_at": "2027-03-21 09:40:00",
+                "prices": [
+                    {
+                        "amount_cents": 500,
+                        "currency": "EUR"
+                    }
+                ]
+            },
+            {
+                "slug": "family-run-5km",
+                "name": {
+                    "en": "Family run 5 km",
+                    "el": "Family Run 5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "is_competitive": false,
+                "starts_at": "2027-03-21 11:45:00",
+                "prices": [
+                    {
+                        "amount_cents": 1000,
+                        "currency": "EUR"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "crete-marathon-2027",
+        "previous_slugs": [
+            "crete-marathon"
+        ],
+        "series": {
+            "slug": "crete-marathon",
+            "name": {
+                "el": "Μαραθώνιος Κρήτης",
+                "en": "Crete Marathon"
+            }
+        },
+        "region": "chania",
+        "edition_number": 11,
+        "name": {
+            "el": "Μαραθώνιος Κρήτης",
+            "en": "Crete Marathon"
+        },
+        "description": {
+            "en": "International marathon in Chania, held there since 2016, with a 10 km, 5 km and 2.5 km race. The marathon starts at 07:00.",
+            "el": "Διεθνής μαραθώνιος στα Χανιά, που διεξάγεται εκεί από το 2016, με αγώνες 10 χλμ., 5 χλμ. και 2,5 χλμ. Ο μαραθώνιος ξεκινά στις 07:00."
+        },
+        "city": "Chania",
+        "venue": {
+            "en": "National Sports Centre of Chania",
+            "el": "Εθνικό Αθλητικό Κέντρο Χανίων"
+        },
+        "registration": {
+            "url": "https://registrations.sdyh.gr/crete-marathon-2027/participant/register"
+        },
+        "links": [
+            {
+                "type": "website",
+                "url": "https://crete-marathon.gr/"
+            }
+        ],
+        "source_url": "https://crete-marathon.gr/",
+        "published": true,
+        "races": [
+            {
+                "slug": "marathon",
+                "name": {
+                    "en": "Marathon 42.195 km",
+                    "el": "Μαραθώνιος 42,195 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 42195,
+                "distance_class": "marathon",
+                "time_limit_minutes": 360,
+                "participant_limit": 600,
+                "starts_at": "2027-04-11 07:00:00"
+            },
+            {
+                "slug": "10km",
+                "name": {
+                    "en": "10 km",
+                    "el": "10 χλμ."
+                },
+                "distance_meters": 10000,
+                "distance_class": "10k",
+                "time_limit_minutes": 90,
+                "participant_limit": 800,
+                "starts_at": "2027-04-11 07:30:00"
+            },
+            {
+                "slug": "5km",
+                "name": {
+                    "en": "5 km",
+                    "el": "5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "starts_at": "2027-04-11 08:30:00"
+            },
+            {
+                "slug": "2-5km",
+                "name": {
+                    "en": "2.5 km fun run",
+                    "el": "Αγώνας 2,5 χλμ."
+                },
+                "distance_meters": 2500,
+                "distance_class": "kids",
+                "starts_at": "2027-04-11 11:30:00"
+            }
+        ]
+    },
+    {
+        "slug": "nikiforeios-dromos-2027",
+        "previous_slugs": [
+            "nikiforeios-dromos"
+        ],
+        "region": "rethymno",
+        "name": {
+            "el": "Νικηφόρειος Δρόμος",
+            "en": "Nikiforeios Run"
+        },
+        "description": {
+            "en": "Two-day running festival in Rethymno: a 10 km evening run on Saturday 17 April and the 23 km main race on Sunday 18 April from Kalonykti, plus a 5.5 km run or walk, a children's 2 km, a mountain bike ride and a hike.",
+            "el": "Διήμερο τρεξίματος στο Ρέθυμνο: βραδινός αγώνας 10 χλμ. το Σάββατο 17 Απριλίου και ο κύριος αγώνας 23 χλμ. την Κυριακή 18 Απριλίου από την Καλονύκτη, μαζί με αγώνα ή περίπατο 5,5 χλμ., παιδικό 2 χλμ., ποδηλατική διαδρομή και πεζοπορία."
+        },
+        "city": "Rethymno",
+        "registration": {
+            "status": "not_open"
+        },
+        "source_url": "https://www.trexalito.gr/2026/10/nikiforeios-dromos-2027.html",
+        "published": true,
+        "races": [
+            {
+                "slug": "23km",
+                "name": {
+                    "en": "23 km",
+                    "el": "23 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 23000,
+                "distance_class": "other",
+                "start_location": {
+                    "en": "Kalonykti",
+                    "el": "Καλονύκτη"
+                },
+                "starts_at": "2027-04-18 09:30:00"
+            },
+            {
+                "slug": "10km",
+                "name": {
+                    "en": "10 km (Saturday evening)",
+                    "el": "10 χλμ. (βραδινός, Σάββατο)"
+                },
+                "distance_meters": 10000,
+                "distance_class": "10k",
+                "starts_at": "2027-04-17 17:00:00"
+            },
+            {
+                "slug": "5-5km",
+                "name": {
+                    "en": "5.5 km run or dynamic walk",
+                    "el": "5,5 χλμ. τρέξιμο ή δυναμικός περίπατος"
+                },
+                "distance_meters": 5500,
+                "distance_class": "other",
+                "starts_at": "2027-04-18 10:00:00"
+            },
+            {
+                "slug": "kids-2km",
+                "name": {
+                    "en": "Kids 2 km",
+                    "el": "Παιδικός αγώνας 2 χλμ."
+                },
+                "distance_meters": 2000,
+                "distance_class": "kids",
+                "starts_at": "2027-04-18 10:00:00"
+            },
+            {
+                "slug": "mtb-23km",
+                "name": {
+                    "en": "23 km mountain bike",
+                    "el": "Ποδηλασία βουνού 23 χλμ."
+                },
+                "distance_meters": 23000,
+                "distance_class": "other",
+                "discipline": "cycle",
+                "starts_at": "2027-04-18 09:15:00"
+            }
+        ]
+    },
+    {
+        "slug": "lafonisios-dromos-2027",
+        "previous_slugs": [
+            "lafonisios-dromos"
+        ],
+        "organizer": {
+            "slug": "mousagores-vathis",
+            "name": {
+                "en": "Mousagores of Vathi Educational, Cultural and Athletic Association",
+                "el": "Μορφωτικός, Πολιτιστικός και Αθλητικός Σύλλογος «ΜΟΥΣΑΓΟΡΕΣ» Βάθης"
+            }
+        },
+        "region": "chania",
+        "name": {
+            "el": "Λαφονήσιος Δρόμος",
+            "en": "Lafonisios Run"
+        },
+        "description": {
+            "en": "Historic race of western Crete in Kissamos: a 21.1 km half marathon from the Xotikospilio entrance to the Chrysoskalitissa monastery, a 7.8 km popular race and a free 1.1 km children's route. Registration has not opened yet.",
+            "el": "Ιστορικός αγώνας της Δυτικής Κρήτης στην Κίσσαμο: ημιμαραθώνιος 21,1 χλμ. από το Ξωτικόσπηλιο έως τη Μονή Χρυσοσκαλίτισσας, λαϊκός αγώνας 7,8 χλμ. και δωρεάν παιδική διαδρομή 1,1 χλμ. Οι εγγραφές δεν έχουν ανοίξει ακόμη."
+        },
+        "city": "Kissamos",
+        "registration": {
+            "status": "not_open"
+        },
+        "source_url": "https://www.trexalito.gr/2026/10/lafonisios-dromos-2027-kissamos-xania-prokiriksi.html",
+        "published": true,
+        "races": [
+            {
+                "slug": "half-marathon",
+                "name": {
+                    "en": "Half marathon 21.1 km",
+                    "el": "Ημιμαραθώνιος 21,1 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 21100,
+                "distance_class": "half_marathon",
+                "start_location": {
+                    "en": "Xotikospilio entrance",
+                    "el": "Είσοδος Ξωτικόσπηλιου"
+                },
+                "finish_location": {
+                    "en": "Chrysoskalitissa monastery",
+                    "el": "Μονή Χρυσοσκαλίτισσας"
+                },
+                "starts_at": "2027-04-25 00:00:00",
+                "start_time_known": false
+            },
+            {
+                "slug": "popular-7-8km",
+                "name": {
+                    "en": "Popular race 7.8 km",
+                    "el": "Λαϊκός αγώνας 7,8 χλμ."
+                },
+                "distance_meters": 7800,
+                "distance_class": "other",
+                "starts_at": "2027-04-25 00:00:00",
+                "start_time_known": false
+            },
+            {
+                "slug": "kids-1-1km",
+                "name": {
+                    "en": "Kids 1.1 km",
+                    "el": "Παιδική διαδρομή 1,1 χλμ."
+                },
+                "distance_meters": 1100,
+                "distance_class": "kids",
+                "starts_at": "2027-04-25 00:00:00",
+                "start_time_known": false,
+                "prices": [
+                    {
+                        "amount_cents": 0,
+                        "currency": "EUR"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "slug": "crete-half-marathon-2027",
+        "previous_slugs": [
+            "crete-half-marathon"
+        ],
+        "organizer": {
+            "slug": "athlisy",
+            "name": {
+                "en": "Athletic Health Club ATHLISY",
+                "el": "Αθλητικός Σύλλογος Υγείας ΑΘΛΗ.Σ.Υ."
+            },
+            "website": "https://www.cretehm.com"
+        },
+        "region": "heraklion",
+        "name": {
+            "el": "Διεθνής Ημιμαραθώνιος Κρήτης",
+            "en": "Crete International Half Marathon"
+        },
+        "description": {
+            "en": "Half marathon, 10 km and 5 km in Arkalochori, Heraklion, with children's races, organised by the Athletic Health Club ATHLISY. The 2027 date is indicative and not yet confirmed by the organiser.",
+            "el": "Ημιμαραθώνιος, 10 χλμ. και 5 χλμ. στο Αρκαλοχώρι Ηρακλείου, με παιδικούς αγώνες, σε διοργάνωση του Αθλητικού Συλλόγου Υγείας ΑΘΛΗ.Σ.Υ. Η ημερομηνία του 2027 είναι ενδεικτική και δεν έχει επιβεβαιωθεί από τον διοργανωτή."
+        },
+        "city": "Arkalochori",
+        "latitude": 35.1381,
+        "longitude": 25.2729,
+        "date_confirmed": false,
+        "links": [
+            {
+                "type": "website",
+                "url": "https://www.cretehm.com"
+            }
+        ],
+        "source_url": "https://www.trexalito.gr/2026/10/kalentari-agonon-kritis-2027.html",
+        "published": false,
+        "races": [
+            {
+                "slug": "half-marathon",
+                "name": {
+                    "en": "Half marathon 21.1 km",
+                    "el": "Ημιμαραθώνιος 21,1 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 21100,
+                "distance_class": "half_marathon",
+                "starts_at": "2027-10-03 09:10:00"
+            },
+            {
+                "slug": "10km",
+                "name": {
+                    "en": "10 km",
+                    "el": "10 χλμ."
+                },
+                "distance_meters": 10000,
+                "distance_class": "10k",
+                "starts_at": "2027-10-03 08:50:00"
+            },
+            {
+                "slug": "5km",
+                "name": {
+                    "en": "5 km",
+                    "el": "5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "starts_at": "2027-10-03 12:10:00"
+            },
+            {
+                "slug": "kids-1km",
+                "name": {
+                    "en": "Kids 1 km",
+                    "el": "Παιδικός αγώνας 1 χλμ."
+                },
+                "distance_meters": 1000,
+                "distance_class": "kids",
+                "starts_at": "2027-10-03 09:15:00"
+            }
+        ]
+    }
+]

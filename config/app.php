@@ -82,7 +82,16 @@ return [
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
-    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+    'faker_locale' => env('APP_FAKER_LOCALE', 'el_GR'),
+
+    /*
+    | Unlike 'locale', which Application::setLocale() rewrites per request, this
+    | is the immutable site default: the one locale served without a URL prefix.
+    */
+
+    'default_locale' => env('APP_LOCALE', 'en'),
+
+    'supported_locales' => ['el', 'en'],
 
     /*
     |--------------------------------------------------------------------------

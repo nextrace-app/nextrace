@@ -1,43 +1,34 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import AppLogoIcon from '@/components/AppLogoIcon.vue';
-import { home } from '@/routes';
+import { useI18n } from 'vue-i18n';
+import { Toaster } from '@/components/ui/sonner';
 
+// The title and description arrive as translation keys, because a page cannot
+// call t() from the layout options it declares.
 defineProps<{
     title?: string;
     description?: string;
 }>();
+
+const { t } = useI18n();
 </script>
 
 <template>
-    <div
-        class="flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 md:p-10"
-    >
-        <div class="w-full max-w-sm">
-            <div class="flex flex-col gap-8">
-                <div class="flex flex-col items-center gap-4">
-                    <Link
-                        :href="home()"
-                        class="flex flex-col items-center gap-2 font-medium"
-                    >
-                        <div
-                            class="mb-1 flex h-9 w-9 items-center justify-center rounded-md"
-                        >
-                            <AppLogoIcon
-                                class="size-9 fill-current text-[var(--foreground)] dark:text-white"
-                            />
-                        </div>
-                        <span class="sr-only">{{ title }}</span>
-                    </Link>
-                    <div class="space-y-2 text-center">
-                        <h1 class="text-xl font-medium">{{ title }}</h1>
-                        <p class="text-center text-sm text-muted-foreground">
-                            {{ description }}
-                        </p>
-                    </div>
+    <DefaultShell>
+        <main class="mx-auto flex w-full max-w-md flex-col px-4 py-10 sm:py-16">
+            <div
+                class="rounded-3xl border bg-card p-6 text-card-foreground shadow-sm sm:p-8"
+            >
+                <div class="mb-6 space-y-2 text-center">
+                    <h1 class="text-2xl font-extrabold tracking-tight">
+                        {{ title ? t(title) : '' }}
+                    </h1>
+                    <p v-if="description" class="text-sm text-muted-foreground">
+                        {{ t(description) }}
+                    </p>
                 </div>
                 <slot />
             </div>
-        </div>
-    </div>
+        </main>
+        <Toaster />
+    </DefaultShell>
 </template>

@@ -1,47 +1,57 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
-import {
-    index as confirmOptions,
-    store as confirmStore,
-} from '@/actions/Laravel/Passkeys/Http/Controllers/PasskeyConfirmationController';
+import { useI18n } from 'vue-i18n';
 import InputError from '@/components/InputError.vue';
 import PasskeyVerify from '@/components/PasskeyVerify.vue';
 import PasswordInput from '@/components/PasswordInput.vue';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { useLocale } from '@/composables/useLocale';
+import { confirm as confirmStore, confirmOptions } from '@/routes/passkey';
 import { store } from '@/routes/password/confirm';
+
+defineProps<{
+    hasPassword: boolean;
+}>();
+
+const { t } = useI18n();
+const { localeRoute } = useLocale();
 
 defineOptions({
     layout: {
-        title: 'Confirm password',
-        description:
-            'This is a secure area of the application. Please confirm your password before continuing.',
+        title: 'auth.confirm.title',
+        description: 'auth.confirm.description',
     },
 });
 </script>
 
 <template>
-    <Head title="Confirm password" />
+    <Head :title="t('auth.confirm.title')" />
 
     <PasskeyVerify
         :routes="{
-            options: confirmOptions(),
-            submit: confirmStore(),
+            options: localeRoute(confirmOptions()),
+            submit: localeRoute(confirmStore()),
         }"
-        label="Confirm with passkey"
-        loading-label="Confirming..."
-        separator="Or confirm with password"
+        :label="t('auth.confirm.passkey')"
+        :loading-label="t('auth.confirm.passkey_loading')"
+        :separator="t('auth.confirm.separator')"
     />
 
+    <p v-if="!hasPassword" class="mt-4 text-sm text-muted-foreground">
+        {{ t('auth.confirm.no_password') }}
+    </p>
+
     <Form
-        v-bind="store.form()"
+        v-else
+        v-bind="localeRoute(store.form())"
         reset-on-success
         v-slot="{ errors, processing }"
     >
         <div class="space-y-6">
             <div class="grid gap-2">
-                <Label htmlFor="password">Password</Label>
+                <Label for="password">{{ t('form.password') }}</Label>
                 <PasswordInput
                     id="password"
                     name="password"
@@ -61,7 +71,7 @@ defineOptions({
                     data-test="confirm-password-button"
                 >
                     <Spinner v-if="processing" />
-                    Confirm password
+                    {{ t('auth.confirm.submit') }}
                 </Button>
             </div>
         </div>

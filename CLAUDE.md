@@ -14,6 +14,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - laravel/fortify (FORTIFY) - v1
 - laravel/framework (LARAVEL) - v13
 - laravel/prompts (PROMPTS) - v0
+- laravel/socialite (SOCIALITE) - v5
 - laravel/wayfinder (WAYFINDER) - v0
 - larastan/larastan (LARASTAN) - v3
 - laravel/boost (BOOST) - v2
@@ -221,3 +222,14 @@ Vue components must have a single root element.
 - IMPORTANT: Activate `inertia-vue-development` when working with Inertia Vue client-side patterns.
 
 </laravel-boost-guidelines>
+
+## NextRace project context
+
+- NextRace is a calendar of running races in Greece. It starts with Crete and will expand across Greece, and more features will be added later.
+- The site is multilingual: English (default) and Greek. The language is detected automatically on the first visit and can be switched with the standard language switcher; the choice is remembered.
+- Translatable content (event name, description) is stored per locale; interface strings live in `lang/` and are served through vue-i18n.
+- Project agents live in `.claude/agents/`: `designer`, `seo`, `data-collector`, `backend`, `qa`. Delegate to them by role.
+- Search engine indexing is gated by `SITE_INDEXABLE` (`config/site.php`, default `false`; see README.md). While it is false the site is closed: `robots.txt` disallows everything, responses carry `X-Robots-Tag: noindex`, and `/sitemap.xml` is a 404.
+  - `public/robots.txt` is a static, generated file and the committed version must always be the closed one (`User-agent: *` / `Disallow: /`); a test enforces it. After running `php artisan seo:robots` with the flag on, restore it with `git checkout public/robots.txt` and never commit the open version.
+  - Never set `SITE_INDEXABLE=true` on a Forge site, and never run `php artisan up` on production, unless the user explicitly says the site is launching. develop and integration stay closed permanently.
+  - The test suite sets `SITE_INDEXABLE=true` in `phpunit.xml` so it is independent of `.env`; tests for the closed mode set `config(['site.indexable' => false])`.

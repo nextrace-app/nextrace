@@ -4,9 +4,16 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Models\User;
+use App\Support\Locale;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
@@ -21,7 +28,9 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // routes/auth.php registers these once per locale instead, so that
+        // /en/login exists alongside /login rather than 404ing.
+        Fortify::ignoreRoutes();
     }
 
     /**
@@ -31,6 +40,7 @@ class FortifyServiceProvider extends ServiceProvider
     {
         $this->configureActions();
         $this->configureViews();
+        $this->configureNotificationUrls();
         $this->configureRateLimiting();
     }
 
@@ -41,6 +51,33 @@ class FortifyServiceProvider extends ServiceProvider
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::createUsersUsing(CreateNewUser::class);
+    }
+
+    /**
+     * Point the authentication emails at the locale they are written in.
+     *
+     * Both links are built from bare route names by default, which would always
+     * send the recipient to the site's default locale.
+     */
+    private function configureNotificationUrls(): void
+    {
+        ResetPassword::createUrlUsing(fn (User $notifiable, string $token) => url(route(
+            Locale::routeName('password.reset'),
+            [
+                'token' => $token,
+                'email' => $notifiable->getEmailForPasswordReset(),
+            ],
+            false
+        )));
+
+        VerifyEmail::createUrlUsing(fn (User $notifiable) => URL::temporarySignedRoute(
+            Locale::routeName('verification.verify'),
+            Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
+            [
+                'id' => $notifiable->getKey(),
+                'hash' => sha1($notifiable->getEmailForVerification()),
+            ]
+        ));
     }
 
     /**
@@ -73,7 +110,9 @@ class FortifyServiceProvider extends ServiceProvider
 
         Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/TwoFactorChallenge'));
 
-        Fortify::confirmPasswordView(fn () => Inertia::render('auth/ConfirmPassword'));
+        Fortify::confirmPasswordView(fn (Request $request) => Inertia::render('auth/ConfirmPassword', [
+            'hasPassword' => $request->user()->hasPassword(),
+        ]));
     }
 
     /**

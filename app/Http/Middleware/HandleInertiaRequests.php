@@ -2,7 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\Locale;
+use App\Support\PageMeta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Lang;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -42,6 +45,14 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'locale' => app()->getLocale(),
+            'defaultLocale' => Locale::default(),
+            'supportedLocales' => config('app.supported_locales'),
+            // The interface strings for this request's locale, rendered by
+            // vue-i18n on the client. Language files stay the single source.
+            // The title the server put in the page head, so the client keeps it.
+            'seo' => fn () => ['title' => app(PageMeta::class)->toArray()['title']],
+            'translations' => Lang::get('ui'),
         ];
     }
 }
