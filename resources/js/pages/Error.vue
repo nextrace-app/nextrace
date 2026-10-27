@@ -32,7 +32,7 @@ const { localeRoute } = useLocale();
             <p class="mt-3 text-muted-foreground">
                 {{ t(`error.text.${props.status}`) }}
             </p>
-            <Button as-child class="mt-8">
+            <Button v-if="props.status !== 503" as-child class="mt-8">
                 <Link :href="localeRoute(eventsIndex())">
                     {{ t('error.back') }}
                 </Link>

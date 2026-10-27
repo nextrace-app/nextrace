@@ -11,7 +11,8 @@ use Illuminate\Console\Command;
 /**
  * Writes public/robots.txt: crawling is allowed except for account and
  * authentication pages in every locale, and the sitemap is announced with the
- * absolute URL built from APP_URL.
+ * absolute URL built from APP_URL. While the site is not indexable (see
+ * config/site.php) everything is disallowed and no sitemap is announced.
  *
  * The file is static because the web server answers /robots.txt itself, without
  * reaching PHP. Run it again whenever APP_URL or the supported locales change,
@@ -27,6 +28,15 @@ class GenerateRobotsFile extends Command
     public function handle(): int
     {
         $path = $this->option('path') ?: public_path('robots.txt');
+
+        if (! config()->boolean('site.indexable')) {
+            file_put_contents($path, $this->closedContents());
+
+            $this->info("Wrote {$path} disallowing every crawler: the site is not indexable.");
+
+            return self::SUCCESS;
+        }
+
         $sitemapUrl = rtrim(config()->string('app.url'), '/').'/sitemap.xml';
 
         file_put_contents($path, $this->contents($sitemapUrl));
@@ -34,6 +44,14 @@ class GenerateRobotsFile extends Command
         $this->info("Wrote {$path} with the sitemap at {$sitemapUrl}.");
 
         return self::SUCCESS;
+    }
+
+    /**
+     * The robots.txt body that keeps every crawler out.
+     */
+    private function closedContents(): string
+    {
+        return "User-agent: *\nDisallow: /\n";
     }
 
     /**

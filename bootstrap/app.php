@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\KeepOutOfSearchResults;
 use App\Http\Middleware\RememberLocale;
 use App\Http\Middleware\SetLocale;
 use App\Support\Locale;
@@ -21,6 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
+
+        // Ahead of the maintenance check, so the "back soon" response is marked too.
+        $middleware->prepend(KeepOutOfSearchResults::class);
 
         // First in the group: everything after it may translate or build URLs.
         $middleware->prependToGroup('web', SetLocale::class);
@@ -60,6 +64,13 @@ return Application::configure(basePath: dirname(__DIR__))
             // middleware, so the language of the URL has to be applied here.
             app()->setLocale(Locale::current($response->request));
 
-            return $response->render('Error', ['status' => $status])->withSharedData();
+            $page = $response->render('Error', ['status' => $status])->withSharedData()->toResponse($response->request);
+
+            // Rendering a new response drops what maintenance mode asked for with --retry.
+            if ($response->response->headers->has('Retry-After')) {
+                $page->headers->set('Retry-After', $response->response->headers->get('Retry-After'));
+            }
+
+            return $page;
         });
     })->create();

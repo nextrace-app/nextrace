@@ -97,7 +97,7 @@ class PageMeta
             'description' => $this->description ?? ($key ? Lang::string("seo.{$key}.description") : Lang::string('seo.default_description')),
             'type' => $this->type,
             'image' => $this->image,
-            'robots' => $this->isPrivate() ? 'noindex, nofollow' : 'index, follow',
+            'robots' => ! config()->boolean('site.indexable') || $this->isPrivate() ? 'noindex, nofollow' : 'index, follow',
             'locale' => $this->openGraphLocale($locale),
             'localeAlternates' => array_values(array_map(
                 fn (string $other) => $this->openGraphLocale($other),

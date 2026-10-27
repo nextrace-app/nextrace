@@ -10,9 +10,13 @@ class SitemapController extends Controller
 {
     /**
      * Every public page in every locale: home, the events list and each published event.
+     *
+     * There is none while the site is not indexable, as it would invite crawlers in.
      */
     public function __invoke(): Response
     {
+        abort_unless(config()->boolean('site.indexable'), 404);
+
         $pages = [
             ['paths' => $this->paths('home'), 'lastmod' => null],
             ['paths' => $this->paths('events.index'), 'lastmod' => null],

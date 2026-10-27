@@ -81,15 +81,11 @@ class SeoTest extends TestCase
         $this->assertStringNotContainsString('Disallow: /events', $body);
     }
 
-    public function test_the_static_robots_file_is_committed_and_allows_crawling(): void
+    public function test_the_static_robots_file_is_committed_and_keeps_crawlers_out(): void
     {
         $this->assertFileExists(public_path('robots.txt'));
 
-        $body = file_get_contents(public_path('robots.txt'));
-
-        $this->assertStringContainsString("User-agent: *\nAllow: /", $body);
-        $this->assertStringContainsString('Disallow: /el/login', $body);
-        $this->assertMatchesRegularExpression('#^Sitemap: https?://\S+/sitemap\.xml$#m', $body);
+        $this->assertSame("User-agent: *\nDisallow: /\n", file_get_contents(public_path('robots.txt')));
     }
 
     public function test_the_sitemap_is_not_redirected_for_greek_browsers(): void

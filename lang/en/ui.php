@@ -415,14 +415,14 @@ return [
             '404' => 'Page not found',
             '419' => 'Page expired',
             '500' => 'Something went wrong',
-            '503' => 'Back soon',
+            '503' => 'Coming soon',
         ],
         'text' => [
             '403' => 'You do not have access to this page.',
             '404' => 'The page you are looking for does not exist or has moved.',
             '419' => 'This page has expired. Please reload it and try again.',
             '500' => 'We hit an unexpected problem. Please try again in a moment.',
-            '503' => 'NextRace is down for a short maintenance. Please check back shortly.',
+            '503' => 'NextRace is still under construction. The race calendar for Greece is on its way, please check back soon.',
         ],
     ],
 ];
