@@ -29,7 +29,6 @@ import { useI18n } from 'vue-i18n';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useEventFormat } from '@/composables/useEventFormat';
-import { placeEvent } from '@/composables/useEventPlacement';
 import { useLocale } from '@/composables/useLocale';
 import { index as eventsIndex } from '@/routes/events';
 import type { Event, LinkType } from '@/types';
@@ -173,7 +172,6 @@ const facts = computed(() => {
 
     return items;
 });
-const hasPin = computed(() => placeEvent(props.event) !== null);
 
 const hasContact = computed(
     () => props.event.contact.email || props.event.contact.phone,
@@ -754,19 +752,6 @@ const hasContact = computed(
                                 {{ t('events.view_map') }}
                             </a>
                         </Button>
-                    </div>
-
-                    <div
-                        v-if="hasPin"
-                        class="rounded-2xl border bg-secondary p-4"
-                    >
-                        <h2 class="mb-2 text-sm font-bold">
-                            {{ t('events.fields.location') }}
-                        </h2>
-                        <EventMap :events="[event]" :active-slug="event.slug" />
-                        <p class="mt-2 text-sm text-muted-foreground">
-                            {{ t('events.map.note') }}
-                        </p>
                     </div>
                 </aside>
             </div>

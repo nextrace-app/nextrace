@@ -14,10 +14,6 @@ const props = defineProps<{
     favorited: boolean;
 }>();
 
-const emit = defineEmits<{
-    hover: [slug: string | null];
-}>();
-
 const { t } = useI18n();
 const { localeRoute } = useLocale();
 const {
@@ -57,8 +53,6 @@ const statusLabel = computed(() =>
     <article
         class="group relative grid grid-cols-[4.5rem_1fr] gap-x-4 rounded-2xl border bg-card p-4 text-card-foreground shadow-xs transition-[box-shadow,transform,border-color] focus-within:ring-[3px] focus-within:ring-ring/50 hover:border-primary hover:shadow-lg motion-safe:hover:-translate-y-0.5 sm:grid-cols-[4.5rem_1fr_9rem] sm:items-center"
         data-test="event-card"
-        @mouseenter="emit('hover', event.slug)"
-        @mouseleave="emit('hover', null)"
     >
         <div
             class="flex flex-col items-center self-start rounded-2xl bg-secondary px-1 py-2.5 text-secondary-foreground"
