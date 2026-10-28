@@ -187,12 +187,12 @@ class SeoTest extends TestCase
     public function test_the_home_and_events_pages_have_their_own_meta(): void
     {
         $this->get(route('home'))->assertOk()
-            ->assertSee('<title>Running races in Greece and Crete - ', false)
+            ->assertSee('<title>Running races in Greece - ', false)
             ->assertSee('<meta property="og:type" content="website">', false)
             ->assertDontSee('application/ld+json', false);
 
         $this->get(route('el.events.index'))->assertOk()
-            ->assertSee('<title>Αγώνες δρόμου Κρήτη και Ελλάδα: ημερολόγιο αγώνων - ', false)
+            ->assertSee('<title>Αγώνες δρόμου Ελλάδα: ημερολόγιο αγώνων - ', false)
             ->assertSee('<link rel="canonical" href="'.route('el.events.index').'">', false)
             ->assertSee('hreflang="x-default" href="'.route('events.index').'"', false);
     }

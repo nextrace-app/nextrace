@@ -7,6 +7,7 @@ use App\Models\EventSeries;
 use App\Models\Organizer;
 use App\Models\Race;
 use App\Models\RacePrice;
+use Database\Seeders\RegionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -259,13 +260,13 @@ class ImportEventsTest extends TestCase
         $this->artisan('events:import', ['file' => 'storage/framework/testing/nope.json'])->assertFailed();
     }
 
-    public function test_the_bundled_crete_file_imports_cleanly(): void
+    public function test_the_bundled_file_imports_cleanly(): void
     {
         $this->travelTo('2026-10-24');
 
         $this->artisan('events:import')->assertSuccessful();
 
-        $rows = json_decode((string) file_get_contents(base_path('database/data/crete-events.json')), true);
+        $rows = json_decode((string) file_get_contents(base_path('database/data/events.json')), true);
 
         $this->assertSame(count($rows), Event::query()->count());
         $this->assertSame(
@@ -285,6 +286,23 @@ class ImportEventsTest extends TestCase
 
         $this->artisan('events:import')->assertSuccessful();
         $this->assertSame(count($rows), Event::query()->count());
+    }
+
+    public function test_the_bundled_file_imports_events_from_across_greece_as_drafts(): void
+    {
+        $this->travelTo('2026-10-28');
+        $this->seed(RegionSeeder::class);
+
+        $this->artisan('events:import')->assertSuccessful();
+
+        $athens = Event::query()->where('slug', 'athens-marathon-the-authentic-2026')->firstOrFail();
+        $this->assertNull($athens->published_at);
+        $this->assertSame('attiki', $athens->region->slug);
+        $this->assertSame(42195, $athens->mainRace->distance_meters);
+        $this->assertTrue($athens->date_confirmed);
+
+        $this->assertSame('south-aegean', Event::query()->where('slug', 'tui-rhodes-marathon-2027')->firstOrFail()->region->slug);
+        $this->assertSame('epirus', Event::query()->where('slug', 'all-terrain-ultra-race-ioannina-2027')->firstOrFail()->region->slug);
     }
 
     public function test_the_bundled_file_carries_the_drafts_of_the_previous_format_over(): void

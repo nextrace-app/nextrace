@@ -1,6 +1,6 @@
 # NextRace
 
-A calendar of running races in Greece, starting with Crete. Laravel, Inertia and Vue; English (default) and Greek.
+A calendar of running races across all of Greece. Laravel, Inertia and Vue; English (default) and Greek.
 
 ## Search engine indexing
 
@@ -11,7 +11,7 @@ Whether search engines may index the site is controlled by one environment varia
 | `false` (default) | `robots.txt` is `Disallow: /` without a sitemap, every response carries `X-Robots-Tag: noindex, nofollow`, pages have `<meta name="robots" content="noindex, nofollow">`, and `/sitemap.xml` returns 404. |
 | `true` | `robots.txt` allows crawling except account pages and announces the sitemap, pages are `index, follow`, and the sitemap is served. |
 
-The default is closed on purpose: a missing variable can never expose an unfinished environment. Local, develop and integration stay `false`. Only production is switched to `true`, at launch.
+The default is closed on purpose: a missing variable can never expose an unfinished environment. Local and develop stay `false`. Only production is switched to `true`, at launch.
 
 ### `robots.txt` is a static file
 

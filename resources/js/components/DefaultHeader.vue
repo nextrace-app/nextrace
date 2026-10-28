@@ -27,7 +27,6 @@ const navLinks = computed(() =>
         ? [
               { key: 'races', route: events() },
               { key: 'favorites', route: favorites() },
-              { key: 'profile', route: profile() },
           ]
         : [{ key: 'races', route: events() }],
 );
@@ -69,22 +68,40 @@ const navLinks = computed(() =>
                 >
                     {{ t(`nav.${item.key}`) }}
                 </Link>
-                <Link
-                    v-if="user"
-                    :href="localeRoute(logout())"
-                    as="button"
-                    :class="[pill, 'text-muted-foreground']"
-                    data-test="logout-button"
-                    @click="handleLogout"
-                >
-                    {{ t('nav.logout') }}
-                </Link>
             </nav>
 
             <div class="ml-auto flex items-center gap-2">
+                <Link
+                    v-if="user"
+                    :href="localeRoute(profile())"
+                    :class="[
+                        pill,
+                        isCurrentOrParentUrl(localeRoute(profile()))
+                            ? 'bg-secondary text-foreground'
+                            : 'text-muted-foreground',
+                    ]"
+                    :aria-current="
+                        isCurrentOrParentUrl(localeRoute(profile()))
+                            ? 'page'
+                            : undefined
+                    "
+                >
+                    {{ t('nav.profile') }}
+                </Link>
                 <ThemeToggle />
                 <LocaleSwitcher />
-                <template v-if="!user">
+                <template v-if="user">
+                    <Link
+                        :href="localeRoute(logout())"
+                        as="button"
+                        :class="[pill, 'text-muted-foreground']"
+                        data-test="logout-button"
+                        @click="handleLogout"
+                    >
+                        {{ t('nav.logout') }}
+                    </Link>
+                </template>
+                <template v-else>
                     <Link
                         :href="localeRoute(login())"
                         :class="

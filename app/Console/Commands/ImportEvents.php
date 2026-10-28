@@ -39,7 +39,7 @@ use Throwable;
  * New events are drafts. `published: true` publishes an event that is not yet
  * published; the importer never unpublishes one or changes its publication date.
  */
-#[Signature('events:import {file=database/data/crete-events.json : JSON file with the events to import}')]
+#[Signature('events:import {file=database/data/events.json : JSON file with the events to import}')]
 #[Description('Import events and their races from a JSON file; new events are unpublished unless the file publishes them')]
 class ImportEvents extends Command
 {
