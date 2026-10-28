@@ -2,10 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 /**
  * @extends Factory<User>
@@ -44,6 +46,33 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * Indicate that the user is an admin.
+     */
+    public function admin(): static
+    {
+        return $this->withRole(UserRole::Admin);
+    }
+
+    /**
+     * Indicate that the user is an organizer.
+     */
+    public function organizer(): static
+    {
+        return $this->withRole(UserRole::Organizer);
+    }
+
+    /**
+     * Give the user a role, creating it if the seeder has not run.
+     */
+    private function withRole(UserRole $role): static
+    {
+        return $this->afterCreating(function (User $user) use ($role): void {
+            Role::findOrCreate($role->value, 'web');
+            $user->assignRole($role->value);
+        });
     }
 
     /**
