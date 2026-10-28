@@ -230,5 +230,5 @@ Vue components must have a single root element.
 - Translatable content (event name, description) is stored per locale; interface strings live in `lang/` and are served through vue-i18n.
 - Search engine indexing is gated by `SITE_INDEXABLE` (`config/site.php`, default `false`; see README.md). While it is false the site is closed: `robots.txt` disallows everything, responses carry `X-Robots-Tag: noindex`, and `/sitemap.xml` is a 404.
   - `public/robots.txt` is a static, generated file and the committed version must always be the closed one (`User-agent: *` / `Disallow: /`); a test enforces it. After running `php artisan seo:robots` with the flag on, restore it with `git checkout public/robots.txt` and never commit the open version.
-  - Never set `SITE_INDEXABLE=true` on a Forge site, and never run `php artisan up` on production, unless the user explicitly says the site is launching. develop stays closed permanently.
+  - Never set `SITE_INDEXABLE=true` on a Forge site, and never run `php artisan up` on production, unless the user explicitly says the site is launching.
   - The test suite sets `SITE_INDEXABLE=true` in `phpunit.xml` so it is independent of `.env`; tests for the closed mode set `config(['site.indexable' => false])`.
