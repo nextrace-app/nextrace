@@ -22,7 +22,7 @@ const linkClass =
 </script>
 
 <template>
-    <footer class="mt-16 border-t bg-background text-sm text-muted-foreground">
+    <footer class="mt-16 border-t bg-card text-sm text-muted-foreground">
         <div
             class="flex flex-col gap-3 px-4 py-6 sm:px-6 md:flex-row md:items-center md:justify-between md:py-4 lg:px-8"
         >
