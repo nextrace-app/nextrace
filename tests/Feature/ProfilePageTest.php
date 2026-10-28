@@ -37,10 +37,14 @@ class ProfilePageTest extends TestCase
         );
     }
 
-    public function test_a_user_with_an_unverified_email_is_sent_to_the_verification_notice(): void
+    /**
+     * The page only reports the state of the address, so it stays reachable
+     * while the address is still waiting to be verified.
+     */
+    public function test_a_user_with_an_unverified_email_can_still_open_it(): void
     {
         $user = User::factory()->unverified()->create();
 
-        $this->actingAs($user)->get(route('profile.show'))->assertRedirect(route('verification.notice'));
+        $this->actingAs($user)->get(route('profile.show'))->assertOk();
     }
 }

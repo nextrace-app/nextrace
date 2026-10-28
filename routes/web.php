@@ -14,15 +14,16 @@ $localized = function () {
     Route::get('events', [EventController::class, 'index'])->name('events.index');
     Route::get('events/{event}', [EventController::class, 'show'])->name('events.show');
 
-    // Everything that belongs to an account waits for a verified email address;
-    // an unverified user only gets the verification notice.
-    Route::middleware(['auth', 'verified'])->group(function () {
+    Route::middleware('auth')->group(function () {
         Route::inertia('profile', 'Profile')->name('profile.show');
-        Route::inertia('dashboard', 'Dashboard')->name('dashboard');
 
         Route::get('favorites', [FavoriteController::class, 'index'])->name('favorites.index');
         Route::post('events/{event}/favorite', [FavoriteController::class, 'store'])->name('events.favorite.store');
         Route::delete('events/{event}/favorite', [FavoriteController::class, 'destroy'])->name('events.favorite.destroy');
+    });
+
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::inertia('dashboard', 'Dashboard')->name('dashboard');
     });
 
     require __DIR__.'/settings.php';
