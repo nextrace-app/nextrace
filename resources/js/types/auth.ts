@@ -10,8 +10,11 @@ export type User = {
     [key: string]: unknown;
 };
 
+export type UserRole = 'admin' | 'organizer';
+
 export type Auth = {
     user: User;
+    roles: UserRole[];
 };
 
 /* @chisel-passkeys */

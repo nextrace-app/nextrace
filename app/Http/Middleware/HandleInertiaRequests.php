@@ -43,6 +43,9 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user(),
+                // Role names only, so Vue can show or hide things. The server
+                // still enforces access; this is never a security check.
+                'roles' => $request->user()?->getRoleNames()->values()->all() ?? [],
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'locale' => app()->getLocale(),

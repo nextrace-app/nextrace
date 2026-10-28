@@ -26,6 +26,11 @@ $localized = function () {
         Route::inertia('dashboard', 'Dashboard')->name('dashboard');
     });
 
+    // Example of a role-protected route; the admin area itself comes later.
+    Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+        Route::inertia('admin', 'Dashboard')->name('admin.dashboard');
+    });
+
     require __DIR__.'/settings.php';
     require __DIR__.'/auth.php';
 };
