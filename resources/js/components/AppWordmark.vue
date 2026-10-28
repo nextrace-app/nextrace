@@ -1,9 +1,7 @@
 <script setup lang="ts">
-// The brand name is not translated. "race" picks up the primary colour.
+// The brand name is not translated.
 </script>
 
 <template>
-    <span class="font-bold tracking-tight"
-        >next<span class="text-primary">race</span></span
-    >
+    <span class="font-extrabold tracking-tight">Nextrace</span>
 </template>
