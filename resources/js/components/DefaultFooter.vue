@@ -29,8 +29,7 @@ const linkClass =
             <div
                 class="flex flex-col gap-x-4 gap-y-1 md:flex-row md:items-center"
             >
-                <span class="flex items-center gap-2 text-base text-foreground">
-                    <AppLogoIcon class="size-6 shrink-0" />
+                <span class="text-base text-foreground">
                     <AppWordmark />
                 </span>
                 <span>{{ t('footer.copyright', { year }) }}</span>

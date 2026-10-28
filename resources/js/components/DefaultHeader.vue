@@ -84,9 +84,8 @@ const menuRow =
             <Link
                 :href="localeRoute(home())"
                 :aria-label="t('nav.home')"
-                class="-ml-1 flex items-center gap-2.5 rounded-full px-1 text-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                class="-ml-1 flex items-center rounded-md px-1 text-xl text-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
-                <AppLogoIcon class="size-8 shrink-0" />
                 <AppWordmark />
             </Link>
 
