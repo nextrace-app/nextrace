@@ -96,11 +96,11 @@ function goToPage(value: number) {
 <template>
     <Head :title="seo.title ?? t('nav.events')" />
 
-    <DefaultShell>
+    <DefaultShell flush>
         <main class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
             <h1 class="sr-only">{{ t('events.index.title') }}</h1>
 
-            <div class="pt-6">
+            <div class="py-6">
                 <div class="min-w-0">
                     <div
                         v-if="visibleEvents.length > 0"
