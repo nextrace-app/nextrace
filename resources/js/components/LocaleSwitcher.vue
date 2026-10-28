@@ -30,24 +30,28 @@ const open = ref(false);
                 class="size-10"
                 :aria-label="t('nav.language')"
                 :title="t('nav.language')"
-                data-test="locale-switcher"
+                data-testid="locale-switcher__trigger"
             >
                 <Globe class="size-[18px]" aria-hidden="true" />
             </Button>
         </DialogTrigger>
-        <DialogContent class="sm:max-w-sm">
+        <DialogContent
+            class="sm:max-w-sm"
+            data-testid="locale-switcher__dialog"
+        >
             <DialogHeader>
                 <DialogTitle>{{ t('nav.chooseLanguage') }}</DialogTitle>
                 <DialogDescription class="sr-only">
                     {{ t('nav.chooseLanguageDescription') }}
                 </DialogDescription>
             </DialogHeader>
-            <ul class="flex flex-col gap-1">
+            <ul class="flex flex-col gap-1" data-testid="locale-switcher__list">
                 <li v-for="code in supportedLocales" :key="code">
                     <a
                         :href="localeSwitchUrl(page.url, code)"
                         :aria-current="code === locale ? 'true' : undefined"
                         :lang="code"
+                        data-testid="locale-switcher__option"
                         :hreflang="code"
                         class="flex items-center justify-between rounded-xl border px-4 py-3 text-sm transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                         :class="

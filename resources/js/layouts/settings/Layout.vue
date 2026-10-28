@@ -16,6 +16,7 @@ const { t } = useI18n();
     <DefaultShell>
         <main
             class="mx-auto flex w-full max-w-6xl flex-col px-4 pt-8 pb-12 sm:px-6 lg:flex-row lg:space-x-12 lg:px-8"
+            data-testid="settings-layout"
         >
             <aside class="w-full max-w-xl lg:w-48 lg:shrink-0">
                 <SettingsNav />
@@ -24,11 +25,17 @@ const { t } = useI18n();
             <Separator class="my-6 lg:hidden" />
 
             <div class="min-w-0 flex-1 md:max-w-2xl">
-                <h1 class="mb-6 text-3xl font-extrabold tracking-tight">
+                <h1
+                    class="mb-6 text-3xl font-extrabold tracking-tight"
+                    data-testid="settings-layout__title"
+                >
                     {{ title ? t(title) : t('settings.title') }}
                 </h1>
 
-                <section class="max-w-xl space-y-12">
+                <section
+                    class="max-w-xl space-y-12"
+                    data-testid="settings-layout__content"
+                >
                     <slot />
                 </section>
             </div>

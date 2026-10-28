@@ -31,7 +31,7 @@ const options = [
                 class="size-10"
                 :aria-label="t('nav.theme.label')"
                 :title="t('nav.theme.label')"
-                data-test="theme-toggle"
+                data-testid="theme-toggle__trigger"
             >
                 <Moon
                     v-if="resolvedAppearance === 'dark'"
@@ -41,7 +41,7 @@ const options = [
                 <Sun v-else class="size-[18px]" aria-hidden="true" />
             </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" data-testid="theme-toggle__menu">
             <DropdownMenuRadioGroup
                 :model-value="appearance"
                 @update:model-value="
@@ -52,7 +52,7 @@ const options = [
                     v-for="{ value, Icon } in options"
                     :key="value"
                     :value="value"
-                    :data-test="`theme-${value}`"
+                    data-testid="theme-toggle__option"
                 >
                     <component :is="Icon" class="size-4" aria-hidden="true" />
                     {{ t(`nav.theme.${value}`) }}

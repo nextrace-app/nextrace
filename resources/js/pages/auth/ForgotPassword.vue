@@ -31,20 +31,23 @@ defineProps<{
 
     <div
         v-if="status"
+        data-testid="forgot-password-page__status"
         class="mb-4 text-center text-sm font-medium text-green-600"
     >
         {{ status }}
     </div>
 
-    <div class="space-y-6">
+    <div class="space-y-6" data-testid="forgot-password-page">
         <Form
             v-bind="localeRoute(email.form())"
+            data-testid="forgot-password-page__form"
             v-slot="{ errors, processing }"
         >
             <div class="grid gap-2">
                 <Label for="email">{{ t('form.email') }}</Label>
                 <Input
                     id="email"
+                    data-testid="forgot-password-page__email"
                     type="email"
                     name="email"
                     autocomplete="off"
@@ -58,7 +61,7 @@ defineProps<{
                 <Button
                     class="w-full"
                     :disabled="processing"
-                    data-test="email-password-reset-link-button"
+                    data-testid="forgot-password-page__submit"
                 >
                     <Spinner v-if="processing" />
                     {{ t('auth.forgot.submit') }}
@@ -68,9 +71,11 @@ defineProps<{
 
         <div class="space-x-1 text-center text-sm text-muted-foreground">
             <span>{{ t('auth.forgot.return_to') }}</span>
-            <TextLink :href="localeRoute(login())">{{
-                t('auth.forgot.log_in')
-            }}</TextLink>
+            <TextLink
+                :href="localeRoute(login())"
+                data-testid="forgot-password-page__login"
+                >{{ t('auth.forgot.log_in') }}</TextLink
+            >
         </div>
     </div>
 </template>

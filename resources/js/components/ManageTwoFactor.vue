@@ -30,7 +30,11 @@ onUnmounted(() => clearTwoFactorAuthData());
 </script>
 
 <template>
-    <div v-if="canManageTwoFactor" class="space-y-6">
+    <div
+        v-if="canManageTwoFactor"
+        class="space-y-6"
+        data-testid="manage-two-factor"
+    >
         <Heading
             variant="small"
             :title="t('settings.two_factor.title')"
@@ -40,13 +44,18 @@ onUnmounted(() => clearTwoFactorAuthData());
         <div
             v-if="!twoFactorEnabled"
             class="flex flex-col items-start justify-start space-y-4"
+            data-testid="manage-two-factor__disabled"
         >
             <p class="text-sm text-muted-foreground">
                 {{ t('settings.two_factor.off_text') }}
             </p>
 
             <div>
-                <Button v-if="hasSetupData" @click="showSetupModal = true">
+                <Button
+                    v-if="hasSetupData"
+                    data-testid="manage-two-factor__continue"
+                    @click="showSetupModal = true"
+                >
                     <ShieldCheck />{{ t('settings.two_factor.continue_setup') }}
                 </Button>
                 <Form
@@ -55,14 +64,22 @@ onUnmounted(() => clearTwoFactorAuthData());
                     @success="showSetupModal = true"
                     #default="{ processing }"
                 >
-                    <Button type="submit" :disabled="processing">
+                    <Button
+                        type="submit"
+                        :disabled="processing"
+                        data-testid="manage-two-factor__enable"
+                    >
                         {{ t('settings.two_factor.enable') }}
                     </Button>
                 </Form>
             </div>
         </div>
 
-        <div v-else class="flex flex-col items-start justify-start space-y-4">
+        <div
+            v-else
+            class="flex flex-col items-start justify-start space-y-4"
+            data-testid="manage-two-factor__enabled"
+        >
             <p class="text-sm text-muted-foreground">
                 {{ t('settings.two_factor.on_text') }}
             </p>
@@ -72,6 +89,7 @@ onUnmounted(() => clearTwoFactorAuthData());
                     <Button
                         variant="destructive"
                         type="submit"
+                        data-testid="manage-two-factor__disable"
                         :disabled="processing"
                     >
                         {{ t('settings.two_factor.disable') }}

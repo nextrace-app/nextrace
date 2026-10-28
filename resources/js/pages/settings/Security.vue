@@ -33,7 +33,7 @@ defineOptions({
 <template>
     <Head :title="t('settings.security.title')" />
 
-    <div class="space-y-6">
+    <div class="space-y-6" data-testid="settings-security-page">
         <Heading
             variant="small"
             :title="t('settings.security.password_title')"
@@ -52,6 +52,7 @@ defineOptions({
                 'current_password',
             ]"
             class="space-y-6"
+            data-testid="settings-security-page__form"
             v-slot="{ errors, processing }"
         >
             <div class="grid gap-2">
@@ -60,6 +61,7 @@ defineOptions({
                 }}</Label>
                 <PasswordInput
                     id="current_password"
+                    data-testid="settings-security-page__current-password"
                     name="current_password"
                     class="mt-1 block w-full"
                     autocomplete="current-password"
@@ -72,6 +74,7 @@ defineOptions({
                 <Label for="password">{{ t('form.new_password') }}</Label>
                 <PasswordInput
                     id="password"
+                    data-testid="settings-security-page__password"
                     name="password"
                     class="mt-1 block w-full"
                     autocomplete="new-password"
@@ -87,6 +90,7 @@ defineOptions({
                 }}</Label>
                 <PasswordInput
                     id="password_confirmation"
+                    data-testid="settings-security-page__password-confirmation"
                     name="password_confirmation"
                     class="mt-1 block w-full"
                     autocomplete="new-password"
@@ -99,7 +103,7 @@ defineOptions({
             <div class="flex items-center gap-4">
                 <Button
                     :disabled="processing"
-                    data-test="update-password-button"
+                    data-testid="settings-security-page__submit"
                 >
                     {{ t('form.save') }}
                 </Button>

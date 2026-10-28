@@ -3,5 +3,7 @@
 </script>
 
 <template>
-    <span class="font-extrabold tracking-tight">Nextrace</span>
+    <span data-testid="app-wordmark" class="font-extrabold tracking-tight"
+        >Nextrace</span
+    >
 </template>

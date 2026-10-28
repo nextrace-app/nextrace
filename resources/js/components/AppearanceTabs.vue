@@ -15,12 +15,14 @@ const tabs = [
 
 <template>
     <div
+        data-testid="appearance-tabs"
         class="inline-flex gap-1 rounded-lg bg-neutral-100 p-1 dark:bg-neutral-800"
     >
         <button
             v-for="{ value, Icon } in tabs"
             :key="value"
             type="button"
+            data-testid="appearance-tabs__tab"
             :aria-pressed="appearance === value"
             @click="updateAppearance(value)"
             :class="[

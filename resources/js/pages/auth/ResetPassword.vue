@@ -37,6 +37,7 @@ const inputEmail = ref(props.email);
         v-bind="localeRoute(update.form())"
         :transform="(data) => ({ ...data, token, email })"
         :reset-on-success="['password', 'password_confirmation']"
+        data-testid="reset-password-page"
         v-slot="{ errors, processing }"
     >
         <div class="grid gap-6">
@@ -44,6 +45,7 @@ const inputEmail = ref(props.email);
                 <Label for="email">{{ t('form.email') }}</Label>
                 <Input
                     id="email"
+                    data-testid="reset-password-page__email"
                     type="email"
                     name="email"
                     autocomplete="email"
@@ -58,6 +60,7 @@ const inputEmail = ref(props.email);
                 <Label for="password">{{ t('form.password') }}</Label>
                 <PasswordInput
                     id="password"
+                    data-testid="reset-password-page__password"
                     name="password"
                     autocomplete="new-password"
                     class="mt-1 block w-full"
@@ -74,6 +77,7 @@ const inputEmail = ref(props.email);
                 }}</Label>
                 <PasswordInput
                     id="password_confirmation"
+                    data-testid="reset-password-page__password-confirmation"
                     name="password_confirmation"
                     autocomplete="new-password"
                     class="mt-1 block w-full"
@@ -87,7 +91,7 @@ const inputEmail = ref(props.email);
                 type="submit"
                 class="mt-4 w-full"
                 :disabled="processing"
-                data-test="reset-password-button"
+                data-testid="reset-password-page__submit"
             >
                 <Spinner v-if="processing" />
                 {{ t('auth.reset.submit') }}

@@ -63,7 +63,7 @@ function toggle() {
         :aria-label="label"
         :title="label"
         :aria-pressed="isFavorite"
-        data-test="favorite-button"
+        data-testid="favorite-button"
         class="flex size-9 items-center justify-center rounded-full bg-background/80 text-muted-foreground shadow-xs backdrop-blur transition-colors hover:text-red-500 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
         :class="{ 'text-red-500': isFavorite }"
         @click.stop.prevent="toggle"

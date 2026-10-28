@@ -21,7 +21,7 @@ const user = computed(() => page.props.auth.user);
 </script>
 
 <template>
-    <div class="flex flex-col space-y-6">
+    <div class="flex flex-col space-y-6" data-testid="profile-page-form">
         <Heading
             variant="small"
             :title="t('profile.section')"
@@ -31,12 +31,14 @@ const user = computed(() => page.props.auth.user);
         <Form
             v-bind="localeRoute(update.form())"
             class="space-y-6"
+            data-testid="profile-page-form__form"
             v-slot="{ errors, processing }"
         >
             <div class="grid gap-2">
                 <Label for="name">{{ t('form.name') }}</Label>
                 <Input
                     id="name"
+                    data-testid="profile-page-form__name"
                     class="mt-1 block w-full"
                     name="name"
                     :default-value="user.name"
@@ -51,6 +53,7 @@ const user = computed(() => page.props.auth.user);
                 <Label for="email">{{ t('form.email') }}</Label>
                 <Input
                     id="email"
+                    data-testid="profile-page-form__email"
                     type="email"
                     class="mt-1 block w-full"
                     name="email"
@@ -68,6 +71,7 @@ const user = computed(() => page.props.auth.user);
                     <Link
                         :href="localeRoute(send())"
                         as="button"
+                        data-testid="profile-page-form__resend"
                         class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                     >
                         {{ t('profile.resend') }}
@@ -77,6 +81,7 @@ const user = computed(() => page.props.auth.user);
                 <div
                     v-if="page.props.status === 'verification-link-sent'"
                     class="mt-2 text-sm font-medium text-green-600"
+                    data-testid="profile-page-form__link-sent"
                 >
                     {{ t('profile.link_sent') }}
                 </div>
@@ -85,7 +90,7 @@ const user = computed(() => page.props.auth.user);
             <div class="flex items-center gap-4">
                 <Button
                     :disabled="processing"
-                    data-test="update-profile-button"
+                    data-testid="profile-page-form__submit"
                     >{{ t('form.save') }}</Button
                 >
             </div>

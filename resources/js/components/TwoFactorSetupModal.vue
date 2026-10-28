@@ -111,7 +111,7 @@ watch(
 
 <template>
     <Dialog :open="isOpen" @update:open="isOpen = $event">
-        <DialogContent class="sm:max-w-md">
+        <DialogContent class="sm:max-w-md" data-testid="two-factor-setup-modal">
             <DialogHeader class="flex items-center justify-center">
                 <div
                     class="mb-3 w-auto rounded-full border border-border bg-card p-0.5 shadow-sm"
@@ -162,6 +162,7 @@ watch(
                             >
                                 <div
                                     v-if="!qrCodeSvg"
+                                    data-testid="two-factor-setup-modal__qr-loading"
                                     class="absolute inset-0 z-10 flex aspect-square h-auto w-full animate-pulse items-center justify-center bg-background"
                                 >
                                     <Spinner class="size-6" />
@@ -172,6 +173,7 @@ watch(
                                 >
                                     <div
                                         v-html="qrCodeSvg"
+                                        data-testid="two-factor-setup-modal__qr-code"
                                         class="flex aspect-square size-full items-center justify-center"
                                         :style="{
                                             filter:
@@ -185,7 +187,11 @@ watch(
                         </div>
 
                         <div class="flex w-full items-center space-x-5">
-                            <Button class="w-full" @click="handleModalNextStep">
+                            <Button
+                                class="w-full"
+                                data-testid="two-factor-setup-modal__next"
+                                @click="handleModalNextStep"
+                            >
                                 {{ modalConfig.buttonText }}
                             </Button>
                         </div>
@@ -217,11 +223,13 @@ watch(
                                     <input
                                         type="text"
                                         readonly
+                                        data-testid="two-factor-setup-modal__manual-key"
                                         :value="manualSetupKey"
                                         class="h-full w-full bg-background p-3 text-foreground"
                                     />
                                     <button
                                         type="button"
+                                        data-testid="two-factor-setup-modal__copy"
                                         :aria-label="
                                             t('settings.two_factor.copy')
                                         "
@@ -243,6 +251,7 @@ watch(
                 <template v-else>
                     <Form
                         v-bind="confirm.form()"
+                        data-testid="two-factor-setup-modal__form"
                         error-bag="confirmTwoFactorAuthentication"
                         reset-on-error
                         @finish="code = ''"
@@ -258,7 +267,7 @@ watch(
                                 class="flex w-full flex-col items-center justify-center space-y-3 py-2"
                             >
                                 <InputOTP
-                                    id="otp"
+                                    data-testid="two-factor-setup-modal__code-input"
                                     v-model="code"
                                     :maxlength="6"
                                     :disabled="processing"
@@ -280,6 +289,7 @@ watch(
                                     type="button"
                                     variant="outline"
                                     class="w-auto flex-1"
+                                    data-testid="two-factor-setup-modal__back"
                                     @click="showVerificationStep = false"
                                     :disabled="processing"
                                 >
@@ -288,6 +298,7 @@ watch(
                                 <Button
                                     type="submit"
                                     class="w-auto flex-1"
+                                    data-testid="two-factor-setup-modal__confirm"
                                     :disabled="processing || code.length < 6"
                                 >
                                     {{ t('settings.two_factor.confirm') }}

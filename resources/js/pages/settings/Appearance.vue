@@ -16,7 +16,7 @@ defineOptions({
 <template>
     <Head :title="t('settings.appearance.title')" />
 
-    <div class="space-y-6">
+    <div class="space-y-6" data-testid="settings-appearance-page">
         <Heading
             variant="small"
             :title="t('nav.theme.label')"

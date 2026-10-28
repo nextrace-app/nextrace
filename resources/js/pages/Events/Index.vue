@@ -19,6 +19,7 @@ const page = usePage();
 const seo = computed(() => page.props.seo);
 const { localeRoute } = useLocale();
 
+const eventsList = ref<HTMLElement | null>(null);
 const distance = ref('');
 const query = ref('');
 
@@ -87,9 +88,7 @@ watch(visibleEvents, () => {
 
 function goToPage(value: number) {
     currentPage.value = Math.min(Math.max(1, value), pageCount.value);
-    document
-        .getElementById('events-list')
-        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    eventsList.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
 
@@ -97,13 +96,19 @@ function goToPage(value: number) {
     <Head :title="seo.title ?? t('nav.events')" />
 
     <DefaultShell flush>
-        <main class="mx-auto w-full max-w-6xl px-4 sm:px-6">
-            <h1 class="sr-only">{{ t('events.index.title') }}</h1>
+        <main
+            class="mx-auto w-full max-w-6xl px-4 sm:px-6"
+            data-testid="events-page"
+        >
+            <h1 class="sr-only" data-testid="events-page__title">
+                {{ t('events.index.title') }}
+            </h1>
 
             <div class="py-4 sm:py-6">
                 <div
                     v-if="visibleEvents.length > 0"
-                    id="events-list"
+                    ref="eventsList"
+                    data-testid="events-page__list"
                     class="grid scroll-mt-24 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3"
                 >
                     <EventCard
@@ -118,13 +123,14 @@ function goToPage(value: number) {
                     v-if="pageCount > 1"
                     class="mt-4 flex items-center justify-center gap-1.5 sm:mt-6"
                     :aria-label="t('events.pagination.label')"
-                    data-test="pagination"
+                    data-testid="events-page__pagination"
                 >
                     <Button
                         type="button"
                         variant="outline"
                         size="icon"
                         :disabled="currentPage === 1"
+                        data-testid="events-page__pagination-previous"
                         :aria-label="t('events.pagination.previous')"
                         @click="goToPage(currentPage - 1)"
                     >
@@ -142,6 +148,7 @@ function goToPage(value: number) {
                             number === currentPage ? 'page' : undefined
                         "
                         :aria-label="t('events.pagination.page', { number })"
+                        data-testid="events-page__pagination-page"
                         @click="goToPage(number)"
                     >
                         {{ number }}
@@ -151,6 +158,7 @@ function goToPage(value: number) {
                         variant="outline"
                         size="icon"
                         :disabled="currentPage === pageCount"
+                        data-testid="events-page__pagination-next"
                         :aria-label="t('events.pagination.next')"
                         @click="goToPage(currentPage + 1)"
                     >
@@ -161,7 +169,7 @@ function goToPage(value: number) {
                 <div
                     v-if="visibleEvents.length === 0"
                     class="flex flex-col items-center gap-4 rounded-xl border border-dashed bg-card py-16 text-center"
-                    data-test="events-empty"
+                    data-testid="events-page__empty"
                 >
                     <CalendarX
                         class="size-8 text-muted-foreground"
@@ -177,6 +185,7 @@ function goToPage(value: number) {
                     <Button
                         v-if="isFiltered"
                         variant="outline"
+                        data-testid="events-page__reset"
                         @click="resetFilters"
                     >
                         {{ t('events.filters.reset') }}

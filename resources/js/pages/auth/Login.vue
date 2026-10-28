@@ -37,6 +37,7 @@ defineProps<{
 
     <div
         v-if="status"
+        data-testid="login-page__status"
         class="mb-4 text-center text-sm font-medium text-green-600"
     >
         {{ status }}
@@ -51,12 +52,14 @@ defineProps<{
         :reset-on-success="['password']"
         v-slot="{ errors, processing }"
         class="flex flex-col gap-6"
+        data-testid="login-page"
     >
         <div class="grid gap-6">
             <div class="grid gap-2">
                 <Label for="email">{{ t('form.email') }}</Label>
                 <Input
                     id="email"
+                    data-testid="login-page__email"
                     type="email"
                     name="email"
                     required
@@ -76,12 +79,14 @@ defineProps<{
                         :href="localeRoute(request())"
                         class="text-sm"
                         :tabindex="5"
+                        data-testid="login-page__forgot"
                     >
                         {{ t('auth.login.forgot') }}
                     </TextLink>
                 </div>
                 <PasswordInput
                     id="password"
+                    data-testid="login-page__password"
                     name="password"
                     required
                     :tabindex="2"
@@ -93,7 +98,12 @@ defineProps<{
 
             <div class="flex items-center justify-between">
                 <Label for="remember" class="flex items-center space-x-3">
-                    <Checkbox id="remember" name="remember" :tabindex="3" />
+                    <Checkbox
+                        id="remember"
+                        name="remember"
+                        :tabindex="3"
+                        data-testid="login-page__remember"
+                    />
                     <span>{{ t('auth.login.remember') }}</span>
                 </Label>
             </div>
@@ -103,7 +113,7 @@ defineProps<{
                 class="mt-4 w-full"
                 :tabindex="4"
                 :disabled="processing"
-                data-test="login-button"
+                data-testid="login-page__submit"
             >
                 <Spinner v-if="processing" />
                 {{ t('auth.login.submit') }}
@@ -112,9 +122,12 @@ defineProps<{
 
         <div class="text-center text-sm text-muted-foreground">
             {{ t('auth.login.no_account') }}
-            <TextLink :href="localeRoute(register())" :tabindex="5">{{
-                t('auth.login.sign_up')
-            }}</TextLink>
+            <TextLink
+                :href="localeRoute(register())"
+                :tabindex="5"
+                data-testid="login-page__register"
+                >{ t('auth.login.sign_up') }</TextLink
+            >
         </div>
     </Form>
 </template>

@@ -33,6 +33,7 @@ const items = computed<NavItem[]>(() => [
 
 <template>
     <nav
+        data-testid="settings-nav"
         class="flex flex-col space-y-1 space-x-0"
         :aria-label="t('settings.nav.label')"
     >
@@ -46,7 +47,7 @@ const items = computed<NavItem[]>(() => [
             ]"
             as-child
         >
-            <Link :href="item.href">
+            <Link :href="item.href" data-testid="settings-nav__link">
                 <component :is="item.icon" class="h-4 w-4" />
                 {{ item.title }}
             </Link>

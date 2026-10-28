@@ -6,9 +6,12 @@ withDefaults(defineProps<{ flush?: boolean }>(), { flush: false });
 </script>
 
 <template>
-    <div class="flex min-h-screen flex-col bg-background text-foreground">
+    <div
+        class="flex min-h-screen flex-col bg-background text-foreground"
+        data-testid="default-shell"
+    >
         <DefaultHeader />
-        <div class="flex-1">
+        <div class="flex-1" data-testid="default-shell__content">
             <slot />
         </div>
         <DefaultFooter :class="flush ? '' : 'mt-16'" />

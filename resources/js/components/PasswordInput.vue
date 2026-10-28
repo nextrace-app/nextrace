@@ -23,15 +23,17 @@ defineExpose({
 </script>
 
 <template>
-    <div class="relative">
+    <div class="relative" data-testid="password-input">
         <Input
             ref="inputRef"
+            data-testid="password-input__field"
             :type="showPassword ? 'text' : 'password'"
             :class="cn('pr-10', props.class)"
             v-bind="$attrs"
         />
         <button
             type="button"
+            data-testid="password-input__toggle"
             @click="showPassword = !showPassword"
             :class="
                 cn(

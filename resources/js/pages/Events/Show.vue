@@ -182,24 +182,30 @@ const hasContact = computed(
     <Head :title="seo.title ?? event.name" />
 
     <DefaultShell>
-        <main class="mx-auto w-full max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
+        <main
+            class="mx-auto w-full max-w-6xl px-4 pt-6 sm:px-6 lg:px-8"
+            data-testid="event-page"
+        >
             <Link
                 :href="localeRoute(eventsIndex())"
                 class="inline-flex items-center gap-1 rounded-full py-1.5 pr-2 text-sm font-bold text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                data-testid="event-page__back"
             >
                 <ArrowLeft class="size-4" aria-hidden="true" />
                 {{ t('events.back') }}
             </Link>
 
-            <header>
+            <header data-testid="event-page__header">
                 <div
                     class="relative mt-3 h-44 overflow-hidden rounded-3xl border bg-sand sm:h-60"
+                    data-testid="event-page__hero"
                 >
                     <img
                         v-if="event.image"
                         :src="event.image"
                         :alt="event.name"
                         class="absolute inset-0 h-full w-full object-cover opacity-30"
+                        data-testid="event-page__image"
                     />
                     <ContourArt
                         v-else
@@ -213,12 +219,13 @@ const hasContact = computed(
                         <div class="flex flex-wrap items-center gap-2">
                             <Badge
                                 class="border-transparent bg-foreground font-bold text-background"
-                                data-test="event-category"
+                                data-testid="event-page__category"
                                 >{{ categoryLabel(event.category) }}</Badge
                             >
                             <Badge
                                 v-if="event.races.length > 1"
                                 variant="secondary"
+                                data-testid="event-page__race-count"
                                 >{{
                                     t('events.races.count', {
                                         count: event.races.length,
@@ -231,21 +238,27 @@ const hasContact = computed(
                             :event-name="event.name"
                             :favorited="isFavorite"
                             class="shrink-0 text-foreground"
+                            data-testid="event-page__favorite"
                         />
                     </div>
                 </div>
 
                 <h1
                     class="mt-6 max-w-3xl text-3xl leading-[1.08] font-extrabold tracking-tight text-balance sm:text-5xl"
+                    data-testid="event-page__title"
                 >
                     {{ event.name }}
                 </h1>
 
-                <ul class="mt-5 flex flex-wrap gap-3">
+                <ul
+                    class="mt-5 flex flex-wrap gap-3"
+                    data-testid="event-page__summary"
+                >
                     <li
                         v-for="fact in facts"
                         :key="fact.key"
                         class="flex min-w-0 items-center gap-3 rounded-2xl border bg-card py-3 pr-4 pl-3 max-sm:w-full"
+                        data-testid="event-page__summary-item"
                     >
                         <span
                             class="grid size-10 shrink-0 place-items-center rounded-xl bg-secondary text-primary"
@@ -259,9 +272,13 @@ const hasContact = computed(
                         <span class="min-w-0">
                             <span
                                 class="block text-[11px] leading-tight font-bold tracking-widest text-muted-foreground uppercase"
+                                data-testid="event-page__summary-label"
                                 >{{ fact.label }}</span
                             >
-                            <span class="block font-bold">
+                            <span
+                                class="block font-bold"
+                                data-testid="event-page__summary-value"
+                            >
                                 <time
                                     v-if="fact.datetime"
                                     :datetime="fact.datetime"
@@ -277,7 +294,10 @@ const hasContact = computed(
             <div
                 class="grid gap-8 pt-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12"
             >
-                <div class="flex min-w-0 flex-col gap-8">
+                <div
+                    class="flex min-w-0 flex-col gap-8"
+                    data-testid="event-page__content"
+                >
                     <div
                         v-if="banner"
                         role="alert"
@@ -287,7 +307,7 @@ const hasContact = computed(
                                 ? 'border-amber-500/50 bg-amber-500/10 text-amber-900 dark:text-amber-200'
                                 : 'border-destructive/50 bg-destructive/10 text-destructive'
                         "
-                        data-test="event-banner"
+                        data-testid="event-page__banner"
                     >
                         <TriangleAlert
                             class="mt-0.5 size-4 shrink-0"
@@ -295,52 +315,75 @@ const hasContact = computed(
                         />
                         <p>{{ t(`events.status.${banner}`) }}</p>
                     </div>
-                    <section>
+                    <section data-testid="event-page__about">
                         <h2 class="mb-2 text-xl font-extrabold tracking-tight">
                             {{ t('events.about') }}
                         </h2>
                         <p
                             v-if="event.description"
                             class="leading-relaxed whitespace-pre-line text-muted-foreground"
+                            data-testid="event-page__description"
                         >
                             {{ event.description }}
                         </p>
-                        <p v-else class="text-muted-foreground">
+                        <p
+                            v-else
+                            class="text-muted-foreground"
+                            data-testid="event-page__no-description"
+                        >
                             {{ t('events.no_description') }}
                         </p>
                     </section>
-                    <section v-if="event.races.length > 0" data-test="races">
+                    <section
+                        v-if="event.races.length > 0"
+                        data-testid="event-page__races"
+                    >
                         <h2 class="mb-3 text-xl font-extrabold tracking-tight">
                             {{ t('events.races.title') }}
                         </h2>
-                        <ul class="flex flex-col gap-3">
+                        <ul
+                            class="flex flex-col gap-3"
+                            data-testid="event-page__race-list"
+                        >
                             <li
                                 v-for="race in event.races"
                                 :key="race.id"
                                 class="rounded-2xl border bg-card p-5"
-                                data-test="race"
+                                data-testid="event-page__race"
                             >
                                 <div
                                     class="flex flex-wrap items-center justify-between gap-2"
                                 >
-                                    <h3 class="font-semibold">
+                                    <h3
+                                        class="font-semibold"
+                                        data-testid="event-page__race-name"
+                                    >
                                         {{ race.name }}
                                     </h3>
                                     <div class="flex flex-wrap gap-1.5">
-                                        <Badge v-if="race.is_main">{{
-                                            t('events.races.main')
-                                        }}</Badge>
-                                        <Badge variant="secondary">{{
+                                        <Badge
+                                            v-if="race.is_main"
+                                            data-testid="event-page__race-main"
+                                            >{ t('events.races.main') }}</Badge
+                                        >
+                                        <Badge
+                                            variant="secondary"
+                                            data-testid="event-page__race-distance"
+                                            >{
                                             formatDistance(race.distance_meters)
-                                        }}</Badge>
-                                        <Badge variant="outline">{{
-                                            t(
-                                                `events.races.discipline.${race.discipline}`,
-                                            )
-                                        }}</Badge>
+                                            }}</Badge
+                                        >
+                                        <Badge
+                                            variant="outline"
+                                            data-testid="event-page__race-discipline"
+                                            >{ t(
+                                            `events.races.discipline.${race.discipline}`,
+                                            ) }}</Badge
+                                        >
                                         <Badge
                                             v-if="race.terrain"
                                             variant="outline"
+                                            data-testid="event-page__race-terrain"
                                             >{{
                                                 t(
                                                     `events.races.terrain.${race.terrain}`,
@@ -351,6 +394,7 @@ const hasContact = computed(
                                             v-if="race.certification"
                                             variant="outline"
                                             class="gap-1"
+                                            data-testid="event-page__race-certification"
                                         >
                                             <BadgeCheck aria-hidden="true" />
                                             {{
@@ -362,6 +406,7 @@ const hasContact = computed(
                                         <Badge
                                             v-if="race.status === 'cancelled'"
                                             variant="destructive"
+                                            data-testid="event-page__race-cancelled"
                                             >{{
                                                 t('events.races.cancelled')
                                             }}</Badge
@@ -371,6 +416,7 @@ const hasContact = computed(
 
                                 <dl
                                     class="mt-3 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2"
+                                    data-testid="event-page__race-details"
                                 >
                                     <div class="flex flex-col">
                                         <dt class="text-muted-foreground">
@@ -452,6 +498,7 @@ const hasContact = computed(
                                     </div>
                                     <div
                                         v-if="race.prices.length > 0"
+                                        data-testid="event-page__race-prices"
                                         class="flex flex-col sm:col-span-2"
                                     >
                                         <dt class="text-muted-foreground">
@@ -467,7 +514,7 @@ const hasContact = computed(
                                                     ) in race.prices"
                                                     :key="index"
                                                     class="rounded-md bg-muted px-2.5 py-1"
-                                                    data-test="race-price"
+                                                    data-testid="event-page__race-price"
                                                 >
                                                     <span class="font-medium">{{
                                                         price.amount === 0
@@ -512,6 +559,7 @@ const hasContact = computed(
                                     class="mt-3 w-full sm:w-auto"
                                 >
                                     <a
+                                        data-testid="event-page__race-register"
                                         :href="race.registration_url"
                                         target="_blank"
                                         rel="noopener noreferrer"
@@ -523,12 +571,16 @@ const hasContact = computed(
                             </li>
                         </ul>
                     </section>
-                    <section data-test="facts">
+                    <section data-testid="event-page__facts">
                         <h2 class="mb-3 text-xl font-extrabold tracking-tight">
                             {{ t('events.facts.title') }}
                         </h2>
                         <dl class="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
-                            <div v-if="event.organizer" class="flex gap-2">
+                            <div
+                                v-if="event.organizer"
+                                class="flex gap-2"
+                                data-testid="event-page__organizer"
+                            >
                                 <Building2
                                     class="mt-0.5 size-4 shrink-0 text-muted-foreground"
                                     aria-hidden="true"
@@ -552,7 +604,11 @@ const hasContact = computed(
                                     </dd>
                                 </div>
                             </div>
-                            <div v-if="event.venue" class="flex gap-2">
+                            <div
+                                v-if="event.venue"
+                                class="flex gap-2"
+                                data-testid="event-page__venue"
+                            >
                                 <MapPin
                                     class="mt-0.5 size-4 shrink-0 text-muted-foreground"
                                     aria-hidden="true"
@@ -564,7 +620,11 @@ const hasContact = computed(
                                     <dd>{{ event.venue }}</dd>
                                 </div>
                             </div>
-                            <div v-if="event.region" class="flex gap-2">
+                            <div
+                                v-if="event.region"
+                                class="flex gap-2"
+                                data-testid="event-page__region"
+                            >
                                 <Flag
                                     class="mt-0.5 size-4 shrink-0 text-muted-foreground"
                                     aria-hidden="true"
@@ -576,7 +636,11 @@ const hasContact = computed(
                                     <dd>{{ event.region.name }}</dd>
                                 </div>
                             </div>
-                            <div v-if="event.series" class="flex gap-2">
+                            <div
+                                v-if="event.series"
+                                class="flex gap-2"
+                                data-testid="event-page__series"
+                            >
                                 <Trophy
                                     class="mt-0.5 size-4 shrink-0 text-muted-foreground"
                                     aria-hidden="true"
@@ -598,7 +662,10 @@ const hasContact = computed(
                                     </dd>
                                 </div>
                             </div>
-                            <div class="flex gap-2" data-test="registration">
+                            <div
+                                class="flex gap-2"
+                                data-testid="event-page__registration"
+                            >
                                 <Ticket
                                     class="mt-0.5 size-4 shrink-0 text-muted-foreground"
                                     aria-hidden="true"
@@ -646,7 +713,11 @@ const hasContact = computed(
                                     </dd>
                                 </div>
                             </div>
-                            <div v-if="hasContact" class="flex gap-2">
+                            <div
+                                v-if="hasContact"
+                                class="flex gap-2"
+                                data-testid="event-page__contact"
+                            >
                                 <Mail
                                     class="mt-0.5 size-4 shrink-0 text-muted-foreground"
                                     aria-hidden="true"
@@ -680,9 +751,14 @@ const hasContact = computed(
                         <ul
                             v-if="event.links.length > 0"
                             class="mt-4 flex flex-wrap gap-2"
+                            data-testid="event-page__links"
                             :aria-label="t('events.facts.links')"
                         >
-                            <li v-for="link in event.links" :key="link.url">
+                            <li
+                                v-for="link in event.links"
+                                :key="link.url"
+                                data-testid="event-page__link"
+                            >
                                 <Button as-child variant="outline" size="sm">
                                     <a
                                         :href="link.url"
@@ -706,6 +782,7 @@ const hasContact = computed(
 
                 <aside
                     class="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start"
+                    data-testid="event-page__sidebar"
                 >
                     <div
                         class="flex flex-col gap-3 rounded-2xl border bg-card p-5"
@@ -718,6 +795,7 @@ const hasContact = computed(
                         >
                             <a
                                 :href="event.registration_url"
+                                data-testid="event-page__register"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
@@ -728,7 +806,7 @@ const hasContact = computed(
                         <p
                             v-else
                             class="text-sm text-muted-foreground"
-                            data-test="registration-unavailable"
+                            data-testid="event-page__registration-unavailable"
                         >
                             {{
                                 t(
@@ -745,6 +823,7 @@ const hasContact = computed(
                         >
                             <a
                                 :href="map"
+                                data-testid="event-page__map"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >

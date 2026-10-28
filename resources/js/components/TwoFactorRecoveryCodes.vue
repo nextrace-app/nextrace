@@ -41,7 +41,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Card class="w-full">
+    <Card class="w-full" data-testid="two-factor-recovery-codes">
         <CardHeader>
             <CardTitle class="flex gap-3">
                 <LockKeyhole class="size-4" />{{
@@ -56,7 +56,11 @@ onMounted(async () => {
             <div
                 class="flex flex-col gap-3 select-none sm:flex-row sm:items-center sm:justify-between"
             >
-                <Button @click="toggleRecoveryCodesVisibility" class="w-fit">
+                <Button
+                    class="w-fit"
+                    data-testid="two-factor-recovery-codes__toggle"
+                    @click="toggleRecoveryCodesVisibility"
+                >
                     <component
                         :is="isRecoveryCodesVisible ? EyeOff : Eye"
                         class="size-4"
@@ -79,6 +83,7 @@ onMounted(async () => {
                     <Button
                         variant="secondary"
                         type="submit"
+                        data-testid="two-factor-recovery-codes__regenerate"
                         :disabled="processing"
                     >
                         <RefreshCw /> {{ t('settings.two_factor.regenerate') }}
@@ -93,12 +98,17 @@ onMounted(async () => {
                         : 'h-0 opacity-0',
                 ]"
             >
-                <div v-if="errors?.length" class="mt-6">
+                <div
+                    v-if="errors?.length"
+                    class="mt-6"
+                    data-testid="two-factor-recovery-codes__errors"
+                >
                     <AlertError :errors="errors" />
                 </div>
                 <div v-else class="mt-3 space-y-3">
                     <div
                         ref="recoveryCodeSectionRef"
+                        data-testid="two-factor-recovery-codes__list"
                         class="grid gap-1 rounded-lg bg-muted p-4 font-mono text-sm"
                     >
                         <div v-if="!recoveryCodesList.length" class="space-y-2">
@@ -112,6 +122,7 @@ onMounted(async () => {
                             v-else
                             v-for="(code, index) in recoveryCodesList"
                             :key="index"
+                            data-testid="two-factor-recovery-codes__code"
                         >
                             {{ code }}
                         </div>
