@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { Head, usePage } from '@inertiajs/vue3';
-import { CalendarX, ChevronLeft, ChevronRight, MapPin } from '@lucide/vue';
+import { CalendarX, ChevronLeft, ChevronRight } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Button } from '@/components/ui/button';
 import { useEventFormat } from '@/composables/useEventFormat';
-import { placeEvent } from '@/composables/useEventPlacement';
 import type { DistanceClass, Event } from '@/types';
 
 const props = defineProps<{
@@ -127,12 +126,6 @@ function goToPage(value: number) {
         .getElementById('events-list')
         ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-
-const hoverSlug = ref<string | null>(null);
-const showMap = ref(false);
-const hasPins = computed(() =>
-    visibleEvents.value.some((event) => placeEvent(event) !== null),
-);
 
 const fieldClass =
     'flex min-w-0 flex-col gap-0.5 rounded-2xl px-3.5 py-2 text-[11px] font-bold tracking-widest text-muted-foreground uppercase transition-colors focus-within:bg-secondary hover:bg-secondary/60';
@@ -265,9 +258,7 @@ const selectClass =
                 </form>
             </section>
 
-            <div
-                class="grid gap-6 pt-6 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-10"
-            >
+            <div class="pt-6">
                 <div class="min-w-0">
                     <div
                         v-if="visibleEvents.length > 0"
@@ -279,7 +270,6 @@ const selectClass =
                             :key="event.id"
                             :event="event"
                             :favorited="favorites.includes(event.id)"
-                            @hover="hoverSlug = $event"
                         />
                     </div>
 
@@ -353,47 +343,6 @@ const selectClass =
                         </Button>
                     </div>
                 </div>
-
-                <aside
-                    v-if="hasPins"
-                    id="events-map"
-                    class="order-first lg:order-none"
-                    :class="showMap ? 'block' : 'hidden lg:block'"
-                >
-                    <div
-                        class="rounded-2xl border bg-secondary p-4 lg:sticky lg:top-24"
-                    >
-                        <h2 class="mb-2 text-sm font-bold">
-                            {{ t('events.map.title') }}
-                        </h2>
-                        <EventMap
-                            :events="visibleEvents"
-                            :hover-slug="hoverSlug"
-                        />
-                        <p class="mt-2 text-sm text-muted-foreground">
-                            {{ t('events.map.note') }}
-                        </p>
-                    </div>
-                </aside>
-            </div>
-
-            <!-- Sticky inside the page rather than fixed to the screen, so at the
-                 end of the list it rests below the last card, clear of the footer. -->
-            <div
-                v-if="hasPins"
-                class="pointer-events-none sticky bottom-0 z-20 mt-4 flex justify-center pb-5 lg:hidden"
-            >
-                <button
-                    type="button"
-                    class="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-bold whitespace-nowrap text-background shadow-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring"
-                    :aria-expanded="showMap"
-                    aria-controls="events-map"
-                    data-test="toggle-map"
-                    @click="showMap = !showMap"
-                >
-                    <MapPin class="size-4" aria-hidden="true" />
-                    {{ showMap ? t('events.map.hide') : t('events.map.show') }}
-                </button>
             </div>
         </main>
     </DefaultShell>

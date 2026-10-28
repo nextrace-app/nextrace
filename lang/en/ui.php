@@ -72,13 +72,6 @@ return [
     'events' => [
         'participants' => 'participants',
         'time_tba' => 'Time TBA',
-        'map' => [
-            'title' => 'Greece',
-            'note' => 'Approximate locations.',
-            'show' => 'Show map',
-            'hide' => 'Hide map',
-            'pin' => '{name}, {city}',
-        ],
         'back' => 'Back to events',
         'register' => 'Register for this event',
         'view_map' => 'View on map',
