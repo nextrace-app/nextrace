@@ -24,7 +24,7 @@ const linkClass =
 <template>
     <footer class="border-t bg-card text-sm text-muted-foreground">
         <div
-            class="flex flex-col gap-3 px-4 py-6 sm:px-6 md:flex-row md:items-center md:justify-between md:py-4 lg:px-8"
+            class="flex flex-col gap-4 px-4 py-4 sm:gap-6 sm:px-6 sm:py-6 md:flex-row md:items-center md:justify-between"
         >
             <div
                 class="flex flex-col gap-x-4 gap-y-1 md:flex-row md:items-center"

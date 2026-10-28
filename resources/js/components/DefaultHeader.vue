@@ -78,9 +78,7 @@ const menuRow =
 
 <template>
     <header class="sticky top-0 z-30 border-b bg-card/95 backdrop-blur">
-        <div
-            class="flex h-14 items-center gap-3 px-4 sm:px-6 md:h-16 md:gap-4 lg:px-8"
-        >
+        <div class="flex h-14 items-center gap-3 px-4 sm:px-6 md:h-16 md:gap-4">
             <Link
                 :href="localeRoute(home())"
                 :aria-label="t('nav.home')"
@@ -331,7 +329,7 @@ const menuRow =
             data-test="category-bar"
         >
             <div
-                class="flex items-center gap-1 overflow-x-auto px-4 py-2 sm:px-6 lg:px-8"
+                class="flex items-center gap-1 overflow-x-auto px-4 py-2 sm:px-6"
             >
                 <Link
                     v-for="item in categoryLinks"

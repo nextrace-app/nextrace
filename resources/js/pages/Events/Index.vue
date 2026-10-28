@@ -97,14 +97,14 @@ function goToPage(value: number) {
     <Head :title="seo.title ?? t('nav.events')" />
 
     <DefaultShell flush>
-        <main class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        <main class="mx-auto w-full max-w-6xl px-4 sm:px-6">
             <h1 class="sr-only">{{ t('events.index.title') }}</h1>
 
-            <div class="py-6">
+            <div class="py-4 sm:py-6">
                 <div
                     v-if="visibleEvents.length > 0"
                     id="events-list"
-                    class="grid scroll-mt-24 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+                    class="grid scroll-mt-24 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3"
                 >
                     <EventCard
                         v-for="event in pagedEvents"
@@ -116,7 +116,7 @@ function goToPage(value: number) {
 
                 <nav
                     v-if="pageCount > 1"
-                    class="mt-6 flex items-center justify-center gap-1.5"
+                    class="mt-4 flex items-center justify-center gap-1.5 sm:mt-6"
                     :aria-label="t('events.pagination.label')"
                     data-test="pagination"
                 >
