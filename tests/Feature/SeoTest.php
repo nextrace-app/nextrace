@@ -221,7 +221,7 @@ class SeoTest extends TestCase
     public function test_every_race_is_a_sub_event_with_offers_and_the_event_has_an_organizer(): void
     {
         $organizer = Organizer::factory()->create(['name' => ['en' => 'Crete Runners', 'el' => 'Δρομείς Κρήτης'], 'website' => 'https://runners.example.com']);
-        $event = $this->event(['organizer_id' => $organizer->id]);
+        $event = $this->event(['organizer_id' => $organizer->id], ['name' => ['en' => 'Half marathon', 'el' => 'Ημιμαραθώνιος']]);
 
         $tenK = Race::factory()->for($event)->create([
             'name' => ['en' => '10 km', 'el' => '10 χλμ'],
@@ -231,7 +231,7 @@ class SeoTest extends TestCase
         ]);
         RacePrice::factory()->for($tenK)->create(['amount_cents' => 1550, 'currency' => 'EUR', 'valid_from' => '2027-01-01', 'valid_until' => '2027-03-31']);
         RacePrice::factory()->for($tenK)->create(['amount_cents' => 0, 'currency' => 'EUR', 'valid_from' => null, 'valid_until' => null]);
-        Race::factory()->for($event)->startTimeUnknown()->create(['distance_meters' => 5000, 'starts_at' => '2027-04-18 00:00:00']);
+        Race::factory()->for($event)->startTimeUnknown()->create(['name' => ['en' => '5 km', 'el' => '5 χλμ'], 'distance_meters' => 5000, 'starts_at' => '2027-04-18 00:00:00']);
 
         $html = $this->get(route('events.show', $event))->assertOk()->getContent();
         $data = $this->jsonLd($html);
