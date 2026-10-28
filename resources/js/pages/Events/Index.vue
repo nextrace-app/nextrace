@@ -329,8 +329,9 @@ const selectClass =
                     </nav>
 
                     <div
-                        v-else
-                        class="flex flex-col items-center gap-4 rounded-3xl border border-dashed bg-card py-16 text-center"
+                        v-if="visibleEvents.length === 0"
+                        class="flex flex-col items-center gap-4 rounded-xl border border-dashed bg-card py-16 text-center"
+                        data-test="events-empty"
                     >
                         <CalendarX
                             class="size-8 text-muted-foreground"
