@@ -1073,5 +1073,962 @@
                 "starts_at": "2027-10-03 09:15:00"
             }
         ]
+    },
+    {
+        "slug": "athens-marathon-the-authentic-2026",
+        "series": {
+            "slug": "athens-marathon-the-authentic",
+            "name": {
+                "en": "Athens Marathon. The Authentic",
+                "el": "Αυθεντικός Μαραθώνιος Αθήνας"
+            },
+            "organizer_slug": "segas"
+        },
+        "organizer": {
+            "slug": "segas",
+            "name": {
+                "en": "SEGAS (Hellenic Athletics Federation)",
+                "el": "ΣΕΓΑΣ"
+            },
+            "website": "https://www.athensauthenticmarathon.gr"
+        },
+        "region": "attiki",
+        "edition_number": 43,
+        "name": {
+            "en": "Athens Marathon. The Authentic",
+            "el": "Αυθεντικός Μαραθώνιος Αθήνας"
+        },
+        "description": {
+            "en": "The 43rd Athens Marathon, run on the original route from Marathon to the Panathenaic Stadium, with a 10 km road race, a 5 km road race, a 5 km universities night run and a kids race over the weekend of 7-8 November. Registration is sold out.",
+            "el": "Ο 43ος Μαραθώνιος Αθήνας στην ιστορική διαδρομή από τον Μαραθώνα έως το Παναθηναϊκό Στάδιο, με αγώνες 10 χλμ., 5 χλμ., νυχτερινό 5 χλμ. φοιτητών και παιδικό αγώνα το Σαββατοκύριακο 7-8 Νοεμβρίου. Οι θέσεις έχουν εξαντληθεί."
+        },
+        "city": "Athens",
+        "venue": {
+            "en": "Start: Marathon. Finish: Panathenaic Stadium, Athens.",
+            "el": "Εκκίνηση: Μαραθώνας. Τερματισμός: Παναθηναϊκό Στάδιο, Αθήνα."
+        },
+        "latitude": 37.9684,
+        "longitude": 23.7411,
+        "date_confirmed": true,
+        "registration": {
+            "status": "sold_out",
+            "url": "https://www.athensauthenticmarathon.gr/en/"
+        },
+        "links": [
+            {
+                "type": "website",
+                "url": "https://www.athensauthenticmarathon.gr/en/"
+            }
+        ],
+        "source_url": "https://www.athensauthenticmarathon.gr/en/",
+        "races": [
+            {
+                "slug": "marathon",
+                "name": {
+                    "en": "Marathon",
+                    "el": "Μαραθώνιος"
+                },
+                "is_main": true,
+                "distance_meters": 42195,
+                "distance_class": "marathon",
+                "discipline": "run",
+                "terrain": "road",
+                "start_location": {
+                    "en": "Marathon",
+                    "el": "Μαραθώνας"
+                },
+                "finish_location": {
+                    "en": "Panathenaic Stadium, Athens",
+                    "el": "Παναθηναϊκό Στάδιο, Αθήνα"
+                },
+                "starts_at": "2026-11-08 08:30:00"
+            },
+            {
+                "slug": "10km",
+                "name": {
+                    "en": "10 km road race",
+                    "el": "Αγώνας δρόμου 10 χλμ."
+                },
+                "distance_meters": 10000,
+                "distance_class": "10k",
+                "discipline": "run",
+                "terrain": "road",
+                "starts_at": "2026-11-08 08:00:00"
+            },
+            {
+                "slug": "5km",
+                "name": {
+                    "en": "5 km road race",
+                    "el": "Αγώνας δρόμου 5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "discipline": "run",
+                "terrain": "road",
+                "starts_at": "2026-11-07 17:00:00"
+            },
+            {
+                "slug": "5km-universities-night-run",
+                "name": {
+                    "en": "5 km universities night run",
+                    "el": "Νυχτερινός αγώνας 5 χλμ. πανεπιστημίων"
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "discipline": "run",
+                "terrain": "road",
+                "starts_at": "2026-11-07 20:00:00"
+            },
+            {
+                "slug": "kids-1200m",
+                "name": {
+                    "en": "Kids race 1,200 m",
+                    "el": "Παιδικός αγώνας 1.200 μ."
+                },
+                "distance_meters": 1200,
+                "distance_class": "kids",
+                "discipline": "run",
+                "terrain": "road",
+                "starts_at": "2026-11-07 16:00:00"
+            }
+        ]
+    },
+    {
+        "slug": "kyriakideia-2026",
+        "series": {
+            "slug": "kyriakideia",
+            "name": {
+                "en": "Kyriakideia",
+                "el": "Κυριακίδεια"
+            }
+        },
+        "region": "attiki",
+        "name": {
+            "en": "Kyriakideia",
+            "el": "Κυριακίδεια"
+        },
+        "description": {
+            "en": "Road races in memory of Stelios Kyriakidis, winner of the 1946 Boston Marathon, in Filothei, Athens: a certified 10 km and 5 km plus a 1 km children's race. Start and finish at the Filothei municipal gym, Kalliga 77. Races start at 09:00.",
+            "el": "Αγώνες δρόμου στη μνήμη του Στέλιου Κυριακίδη, νικητή του Μαραθωνίου της Βοστόνης το 1946, στη Φιλοθέη Αθηνών: πιστοποιημένοι αγώνες 10 και 5 χλμ. και παιδικός αγώνας 1 χλμ. Εκκίνηση και τερματισμός στο Δημοτικό Γυμναστήριο Φιλοθέης (Καλλιγά 77). Ώρα έναρξης 09:00."
+        },
+        "city": "Filothei",
+        "venue": {
+            "en": "Filothei municipal gym, Kalliga 77",
+            "el": "Δημοτικό Γυμναστήριο Φιλοθέης, Καλλιγά 77"
+        },
+        "date_confirmed": true,
+        "source_url": "https://runnermagazine.gr/kalentari/185600/kyriakideia-2026/",
+        "races": [
+            {
+                "slug": "10km",
+                "name": {
+                    "en": "10 km",
+                    "el": "10 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 10000,
+                "distance_class": "10k",
+                "discipline": "run",
+                "terrain": "road",
+                "time_limit_minutes": 90,
+                "certification": "aims",
+                "finish_location": {
+                    "en": "Filothei municipal gym, Kalliga 77",
+                    "el": "Δημοτικό Γυμναστήριο Φιλοθέης, Καλλιγά 77"
+                },
+                "starts_at": "2026-11-29 09:00:00"
+            },
+            {
+                "slug": "5km",
+                "name": {
+                    "en": "5 km",
+                    "el": "5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "discipline": "run",
+                "terrain": "road",
+                "time_limit_minutes": 50,
+                "certification": "aims",
+                "starts_at": "2026-11-29 09:00:00"
+            },
+            {
+                "slug": "kids-1km",
+                "name": {
+                    "en": "Kids race 1 km",
+                    "el": "Παιδικός αγώνας 1 χλμ."
+                },
+                "distance_meters": 1000,
+                "distance_class": "kids",
+                "discipline": "run",
+                "terrain": "road",
+                "starts_at": "2026-11-29 09:00:00"
+            }
+        ]
+    },
+    {
+        "slug": "run-the-lake-vouliagmeni-2026",
+        "series": {
+            "slug": "run-the-lake-vouliagmeni",
+            "name": {
+                "en": "Run the Lake Vouliagmeni",
+                "el": "Run the Lake Βουλιαγμένη"
+            },
+            "organizer_slug": "efklis-southern-suburbs-runners"
+        },
+        "organizer": {
+            "slug": "efklis-southern-suburbs-runners",
+            "name": {
+                "en": "Efklis Southern Suburbs of Attica Runners Club",
+                "el": "Σύλλογος Δρομέων Νοτίων Προαστίων Αττικής «Ευκλής»"
+            },
+            "website": "https://www.efklis.gr/"
+        },
+        "region": "attiki",
+        "edition_number": 12,
+        "name": {
+            "en": "Run the Lake Vouliagmeni",
+            "el": "Run the Lake Βουλιαγμένη"
+        },
+        "description": {
+            "en": "12th edition of the coastal run from Vouliagmeni to Varkiza and back, with 10 km and 5 km races and a 1 km children's race, on Sunday 20 December. Organised by the Municipality of Vari-Voula-Vouliagmeni and the Efklis runners' club.",
+            "el": "12η διοργάνωση του παραλιακού αγώνα από τη Βουλιαγμένη έως τη Βάρκιζα, με αγώνες 10 και 5 χλμ. και παιδικό 1 χλμ., την Κυριακή 20 Δεκεμβρίου. Διοργάνωση: Δήμος Βάρης-Βούλας-Βουλιαγμένης και Σύλλογος Δρομέων Νοτίων Προαστίων «Ευκλής»."
+        },
+        "city": "Vouliagmeni",
+        "date_confirmed": true,
+        "registration": {
+            "url": "https://runthelakevouliagmeni.gr/eggrafi/"
+        },
+        "links": [
+            {
+                "type": "website",
+                "url": "https://runthelakevouliagmeni.gr/"
+            }
+        ],
+        "source_url": "https://runnermagazine.gr/kalentari/180719/12o-run-the-lake-vouliagmeni/",
+        "races": [
+            {
+                "slug": "10km",
+                "name": {
+                    "en": "10 km",
+                    "el": "10 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 10000,
+                "distance_class": "10k",
+                "discipline": "run",
+                "terrain": "road",
+                "start_location": {
+                    "en": "Vouliagmeni lake entrance",
+                    "el": "Είσοδος Λίμνης Βουλιαγμένης"
+                },
+                "starts_at": "2026-12-20 08:30:00"
+            },
+            {
+                "slug": "5km",
+                "name": {
+                    "en": "5 km",
+                    "el": "5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "discipline": "run",
+                "terrain": "road",
+                "starts_at": "2026-12-20 10:45:00"
+            },
+            {
+                "slug": "kids-1km",
+                "name": {
+                    "en": "Kids race 1 km",
+                    "el": "Παιδικός αγώνας 1 χλμ."
+                },
+                "distance_meters": 1000,
+                "distance_class": "kids",
+                "discipline": "run",
+                "terrain": "road",
+                "starts_at": "2026-12-20 10:15:00"
+            }
+        ]
+    },
+    {
+        "slug": "night-run-santa-edition-papagou-2026",
+        "series": {
+            "slug": "night-run-santa-edition-papagou",
+            "name": {
+                "en": "Night Run Santa Edition: Miles with Smiles",
+                "el": "Night Run Santa Edition: Miles with Smiles Παπάγου-Χολαργού"
+            }
+        },
+        "region": "attiki",
+        "edition_number": 2,
+        "name": {
+            "en": "Night Run Santa Edition: Miles with Smiles",
+            "el": "Night Run Santa Edition: Miles with Smiles Παπάγου-Χολαργού"
+        },
+        "description": {
+            "en": "2nd Christmas-themed night run of the Municipality of Papagou-Cholargos and Papagou Athletic Club, with 10 km, 5 km and a 1 km children's race, starting at 18:00 at the Papagou Athletic Centre.",
+            "el": "2ος χριστουγεννιάτικος νυχτερινός αγώνας του Δήμου Παπάγου-Χολαργού και του Αθλητικού Συλλόγου Παπάγου, με αγώνες 10 και 5 χλμ. και παιδικό 1 χλμ., με εκκίνηση στις 18:00 στο Αθλητικό Κέντρο Παπάγου."
+        },
+        "city": "Papagou",
+        "venue": {
+            "en": "Papagou Athletic Centre 'Vasilios Xydis'",
+            "el": "Αθλητικό Κέντρο Παπάγου «Βασίλειος Ξύδης»"
+        },
+        "date_confirmed": true,
+        "registration": {
+            "url": "https://eggrafes.mysportevent.gr/product-category/night-run-miles-with-smiles-papagou-cholargou/"
+        },
+        "source_url": "https://runnermagazine.gr/kalentari/185168/2nd-night-run-santa-edition-miles-with-smiles/",
+        "races": [
+            {
+                "slug": "10km",
+                "name": {
+                    "en": "10 km",
+                    "el": "10 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 10000,
+                "distance_class": "10k",
+                "discipline": "run",
+                "terrain": "road",
+                "min_age": 12,
+                "starts_at": "2026-12-12 18:00:00"
+            },
+            {
+                "slug": "5km",
+                "name": {
+                    "en": "5 km",
+                    "el": "5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "discipline": "run",
+                "terrain": "road",
+                "min_age": 12,
+                "starts_at": "2026-12-12 18:00:00"
+            },
+            {
+                "slug": "kids-1km",
+                "name": {
+                    "en": "Kids race 1 km",
+                    "el": "Παιδικός αγώνας 1 χλμ."
+                },
+                "distance_meters": 1000,
+                "distance_class": "kids",
+                "discipline": "run",
+                "terrain": "road",
+                "starts_at": "2026-12-12 18:00:00"
+            }
+        ]
+    },
+    {
+        "slug": "pentelikon-marathon-2026",
+        "series": {
+            "slug": "pentelikon-marathon",
+            "name": {
+                "en": "Pentelikon Marathon",
+                "el": "Πεντελικόν Μαραθών"
+            },
+            "organizer_slug": "aps-telmissos-marathonos"
+        },
+        "organizer": {
+            "slug": "aps-telmissos-marathonos",
+            "name": {
+                "en": "APS Telmissos Marathonos",
+                "el": "ΑΠΣ Τελμησσός Μαραθώνος"
+            },
+            "website": "http://www.telmissos.gr/"
+        },
+        "region": "attiki",
+        "name": {
+            "en": "Pentelikon Marathon",
+            "el": "Πεντελικόν Μαραθών"
+        },
+        "description": {
+            "en": "12 km mountain race on Sunday 13 December organised by APS Telmissos Marathonos. The official proclamation is still to be published.",
+            "el": "Ορεινός αγώνας 12 χλμ. την Κυριακή 13 Δεκεμβρίου, με διοργανωτή τον ΑΠΣ Τελμησσός Μαραθώνος. Η προκήρυξη αναμένεται."
+        },
+        "city": "Marathon",
+        "date_confirmed": true,
+        "source_url": "https://runnermagazine.gr/kalentari/165590/pentelikon-marathon-2026/",
+        "races": [
+            {
+                "slug": "12km",
+                "name": {
+                    "en": "12 km mountain race",
+                    "el": "Ορεινός αγώνας 12 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 12000,
+                "distance_class": "other",
+                "discipline": "run",
+                "terrain": "trail",
+                "starts_at": "2026-12-13 00:00:00",
+                "start_time_known": false
+            }
+        ]
+    },
+    {
+        "slug": "to-gidi-ton-methanon-2026",
+        "series": {
+            "slug": "to-gidi-ton-methanon",
+            "name": {
+                "en": "Το Γίδι των Μεθάνων (The Goat of Methana)",
+                "el": "Το Γίδι των Μεθάνων"
+            }
+        },
+        "region": "attiki",
+        "edition_number": 4,
+        "name": {
+            "en": "Το Γίδι των Μεθάνων (The Goat of Methana)",
+            "el": "Το Γίδι των Μεθάνων"
+        },
+        "description": {
+            "en": "4th mountain-running weekend on the volcanic Methana peninsula: a 28 km and a 12 km mountain race on Sunday 22 November from Methana port to Vathy, and a 5 km fun run plus a kids race on Saturday 21 November.",
+            "el": "4ο ορεινό τρέξιμο στην ηφαιστειογενή χερσόνησο των Μεθάνων: αγώνες βουνού 28 και 12 χλμ. την Κυριακή 22 Νοεμβρίου από το λιμάνι των Μεθάνων έως το Βαθύ, και αγώνας 5 χλμ. με παιδικό αγώνα το Σάββατο 21 Νοεμβρίου."
+        },
+        "city": "Methana",
+        "date_confirmed": true,
+        "registration": {
+            "url": "https://results.chronolog.gr/registrationc1.aspx?h=d2c829ef9e6a7900f7dca5bc446ebde0"
+        },
+        "links": [
+            {
+                "type": "website",
+                "url": "https://www.volcanotrails.gr/togidi/"
+            }
+        ],
+        "source_url": "https://runnermagazine.gr/kalentari/180024/to-gidi-ton-methanon-2026/",
+        "races": [
+            {
+                "slug": "28km",
+                "name": {
+                    "en": "Pausanias 28 km",
+                    "el": "Παυσανίας 28 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 28000,
+                "distance_class": "ultra",
+                "discipline": "run",
+                "terrain": "trail",
+                "elevation_gain_m": 1720,
+                "registration_url": "https://results.chronolog.gr/registrationc1.aspx?h=d2c829ef9e6a7900f7dca5bc446ebde0",
+                "start_location": {
+                    "en": "Methana port",
+                    "el": "Λιμάνι Μεθάνων"
+                },
+                "finish_location": {
+                    "en": "Vathy, Methana",
+                    "el": "Βαθύ Μεθάνων"
+                },
+                "prices": [
+                    {
+                        "amount_cents": 3000,
+                        "currency": "EUR"
+                    }
+                ],
+                "starts_at": "2026-11-22 00:00:00",
+                "start_time_known": false
+            },
+            {
+                "slug": "12km",
+                "name": {
+                    "en": "Arsinoe 12 km",
+                    "el": "Αρσινόη 12 χλμ."
+                },
+                "distance_meters": 12000,
+                "distance_class": "other",
+                "discipline": "run",
+                "terrain": "trail",
+                "elevation_gain_m": 680,
+                "registration_url": "https://results.chronolog.gr/registrationc1.aspx?h=d2c829ef9e6a7900f7dca5bc446ebde0",
+                "prices": [
+                    {
+                        "amount_cents": 2000,
+                        "currency": "EUR"
+                    }
+                ],
+                "starts_at": "2026-11-22 00:00:00",
+                "start_time_known": false
+            },
+            {
+                "slug": "5km",
+                "name": {
+                    "en": "Polo Fun Run 5 km",
+                    "el": "Polo Fun Run 5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "discipline": "run",
+                "terrain": "trail",
+                "elevation_gain_m": 120,
+                "registration_url": "https://results.chronolog.gr/registrationc1.aspx?h=d2c829ef9e6a7900f7dca5bc446ebde0",
+                "prices": [
+                    {
+                        "amount_cents": 1000,
+                        "currency": "EUR"
+                    }
+                ],
+                "starts_at": "2026-11-21 00:00:00",
+                "start_time_known": false
+            },
+            {
+                "slug": "kids-1500m",
+                "name": {
+                    "en": "Kids race 'Gidaki' 1,500 m",
+                    "el": "Παιδικός αγώνας «Γιδάκι» 1.500 μ."
+                },
+                "distance_meters": 1500,
+                "distance_class": "kids",
+                "discipline": "run",
+                "prices": [
+                    {
+                        "amount_cents": 0,
+                        "currency": "EUR"
+                    }
+                ],
+                "starts_at": "2026-11-21 00:00:00",
+                "start_time_known": false
+            }
+        ]
+    },
+    {
+        "slug": "giona-mountain-race-2026",
+        "series": {
+            "slug": "giona-mountain-race",
+            "name": {
+                "en": "Giona Mountain Race",
+                "el": "Giona Mountain Race"
+            }
+        },
+        "region": "central-greece",
+        "name": {
+            "en": "Giona Mountain Race",
+            "el": "Giona Mountain Race"
+        },
+        "description": {
+            "en": "New mountain-running event on Mount Giona and in Amfissa on 21-22 November, supported by the Region of Central Greece and the Municipality of Delphi: 28 km, 12 km and a 5 km city trail on Sunday, plus a fun run and a kids race on Saturday.",
+            "el": "Νέος αγώνας ορεινού τρεξίματος στη Γκιώνα και την Άμφισσα στις 21-22 Νοεμβρίου, με στήριξη της Περιφέρειας Στερεάς Ελλάδας και του Δήμου Δελφών: διαδρομές 28 και 12 χλμ. και city trail 5 χλμ. την Κυριακή, με δράση συμμετοχής και παιδικό αγώνα το Σάββατο."
+        },
+        "city": "Amfissa",
+        "date_confirmed": true,
+        "links": [
+            {
+                "type": "instagram",
+                "url": "https://www.instagram.com/giona_mountain_race_/"
+            }
+        ],
+        "source_url": "https://runnermagazine.gr/kalentari/179844/giona-mountain-race-2026/",
+        "races": [
+            {
+                "slug": "giona-trail-28km",
+                "name": {
+                    "en": "Giona Trail 28 km",
+                    "el": "Giona Trail 28 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 28000,
+                "distance_class": "ultra",
+                "discipline": "run",
+                "terrain": "trail",
+                "elevation_gain_m": 1550,
+                "time_limit_minutes": 360,
+                "starts_at": "2026-11-22 08:30:00"
+            },
+            {
+                "slug": "panagiorema-trail-12km",
+                "name": {
+                    "en": "Panagiorema Trail 12 km",
+                    "el": "Panagiorema Trail 12 χλμ."
+                },
+                "distance_meters": 12000,
+                "distance_class": "other",
+                "discipline": "run",
+                "terrain": "trail",
+                "elevation_gain_m": 550,
+                "time_limit_minutes": 180,
+                "starts_at": "2026-11-22 09:00:00"
+            },
+            {
+                "slug": "amfissa-city-trail-5km",
+                "name": {
+                    "en": "Amfissa City Trail 5 km",
+                    "el": "Amfissa City Trail 5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "discipline": "run",
+                "terrain": "trail",
+                "elevation_gain_m": 100,
+                "starts_at": "2026-11-22 09:30:00"
+            }
+        ]
+    },
+    {
+        "slug": "gyros-tis-kadmeias-2026",
+        "series": {
+            "slug": "gyros-tis-kadmeias",
+            "name": {
+                "en": "Round of Kadmeia (Gyros tis Kadmeias)",
+                "el": "Ο Γύρος της Καδμείας"
+            },
+            "organizer_slug": "thebes-health-runners-marathon-runners"
+        },
+        "organizer": {
+            "slug": "thebes-health-runners-marathon-runners",
+            "name": {
+                "en": "Thebes Health Runners Marathon Runners Club",
+                "el": "Σύλλογος Δρομέων Υγείας Μαραθωνοδρόμων Θήβας"
+            },
+            "phone": "6945685343"
+        },
+        "region": "central-greece",
+        "name": {
+            "en": "Round of Kadmeia (Gyros tis Kadmeias)",
+            "el": "Ο Γύρος της Καδμείας"
+        },
+        "description": {
+            "en": "New Year's Eve race of 6 km and a 1 km children's race, starting and finishing in the central square of Thebes, on Thursday 31 December. Organised by the Thebes Health Runners Marathon Runners Club; the proclamation is still to be published.",
+            "el": "Αγώνας Παραμονής Πρωτοχρονιάς 6 χλμ. και παιδικός 1 χλμ., με εκκίνηση και τερματισμό στην κεντρική πλατεία Θήβας, την Πέμπτη 31 Δεκεμβρίου. Διοργάνωση: Σύλλογος Δρομέων Υγείας Μαραθωνοδρόμων Θήβας· η προκήρυξη αναμένεται."
+        },
+        "city": "Thebes",
+        "venue": {
+            "en": "Central square of Thebes",
+            "el": "Κεντρική πλατεία Θήβας"
+        },
+        "date_confirmed": true,
+        "source_url": "https://runnermagazine.gr/kalentari/180723/o-gyros-tis-kadmeias-2026/",
+        "races": [
+            {
+                "slug": "6km",
+                "name": {
+                    "en": "6 km",
+                    "el": "6 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 6000,
+                "distance_class": "other",
+                "discipline": "run",
+                "terrain": "road",
+                "start_location": {
+                    "en": "Central square of Thebes",
+                    "el": "Κεντρική πλατεία Θήβας"
+                },
+                "starts_at": "2026-12-31 00:00:00",
+                "start_time_known": false
+            },
+            {
+                "slug": "kids-1km",
+                "name": {
+                    "en": "Kids race 1 km",
+                    "el": "Παιδικός αγώνας 1 χλμ."
+                },
+                "distance_meters": 1000,
+                "distance_class": "kids",
+                "discipline": "run",
+                "terrain": "road",
+                "starts_at": "2026-12-31 00:00:00",
+                "start_time_known": false
+            }
+        ]
+    },
+    {
+        "slug": "nymfaia-mountain-races-2026",
+        "series": {
+            "slug": "nymfaia-mountain-races",
+            "name": {
+                "en": "Nymfaia Mountain Races",
+                "el": "Ορεινοί Αγώνες Νυμφαίας"
+            },
+            "organizer_slug": "rodopi-runners"
+        },
+        "organizer": {
+            "slug": "rodopi-runners",
+            "name": {
+                "en": "Rodopi Runners (Health Runners Club of Rhodope)",
+                "el": "Σύλλογος Δρομέων Υγείας Ν. Ροδόπης Rodopi Runners"
+            },
+            "website": "http://www.rodopirunners.gr/"
+        },
+        "region": "eastern-macedonia-thrace",
+        "name": {
+            "en": "Nymfaia Mountain Races",
+            "el": "Ορεινοί Αγώνες Νυμφαίας"
+        },
+        "description": {
+            "en": "Mountain races in the peri-urban forest of Nymfaia near Komotini on Sunday 22 November: 40 km (ITRA points), 17 km and 8 km. Organised by Rodopi Runners; start and finish at the Nymfaia tourist kiosk.",
+            "el": "Ορεινοί αγώνες στο περιαστικό δάσος της Νυμφαίας κοντά στην Κομοτηνή την Κυριακή 22 Νοεμβρίου: 40, 17 και 8 χλμ. (το 40άρι με βαθμούς ITRA). Διοργάνωση: Rodopi Runners· εκκίνηση και τερματισμός στο τουριστικό περίπτερο Νυμφαίας."
+        },
+        "city": "Komotini",
+        "venue": {
+            "en": "Nymfaia tourist kiosk, Rhodope",
+            "el": "Τουριστικό Περίπτερο Νυμφαίας, Ροδόπη"
+        },
+        "date_confirmed": true,
+        "registration": {
+            "url": "https://www.athletin.gr/events/97"
+        },
+        "source_url": "https://runnermagazine.gr/kalentari/180450/oreinoi-agones-nymfaias-2026/",
+        "races": [
+            {
+                "slug": "40km",
+                "name": {
+                    "en": "Nymfaia 40 km",
+                    "el": "Ορεινός Αγώνας Νυμφαίας 40 χλμ."
+                },
+                "is_main": true,
+                "distance_meters": 40000,
+                "distance_class": "ultra",
+                "discipline": "run",
+                "terrain": "trail",
+                "elevation_gain_m": 2000,
+                "time_limit_minutes": 540,
+                "starts_at": "2026-11-22 08:00:00"
+            },
+            {
+                "slug": "17km",
+                "name": {
+                    "en": "Nymfaia 17 km",
+                    "el": "Ορεινός Αγώνας Νυμφαίας 17 χλμ."
+                },
+                "distance_meters": 17000,
+                "distance_class": "other",
+                "discipline": "run",
+                "terrain": "trail",
+                "elevation_gain_m": 760,
+                "time_limit_minutes": 240,
+                "starts_at": "2026-11-22 10:00:00"
+            },
+            {
+                "slug": "8km",
+                "name": {
+                    "en": "Nymfaia 8 km",
+                    "el": "Ορεινός Αγώνας Νυμφαίας 8 χλμ."
+                },
+                "distance_meters": 8000,
+                "distance_class": "other",
+                "discipline": "run",
+                "terrain": "trail",
+                "time_limit_minutes": 180,
+                "starts_at": "2026-11-22 10:15:00"
+            }
+        ]
+    },
+    {
+        "slug": "all-terrain-ultra-race-ioannina-2027",
+        "series": {
+            "slug": "all-terrain-ultra-race-ioannina",
+            "name": {
+                "en": "All Terrain Ultra Race Ioannina",
+                "el": "All Terrain Ultra Race Ιωάννινα"
+            },
+            "organizer_slug": "epirus-athletic-events"
+        },
+        "organizer": {
+            "slug": "epirus-athletic-events",
+            "name": {
+                "en": "Epirus Athletic Events",
+                "el": "Epirus Athletic Events"
+            }
+        },
+        "region": "epirus",
+        "edition_number": 2,
+        "name": {
+            "en": "All Terrain Ultra Race Ioannina",
+            "el": "All Terrain Ultra Race Ιωάννινα"
+        },
+        "description": {
+            "en": "2nd edition at the Pan-Epirotic Athletic Centre (PEAKI) in Ioannina on Sunday 28 February 2027: 12 h, 6 h and 3 h timed races (a marathon can be completed within the 3 h race), 10 km, 5 km, a 1 km children's race and a 400 m Geri Run. Courses are World Athletics certified. Only the fixed distances are listed here; the timed races are not modelled.",
+            "el": "2η διοργάνωση στο Πανηπειρωτικό Αθλητικό Κέντρο Ιωαννίνων (ΠΕΑΚΙ) την Κυριακή 28 Φεβρουαρίου 2027: αγώνες 12 ωρών, 6 ωρών και 3 ωρών (με δυνατότητα μαραθωνίου εντός των 3 ωρών), 10 χλμ., 5 χλμ., παιδικός 1 χλμ. και GERI Run 400 μ. Οι διαδρομές είναι πιστοποιημένες από την World Athletics. Εδώ καταγράφονται μόνο οι αποστάσεις σταθερού μήκους· οι χρονικοί αγώνες δεν αποτυπώνονται."
+        },
+        "city": "Ioannina",
+        "venue": {
+            "en": "Pan-Epirotic Athletic Centre (PEAKI), Ioannina",
+            "el": "Πανηπειρωτικό Αθλητικό Κέντρο Ιωαννίνων (ΠΕΑΚΙ)"
+        },
+        "date_confirmed": true,
+        "links": [
+            {
+                "type": "other",
+                "url": "https://www.athletin.gr/events/104"
+            }
+        ],
+        "source_url": "https://runnermagazine.gr/kalentari/184947/2nd-all-terrain-ultra-race-ioannina/",
+        "races": [
+            {
+                "slug": "marathon",
+                "name": {
+                    "en": "Marathon (within the 3 h race)",
+                    "el": "Μαραθώνιος (εντός του αγώνα 3 ωρών)"
+                },
+                "is_main": true,
+                "distance_meters": 42195,
+                "distance_class": "marathon",
+                "discipline": "run",
+                "terrain": "mixed",
+                "starts_at": "2027-02-28 00:00:00",
+                "start_time_known": false
+            },
+            {
+                "slug": "10km",
+                "name": {
+                    "en": "10 km",
+                    "el": "10 χλμ."
+                },
+                "distance_meters": 10000,
+                "distance_class": "10k",
+                "discipline": "run",
+                "terrain": "mixed",
+                "starts_at": "2027-02-28 00:00:00",
+                "start_time_known": false
+            },
+            {
+                "slug": "5km",
+                "name": {
+                    "en": "5 km",
+                    "el": "5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "discipline": "run",
+                "terrain": "mixed",
+                "starts_at": "2027-02-28 00:00:00",
+                "start_time_known": false
+            },
+            {
+                "slug": "kids-1km",
+                "name": {
+                    "en": "Kids race 1 km",
+                    "el": "Παιδικός αγώνας 1 χλμ."
+                },
+                "distance_meters": 1000,
+                "distance_class": "kids",
+                "discipline": "run",
+                "starts_at": "2027-02-28 00:00:00",
+                "start_time_known": false
+            }
+        ]
+    },
+    {
+        "slug": "tui-rhodes-marathon-2027",
+        "series": {
+            "slug": "tui-rhodes-marathon",
+            "name": {
+                "en": "TUI Rhodes Marathon",
+                "el": "TUI Διεθνής Μαραθώνιος Ρόδου"
+            }
+        },
+        "region": "south-aegean",
+        "edition_number": 12,
+        "name": {
+            "en": "TUI Rhodes Marathon",
+            "el": "TUI Διεθνής Μαραθώνιος Ρόδου"
+        },
+        "description": {
+            "en": "12th edition on Sunday 18 April 2027 along the Rhodes seafront past the walls of the Medieval Town: marathon (two laps of the 21.097 km loop), half marathon, 10 km, 5 km, a 5 km walk and a 600 m children's race. Entries close on 7 April 2027.",
+            "el": "12η διοργάνωση την Κυριακή 18 Απριλίου 2027 στην παραλιακή διαδρομή της Ρόδου δίπλα στα τείχη της Μεσαιωνικής Πόλης: Μαραθώνιος (δύο γύροι της διαδρομής των 21,097 χλμ.), ημιμαραθώνιος, 10 χλμ., 5 χλμ., περιπατητική διαδρομή 5 χλμ. και παιδικός αγώνας 600 μ. Οι δηλώσεις κλείνουν στις 7 Απριλίου 2027."
+        },
+        "city": "Rhodes",
+        "date_confirmed": true,
+        "registration": {
+            "status": "open",
+            "closes_at": "2027-04-07",
+            "url": "https://www.rhodesmarathon.gr"
+        },
+        "links": [
+            {
+                "type": "website",
+                "url": "https://www.rhodesmarathon.gr"
+            }
+        ],
+        "source_url": "https://runnermagazine.gr/kalentari/178714/12os-tui-rhodes-marathon-anoigma-engrafon/",
+        "races": [
+            {
+                "slug": "marathon",
+                "name": {
+                    "en": "Marathon",
+                    "el": "Μαραθώνιος"
+                },
+                "is_main": true,
+                "distance_meters": 42195,
+                "distance_class": "marathon",
+                "discipline": "run",
+                "terrain": "road",
+                "min_age": 18,
+                "start_location": {
+                    "en": "Eleftherias Square (Altar of the Fatherland)",
+                    "el": "Πλατεία Ελευθερίας (Βωμός της Πατρίδας)"
+                },
+                "starts_at": "2027-04-18 07:30:00"
+            },
+            {
+                "slug": "half-marathon",
+                "name": {
+                    "en": "Half marathon",
+                    "el": "Ημιμαραθώνιος"
+                },
+                "distance_meters": 21097,
+                "distance_class": "half_marathon",
+                "discipline": "run",
+                "terrain": "road",
+                "min_age": 18,
+                "starts_at": "2027-04-18 07:30:00"
+            },
+            {
+                "slug": "10km",
+                "name": {
+                    "en": "10 km",
+                    "el": "10 χλμ."
+                },
+                "distance_meters": 10000,
+                "distance_class": "10k",
+                "discipline": "run",
+                "terrain": "road",
+                "min_age": 15,
+                "starts_at": "2027-04-18 07:15:00"
+            },
+            {
+                "slug": "5km",
+                "name": {
+                    "en": "5 km",
+                    "el": "5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "discipline": "run",
+                "terrain": "road",
+                "min_age": 12,
+                "start_location": {
+                    "en": "Rimini Square",
+                    "el": "Πλατεία Ρίμινι"
+                },
+                "starts_at": "2027-04-18 11:50:00"
+            },
+            {
+                "slug": "walk-5km",
+                "name": {
+                    "en": "5 km walk",
+                    "el": "Περιπατητική διαδρομή 5 χλμ."
+                },
+                "distance_meters": 5000,
+                "distance_class": "5k",
+                "discipline": "walk",
+                "terrain": "road",
+                "is_competitive": false,
+                "starts_at": "2027-04-18 11:55:00"
+            },
+            {
+                "slug": "kids-600m",
+                "name": {
+                    "en": "Kids race 600 m",
+                    "el": "Αγώνας παιδιών 600 μ."
+                },
+                "distance_meters": 600,
+                "distance_class": "kids",
+                "discipline": "run",
+                "terrain": "road",
+                "starts_at": "2027-04-18 13:00:00"
+            }
+        ]
     }
 ]

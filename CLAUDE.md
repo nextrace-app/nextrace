@@ -225,7 +225,7 @@ Vue components must have a single root element.
 
 ## NextRace project context
 
-- NextRace is a calendar of running races in Greece. It starts with Crete and will expand across Greece, and more features will be added later.
+- NextRace is a calendar of running races in Greece. It covers all of Greece, and more features will be added later.
 - The site is multilingual: English (default) and Greek. The language is detected automatically on the first visit and can be switched with the standard language switcher; the choice is remembered.
 - Translatable content (event name, description) is stored per locale; interface strings live in `lang/` and are served through vue-i18n.
 - Project agents live in `.claude/agents/`: `designer`, `seo`, `data-collector`, `backend`, `qa`. Delegate to them by role.

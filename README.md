@@ -1,6 +1,6 @@
 # NextRace
 
-A calendar of running races in Greece, starting with Crete. Laravel, Inertia and Vue; English (default) and Greek.
+A calendar of running races across all of Greece. Laravel, Inertia and Vue; English (default) and Greek.
 
 ## Search engine indexing
 

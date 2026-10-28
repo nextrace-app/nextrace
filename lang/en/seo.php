@@ -4,16 +4,16 @@ return [
 
     'og_locales' => ['en' => 'en_US', 'el' => 'el_GR'],
 
-    'default_description' => 'A calendar of running races in Greece, starting with Crete: dates, distances and registration links.',
+    'default_description' => 'A calendar of running races in Greece, across all of Greece: dates, distances and registration links.',
 
     'home' => [
-        'title' => 'Running races in Greece and Crete',
-        'description' => 'Find your next race: a calendar of running events in Crete and across Greece, from 5K to ultra, with dates, distances and registration links.',
+        'title' => 'Running races in Greece',
+        'description' => 'Find your next race: a calendar of running events across Greece, from 5K to ultra, with dates, distances and registration links.',
     ],
 
     'events' => [
-        'title' => 'Running events in Crete and Greece: race calendar',
-        'description' => 'Upcoming races in Crete (Heraklion, Chania, Rethymno, Lasithi) and Greece: 5K, 10K, half marathons, marathons, trail and ultra, with dates and registration.',
+        'title' => 'Running events in Greece: race calendar',
+        'description' => 'Upcoming races across Greece, from Crete to Macedonia: 5K, 10K, half marathons, marathons, trail and ultra, with dates and registration.',
     ],
 
     'event' => [

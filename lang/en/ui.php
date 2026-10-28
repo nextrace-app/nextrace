@@ -43,8 +43,8 @@ return [
         'title' => 'Find your next race',
         'subtitle' => 'Browse the upcoming events and sign up in a couple of minutes.',
         'cta' => 'Browse events',
-        'eyebrow' => 'Race calendar / Crete',
-        'heading' => 'Find a race that feels like Crete.',
+        'eyebrow' => 'Race calendar / Greece',
+        'heading' => 'Find your next race in Greece.',
         'lead' => 'Sea-level 10Ks, mountain trails and the Mediterranean marathon. Calm, clear and up to date.',
         'features' => [
             'calendar' => [
@@ -63,7 +63,7 @@ return [
     ],
 
     'footer' => [
-        'tagline' => 'Crete first, then all of Greece.',
+        'tagline' => 'Running races across all of Greece.',
         'disclaimer' => 'Dates are collected from organisers. Always confirm on the official site before you travel.',
         'copyright' => '© {year} NextRace',
         'browse' => 'Browse',
@@ -73,7 +73,7 @@ return [
         'participants' => 'participants',
         'time_tba' => 'Time TBA',
         'map' => [
-            'title' => 'Crete, Greece',
+            'title' => 'Greece',
             'note' => 'Approximate locations.',
             'show' => 'Show map',
             'hide' => 'Hide map',
@@ -116,7 +116,7 @@ return [
         ],
         'index' => [
             'title' => 'Upcoming races',
-            'subtitle' => 'Running events across Greece, starting with Crete.',
+            'subtitle' => 'Running events across all of Greece.',
             'eyebrow' => 'Race calendar',
             'empty' => 'There are no upcoming races yet. Check back soon.',
             'no_matches' => 'No races match these filters.',
