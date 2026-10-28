@@ -77,7 +77,7 @@ const menuRow =
 </script>
 
 <template>
-    <header class="sticky top-0 z-30 border-b bg-background/95 backdrop-blur">
+    <header class="sticky top-0 z-30 border-b bg-card/95 backdrop-blur">
         <div
             class="flex h-14 items-center gap-3 px-4 sm:px-6 md:h-16 md:gap-4 lg:px-8"
         >
