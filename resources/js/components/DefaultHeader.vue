@@ -110,33 +110,31 @@ const menuRow =
             </form>
 
             <div class="ml-auto flex items-center gap-1.5 md:gap-2">
-                <Link
-                    v-if="user"
-                    :href="localeRoute(favorites())"
-                    :class="[
-                        pill,
-                        'hidden md:inline-flex',
-                        isCurrentOrParentUrl(localeRoute(favorites()))
-                            ? 'bg-secondary text-foreground'
-                            : 'text-muted-foreground',
-                    ]"
-                >
-                    {{ t('nav.favorites') }}
-                </Link>
-                <Link
-                    v-if="user"
-                    :href="localeRoute(profile())"
-                    :class="[
-                        pill,
-                        'hidden md:inline-flex',
-                        isCurrentOrParentUrl(localeRoute(profile()))
-                            ? 'bg-secondary text-foreground'
-                            : 'text-muted-foreground',
-                    ]"
-                >
-                    {{ t('nav.profile') }}
-                </Link>
                 <div class="hidden items-center gap-2 md:flex">
+                    <Link
+                        v-if="user"
+                        :href="localeRoute(favorites())"
+                        :class="[
+                            pill,
+                            isCurrentOrParentUrl(localeRoute(favorites()))
+                                ? 'bg-secondary text-foreground'
+                                : 'text-muted-foreground',
+                        ]"
+                    >
+                        {{ t('nav.favorites') }}
+                    </Link>
+                    <Link
+                        v-if="user"
+                        :href="localeRoute(profile())"
+                        :class="[
+                            pill,
+                            isCurrentOrParentUrl(localeRoute(profile()))
+                                ? 'bg-secondary text-foreground'
+                                : 'text-muted-foreground',
+                        ]"
+                    >
+                        {{ t('nav.profile') }}
+                    </Link>
                     <ThemeToggle />
                     <LocaleSwitcher />
                     <template v-if="user">
