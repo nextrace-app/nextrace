@@ -159,28 +159,9 @@ const selectClass =
 
     <DefaultShell>
         <main class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-            <section
-                class="relative mt-4 flex h-56 items-end overflow-hidden rounded-xl bg-primary sm:mt-6 sm:h-72"
-            >
-                <div
-                    class="absolute inset-0 opacity-40 mix-blend-overlay"
-                    aria-hidden="true"
-                >
-                    <ContourArt
-                        seed="nextrace-events"
-                        :width="1000"
-                        :height="300"
-                    />
-                </div>
-                <div class="absolute inset-0 bg-black/30" aria-hidden="true" />
-                <h1
-                    class="relative max-w-xl p-5 text-3xl leading-[1.08] font-extrabold tracking-tight text-balance text-white sm:p-9 sm:text-5xl"
-                >
-                    {{ t('home.heading') }}
-                </h1>
-            </section>
+            <h1 class="sr-only">{{ t('events.index.title') }}</h1>
 
-            <section class="pt-5">
+            <section class="pt-4 sm:pt-6">
                 <form
                     v-if="events.length > 0"
                     class="grid grid-cols-2 gap-1 rounded-xl border bg-card p-2 md:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:items-center"
@@ -288,17 +269,6 @@ const selectClass =
 
             <div class="pt-6">
                 <div class="min-w-0">
-                    <p
-                        v-if="visibleEvents.length > 0"
-                        class="mb-3 text-sm text-muted-foreground"
-                        data-test="events-count"
-                    >
-                        {{
-                            t('events.index.count', {
-                                count: visibleEvents.length,
-                            })
-                        }}
-                    </p>
                     <div
                         v-if="visibleEvents.length > 0"
                         id="events-list"

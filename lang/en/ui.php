@@ -118,7 +118,6 @@ return [
             'eyebrow' => 'Race calendar',
             'empty' => 'There are no upcoming races yet. Check back soon.',
             'no_matches' => 'No races match these filters.',
-            'count' => '{count} upcoming races',
         ],
         'status' => [
             'postponed' => 'Postponed',
