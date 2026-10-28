@@ -23,6 +23,7 @@ const city = ref('');
 const distance = ref('');
 const region = ref('');
 const month = ref('');
+const query = ref('');
 
 const distanceFilters = ['5k', '10k', 'half_marathon', 'marathon', 'ultra'];
 
@@ -31,6 +32,20 @@ function distanceFilterOf(distanceClass: DistanceClass | null): string {
         ? distanceClass
         : 'kids_other';
 }
+
+// The header search and the category links send their choice in the URL.
+function syncFromUrl() {
+    const params = new URLSearchParams(page.url.split('?')[1] ?? '');
+    const wanted = params.get('distance') ?? '';
+
+    distance.value = [...distanceFilters, 'kids_other'].includes(wanted)
+        ? wanted
+        : '';
+    query.value = params.get('q') ?? '';
+}
+
+syncFromUrl();
+watch(() => page.url, syncFromUrl);
 
 const categories = computed(() => [
     ...new Set(props.events.map((event) => event.category)),
@@ -76,7 +91,11 @@ const visibleEvents = computed(() =>
                         distance.value,
                 )) &&
             (region.value === '' || event.region?.slug === region.value) &&
-            (month.value === '' || event.date.startsWith(month.value)),
+            (month.value === '' || event.date.startsWith(month.value)) &&
+            (query.value === '' ||
+                `${event.name} ${event.city}`
+                    .toLowerCase()
+                    .includes(query.value.toLowerCase())),
     ),
 );
 const isFiltered = computed(
@@ -85,7 +104,8 @@ const isFiltered = computed(
         city.value !== '' ||
         distance.value !== '' ||
         region.value !== '' ||
-        month.value !== '',
+        month.value !== '' ||
+        query.value !== '',
 );
 
 function monthLabel(value: string): string {
@@ -98,6 +118,7 @@ function resetFilters() {
     distance.value = '';
     region.value = '';
     month.value = '';
+    query.value = '';
 }
 
 // Visible events in date order.
@@ -128,7 +149,7 @@ function goToPage(value: number) {
 }
 
 const fieldClass =
-    'flex min-w-0 flex-col gap-0.5 rounded-2xl px-3.5 py-2 text-[11px] font-bold tracking-widest text-muted-foreground uppercase transition-colors focus-within:bg-secondary hover:bg-secondary/60';
+    'flex min-w-0 flex-col gap-0.5 rounded-lg px-3.5 py-2 text-[11px] font-bold tracking-widest text-muted-foreground uppercase transition-colors focus-within:bg-secondary hover:bg-secondary/60';
 const selectClass =
     'w-full cursor-pointer truncate rounded-sm border-0 bg-transparent py-0.5 text-base font-bold tracking-normal text-foreground normal-case outline-none';
 </script>
@@ -138,24 +159,31 @@ const selectClass =
 
     <DefaultShell>
         <main class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-            <section class="pt-8 pb-2 sm:pt-12">
-                <p
-                    class="text-xs font-bold tracking-[0.12em] text-olive uppercase"
+            <section
+                class="relative mt-4 flex h-56 items-end overflow-hidden rounded-xl bg-primary sm:mt-6 sm:h-72"
+            >
+                <div
+                    class="absolute inset-0 opacity-40 mix-blend-overlay"
+                    aria-hidden="true"
                 >
-                    {{ t('events.index.eyebrow') }}
-                </p>
+                    <ContourArt
+                        seed="nextrace-events"
+                        :width="1000"
+                        :height="300"
+                    />
+                </div>
+                <div class="absolute inset-0 bg-black/30" aria-hidden="true" />
                 <h1
-                    class="mt-2 max-w-3xl text-4xl leading-[1.08] font-extrabold tracking-tight text-balance sm:text-5xl"
+                    class="relative max-w-xl p-5 text-3xl leading-[1.08] font-extrabold tracking-tight text-balance text-white sm:p-9 sm:text-5xl"
                 >
-                    {{ t('events.index.title') }}
+                    {{ t('home.heading') }}
                 </h1>
-                <p class="mt-3 max-w-xl text-lg text-muted-foreground">
-                    {{ t('events.index.subtitle') }}
-                </p>
+            </section>
 
+            <section class="pt-5">
                 <form
                     v-if="events.length > 0"
-                    class="mt-7 grid grid-cols-2 gap-1 rounded-3xl border bg-card p-2 shadow-[0_10px_30px_-12px_rgb(34_49_58/0.18)] md:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:items-center"
+                    class="grid grid-cols-2 gap-1 rounded-xl border bg-card p-2 md:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] lg:items-center"
                     role="search"
                     :aria-label="t('events.filters.label')"
                     @submit.prevent
@@ -260,10 +288,21 @@ const selectClass =
 
             <div class="pt-6">
                 <div class="min-w-0">
+                    <p
+                        v-if="visibleEvents.length > 0"
+                        class="mb-3 text-sm text-muted-foreground"
+                        data-test="events-count"
+                    >
+                        {{
+                            t('events.index.count', {
+                                count: visibleEvents.length,
+                            })
+                        }}
+                    </p>
                     <div
                         v-if="visibleEvents.length > 0"
                         id="events-list"
-                        class="flex scroll-mt-24 flex-col gap-3"
+                        class="grid scroll-mt-24 gap-5 sm:grid-cols-2 lg:grid-cols-3"
                     >
                         <EventCard
                             v-for="event in pagedEvents"

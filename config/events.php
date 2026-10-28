@@ -12,6 +12,6 @@ return [
     |
     */
 
-    'per_page' => max(1, (int) env('EVENTS_PER_PAGE', 10)),
+    'per_page' => max(1, (int) env('EVENTS_PER_PAGE', 12)),
 
 ];
