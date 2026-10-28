@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { Clock, MapPin, Users } from '@lucide/vue';
+import { CalendarDays, MapPin } from '@lucide/vue';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Badge } from '@/components/ui/badge';
@@ -16,19 +16,13 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const { localeRoute } = useLocale();
-const {
-    formatDate,
-    formatDateRange,
-    formatDistance,
-    formatNumber,
-    categoryLabel,
-} = useEventFormat();
+const { formatDate, formatDateRange, formatDistance } = useEventFormat();
 
 const maxChips = 3;
 
 const day = computed(() => formatDate(props.event.date, { day: 'numeric' }));
-const weekday = computed(() =>
-    formatDate(props.event.date, { weekday: 'short' }).replace('.', ''),
+const month = computed(() =>
+    formatDate(props.event.date, { month: 'short' }).replace('.', ''),
 );
 const fullDate = computed(() =>
     formatDateRange(props.event.date, props.event.ends_on),
@@ -51,66 +45,82 @@ const statusLabel = computed(() =>
 
 <template>
     <article
-        class="group relative grid grid-cols-[4.5rem_1fr] gap-x-4 rounded-2xl border bg-card p-4 text-card-foreground shadow-xs transition-[box-shadow,transform,border-color] focus-within:ring-[3px] focus-within:ring-ring/50 hover:border-primary hover:shadow-lg motion-safe:hover:-translate-y-0.5 sm:grid-cols-[4.5rem_1fr_9rem] sm:items-center"
+        class="group relative flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-[box-shadow,transform,border-color] focus-within:ring-[3px] focus-within:ring-ring/50 hover:border-primary hover:shadow-lg motion-safe:hover:-translate-y-0.5"
         data-test="event-card"
     >
-        <div
-            class="flex flex-col items-center self-start rounded-2xl bg-secondary px-1 py-2.5 text-secondary-foreground"
-            aria-hidden="true"
-        >
-            <span class="text-3xl leading-none font-extrabold tracking-tight">{{
-                day
-            }}</span>
-            <span
-                class="mt-1 text-[11px] font-bold tracking-widest text-muted-foreground uppercase"
-                >{{ weekday }}</span
+        <div class="relative aspect-[16/10] overflow-hidden bg-sand">
+            <img
+                v-if="event.image"
+                :src="event.image"
+                alt=""
+                loading="lazy"
+                class="size-full object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"
+            />
+            <ContourArt v-else :seed="event.slug" :width="480" :height="300" />
+
+            <div
+                class="absolute top-3 left-3 flex flex-col items-center rounded-md bg-card px-2.5 py-1 text-card-foreground shadow-xs"
+                aria-hidden="true"
+            >
+                <span class="text-lg leading-tight font-extrabold">{{
+                    day
+                }}</span>
+                <span
+                    class="text-[10px] font-bold tracking-widest text-muted-foreground uppercase"
+                    >{{ month }}</span
+                >
+            </div>
+
+            <FavoriteButton
+                :event-slug="event.slug"
+                :event-name="event.name"
+                :favorited="favorited"
+                class="absolute top-3 right-3 z-10"
+            />
+
+            <Badge
+                v-if="statusLabel"
+                variant="destructive"
+                class="absolute bottom-3 left-3"
+                data-test="event-status"
+                >{{ statusLabel }}</Badge
             >
         </div>
 
-        <div class="flex min-w-0 flex-col gap-2.5">
-            <div class="flex items-start justify-between gap-3">
-                <div class="min-w-0">
-                    <h3 class="text-lg leading-snug font-bold">
-                        <Link
-                            :href="localeRoute(eventsShow(event.slug))"
-                            class="rounded-sm outline-none after:absolute after:inset-0 after:rounded-2xl after:content-['']"
+        <div class="flex flex-1 flex-col gap-3 p-4">
+            <div class="min-w-0">
+                <h3 class="text-lg leading-snug font-bold">
+                    <Link
+                        :href="localeRoute(eventsShow(event.slug))"
+                        class="rounded-sm outline-none after:absolute after:inset-0 after:content-['']"
+                    >
+                        {{ event.name }}
+                    </Link>
+                </h3>
+                <ul class="mt-1.5 space-y-0.5 text-sm text-muted-foreground">
+                    <li class="flex items-center gap-1.5">
+                        <MapPin class="size-4 shrink-0" aria-hidden="true" />
+                        <span class="sr-only"
+                            >{{ t('events.fields.city') }}:</span
                         >
-                            {{ event.name }}
-                        </Link>
-                    </h3>
-                    <p class="mt-0.5 text-sm text-muted-foreground">
+                        {{ event.city }}
+                    </li>
+                    <li class="flex items-center gap-1.5">
+                        <CalendarDays
+                            class="size-4 shrink-0"
+                            aria-hidden="true"
+                        />
                         <time :datetime="event.date">{{ fullDate }}</time>
-                    </p>
-                </div>
-                <FavoriteButton
-                    :event-slug="event.slug"
-                    :event-name="event.name"
-                    :favorited="favorited"
-                    class="relative z-10 shrink-0"
-                />
+                        <span aria-hidden="true">·</span>
+                        <span class="sr-only"
+                            >{{ t('events.fields.time') }}:</span
+                        >
+                        {{ event.time ?? t('events.time_tba') }}
+                    </li>
+                </ul>
             </div>
 
-            <ul
-                class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground"
-            >
-                <li class="flex items-center gap-1.5">
-                    <MapPin class="size-4 shrink-0" aria-hidden="true" />
-                    <span class="sr-only">{{ t('events.fields.city') }}:</span>
-                    {{ event.city }}
-                </li>
-                <li class="flex items-center gap-1.5">
-                    <Clock class="size-4 shrink-0" aria-hidden="true" />
-                    <span class="sr-only">{{ t('events.fields.time') }}:</span>
-                    {{ event.time ?? t('events.time_tba') }}
-                </li>
-                <li v-if="event.participants" class="flex items-center gap-1.5">
-                    <Users class="size-4 shrink-0" aria-hidden="true" />
-                    {{ formatNumber(event.participants) }}
-                    {{ t('events.participants') }}
-                </li>
-            </ul>
-
-            <div class="flex flex-wrap items-center gap-1.5">
+            <div class="mt-auto flex flex-wrap items-center gap-1.5">
                 <Badge
                     class="border-transparent bg-foreground font-bold text-background"
                 >
@@ -119,9 +129,6 @@ const statusLabel = computed(() =>
                     >
                     {{ formatDistance(event.distance_meters) }}
                 </Badge>
-                <Badge variant="secondary" class="font-semibold">{{
-                    categoryLabel(event.category)
-                }}</Badge>
                 <Badge
                     v-for="race in chips"
                     :key="race.id"
@@ -142,12 +149,6 @@ const statusLabel = computed(() =>
                     >{{ t('events.registration_status.open') }}</Badge
                 >
                 <Badge
-                    v-if="statusLabel"
-                    variant="destructive"
-                    data-test="event-status"
-                    >{{ statusLabel }}</Badge
-                >
-                <Badge
                     v-if="!event.date_confirmed"
                     variant="outline"
                     class="border-amber-600/60 text-amber-800 dark:text-amber-400"
@@ -155,13 +156,6 @@ const statusLabel = computed(() =>
                     >{{ t('events.status.date_unconfirmed') }}</Badge
                 >
             </div>
-        </div>
-
-        <div
-            class="hidden h-24 overflow-hidden rounded-2xl bg-sand sm:block"
-            aria-hidden="true"
-        >
-            <ContourArt :seed="event.slug" :width="240" :height="160" />
         </div>
     </article>
 </template>

@@ -19,6 +19,10 @@ return [
         'register' => 'Register',
         'events' => 'Events',
         'races' => 'Races',
+        'all_races' => 'All races',
+        'search' => 'Search',
+        'search_placeholder' => 'Search race or place',
+        'menu' => 'Menu',
         'main' => 'Main navigation',
         'home' => 'NextRace home',
         'favorites' => 'Favorites',
@@ -67,6 +71,7 @@ return [
         'disclaimer' => 'Dates are collected from organisers. Always confirm on the official site before you travel.',
         'copyright' => '© {year} NextRace',
         'browse' => 'Browse',
+        'note' => 'Dates come from organisers.',
     ],
 
     'events' => [

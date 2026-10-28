@@ -1,5 +1,8 @@
 <script setup lang="ts">
-// The frame of every public page: sticky header, content and footer.
+// The frame of every public page: sticky header, content and footer. A page
+// that carries its own bottom spacing passes `flush` to drop the gap above
+// the footer.
+withDefaults(defineProps<{ flush?: boolean }>(), { flush: false });
 </script>
 
 <template>
@@ -8,6 +11,6 @@
         <div class="flex-1">
             <slot />
         </div>
-        <DefaultFooter />
+        <DefaultFooter :class="flush ? '' : 'mt-16'" />
     </div>
 </template>
