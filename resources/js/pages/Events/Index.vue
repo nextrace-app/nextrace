@@ -101,90 +101,86 @@ function goToPage(value: number) {
             <h1 class="sr-only">{{ t('events.index.title') }}</h1>
 
             <div class="py-6">
-                <div class="min-w-0">
-                    <div
-                        v-if="visibleEvents.length > 0"
-                        id="events-list"
-                        class="grid scroll-mt-24 gap-5 sm:grid-cols-2 lg:grid-cols-3"
-                    >
-                        <EventCard
-                            v-for="event in pagedEvents"
-                            :key="event.id"
-                            :event="event"
-                            :favorited="favorites.includes(event.id)"
-                        />
-                    </div>
+                <div
+                    v-if="visibleEvents.length > 0"
+                    id="events-list"
+                    class="grid scroll-mt-24 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+                >
+                    <EventCard
+                        v-for="event in pagedEvents"
+                        :key="event.id"
+                        :event="event"
+                        :favorited="favorites.includes(event.id)"
+                    />
+                </div>
 
-                    <nav
-                        v-if="pageCount > 1"
-                        class="mt-6 flex items-center justify-center gap-1.5"
-                        :aria-label="t('events.pagination.label')"
-                        data-test="pagination"
+                <nav
+                    v-if="pageCount > 1"
+                    class="mt-6 flex items-center justify-center gap-1.5"
+                    :aria-label="t('events.pagination.label')"
+                    data-test="pagination"
+                >
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        :disabled="currentPage === 1"
+                        :aria-label="t('events.pagination.previous')"
+                        @click="goToPage(currentPage - 1)"
                     >
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            :disabled="currentPage === 1"
-                            :aria-label="t('events.pagination.previous')"
-                            @click="goToPage(currentPage - 1)"
-                        >
-                            <ChevronLeft class="size-4" aria-hidden="true" />
-                        </Button>
-                        <Button
-                            v-for="number in pageCount"
-                            :key="number"
-                            type="button"
-                            :variant="
-                                number === currentPage ? 'default' : 'outline'
-                            "
-                            size="icon"
-                            :aria-current="
-                                number === currentPage ? 'page' : undefined
-                            "
-                            :aria-label="
-                                t('events.pagination.page', { number })
-                            "
-                            @click="goToPage(number)"
-                        >
-                            {{ number }}
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            :disabled="currentPage === pageCount"
-                            :aria-label="t('events.pagination.next')"
-                            @click="goToPage(currentPage + 1)"
-                        >
-                            <ChevronRight class="size-4" aria-hidden="true" />
-                        </Button>
-                    </nav>
+                        <ChevronLeft class="size-4" aria-hidden="true" />
+                    </Button>
+                    <Button
+                        v-for="number in pageCount"
+                        :key="number"
+                        type="button"
+                        :variant="
+                            number === currentPage ? 'default' : 'outline'
+                        "
+                        size="icon"
+                        :aria-current="
+                            number === currentPage ? 'page' : undefined
+                        "
+                        :aria-label="t('events.pagination.page', { number })"
+                        @click="goToPage(number)"
+                    >
+                        {{ number }}
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        :disabled="currentPage === pageCount"
+                        :aria-label="t('events.pagination.next')"
+                        @click="goToPage(currentPage + 1)"
+                    >
+                        <ChevronRight class="size-4" aria-hidden="true" />
+                    </Button>
+                </nav>
 
-                    <div
-                        v-if="visibleEvents.length === 0"
-                        class="flex flex-col items-center gap-4 rounded-xl border border-dashed bg-card py-16 text-center"
-                        data-test="events-empty"
+                <div
+                    v-if="visibleEvents.length === 0"
+                    class="flex flex-col items-center gap-4 rounded-xl border border-dashed bg-card py-16 text-center"
+                    data-test="events-empty"
+                >
+                    <CalendarX
+                        class="size-8 text-muted-foreground"
+                        aria-hidden="true"
+                    />
+                    <p class="max-w-sm text-muted-foreground">
+                        {{
+                            isFiltered
+                                ? t('events.index.no_matches')
+                                : t('events.index.empty')
+                        }}
+                    </p>
+                    <Button
+                        v-if="isFiltered"
+                        variant="outline"
+                        @click="resetFilters"
                     >
-                        <CalendarX
-                            class="size-8 text-muted-foreground"
-                            aria-hidden="true"
-                        />
-                        <p class="max-w-sm text-muted-foreground">
-                            {{
-                                isFiltered
-                                    ? t('events.index.no_matches')
-                                    : t('events.index.empty')
-                            }}
-                        </p>
-                        <Button
-                            v-if="isFiltered"
-                            variant="outline"
-                            @click="resetFilters"
-                        >
-                            {{ t('events.filters.reset') }}
-                        </Button>
-                    </div>
+                        {{ t('events.filters.reset') }}
+                    </Button>
                 </div>
             </div>
         </main>
