@@ -20,15 +20,21 @@ defineProps<Props>();
 <template>
     <SidebarGroup
         :class="`group-data-[collapsible=icon]:p-0 ${$props.class || ''}`"
+        data-testid="nav-footer"
     >
         <SidebarGroupContent>
             <SidebarMenu>
-                <SidebarMenuItem v-for="item in items" :key="item.title">
+                <SidebarMenuItem
+                    v-for="item in items"
+                    :key="item.title"
+                    data-testid="nav-footer__item"
+                >
                     <SidebarMenuButton
                         class="text-neutral-600 hover:text-neutral-800 dark:text-neutral-300 dark:hover:text-neutral-100"
                         as-child
                     >
                         <a
+                            data-testid="nav-footer__link"
                             :href="toUrl(item.href)"
                             target="_blank"
                             rel="noopener noreferrer"

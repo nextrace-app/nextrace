@@ -53,12 +53,13 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
 <template>
     <Head :title="t('auth.two_factor.title')" />
 
-    <div class="space-y-6">
+    <div class="space-y-6" data-testid="two-factor-challenge-page">
         <template v-if="!showRecoveryInput">
             <Form
                 v-bind="localeRoute(store.form())"
                 class="space-y-4"
                 reset-on-error
+                data-testid="two-factor-challenge-page__code-form"
                 @error="code = ''"
                 #default="{ errors, processing, clearErrors }"
             >
@@ -68,8 +69,8 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
                 >
                     <div class="flex w-full items-center justify-center">
                         <InputOTP
-                            id="otp"
                             v-model="code"
+                            data-testid="two-factor-challenge-page__code"
                             :maxlength="6"
                             :disabled="processing"
                             autofocus
@@ -85,13 +86,18 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
                     </div>
                     <InputError :message="errors.code" />
                 </div>
-                <Button type="submit" class="w-full" :disabled="processing">{{
-                    t('auth.two_factor.continue')
-                }}</Button>
+                <Button
+                    type="submit"
+                    class="w-full"
+                    :disabled="processing"
+                    data-testid="two-factor-challenge-page__submit"
+                    >{ t('auth.two_factor.continue') }}</Button
+                >
                 <div class="text-center text-sm text-muted-foreground">
                     <span>{{ t('auth.two_factor.or_you_can') }} </span>
                     <button
                         type="button"
+                        data-testid="two-factor-challenge-page__toggle"
                         class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                         @click="() => toggleRecoveryMode(clearErrors)"
                     >
@@ -106,10 +112,12 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
                 v-bind="localeRoute(store.form())"
                 class="space-y-4"
                 reset-on-error
+                data-testid="two-factor-challenge-page__recovery-form"
                 #default="{ errors, processing, clearErrors }"
             >
                 <Input
                     name="recovery_code"
+                    data-testid="two-factor-challenge-page__recovery-code"
                     type="text"
                     :placeholder="t('auth.two_factor.recovery_placeholder')"
                     :aria-label="t('auth.two_factor.recovery_title')"
@@ -117,14 +125,19 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
                     required
                 />
                 <InputError :message="errors.recovery_code" />
-                <Button type="submit" class="w-full" :disabled="processing">{{
-                    t('auth.two_factor.continue')
-                }}</Button>
+                <Button
+                    type="submit"
+                    class="w-full"
+                    :disabled="processing"
+                    data-testid="two-factor-challenge-page__submit"
+                    >{ t('auth.two_factor.continue') }}</Button
+                >
 
                 <div class="text-center text-sm text-muted-foreground">
                     <span>{{ t('auth.two_factor.or_you_can') }} </span>
                     <button
                         type="button"
+                        data-testid="two-factor-challenge-page__toggle"
                         class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                         @click="() => toggleRecoveryMode(clearErrors)"
                     >

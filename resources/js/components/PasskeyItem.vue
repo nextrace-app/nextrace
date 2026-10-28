@@ -34,7 +34,10 @@ const handleDelete = () => {
 </script>
 
 <template>
-    <div class="flex items-center justify-between border-b p-4 last:border-b-0">
+    <div
+        class="flex items-center justify-between border-b p-4 last:border-b-0"
+        data-testid="passkey-item"
+    >
         <div class="flex items-center gap-4">
             <div
                 class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted"
@@ -43,9 +46,15 @@ const handleDelete = () => {
             </div>
             <div class="space-y-1">
                 <div class="flex items-center gap-2.5">
-                    <p class="font-medium tracking-tight">{{ passkey.name }}</p>
+                    <p
+                        class="font-medium tracking-tight"
+                        data-testid="passkey-item__name"
+                    >
+                        {{ passkey.name }}
+                    </p>
                     <span
                         v-if="passkey.authenticator"
+                        data-testid="passkey-item__authenticator"
                         class="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium tracking-wide text-muted-foreground uppercase ring-1 ring-border ring-inset"
                     >
                         {{ passkey.authenticator }}
@@ -74,6 +83,7 @@ const handleDelete = () => {
                 <Button
                     variant="ghost"
                     size="sm"
+                    data-testid="passkey-item__remove"
                     class="text-destructive hover:bg-destructive/10 hover:text-destructive"
                 >
                     <Trash2 class="h-4 w-4" />
@@ -83,7 +93,7 @@ const handleDelete = () => {
                 </Button>
             </DialogTrigger>
 
-            <DialogContent>
+            <DialogContent data-testid="passkey-item__dialog">
                 <DialogTitle>{{
                     t('settings.passkeys.remove_title')
                 }}</DialogTitle>
@@ -96,13 +106,16 @@ const handleDelete = () => {
                 </DialogDescription>
                 <DialogFooter class="gap-2">
                     <DialogClose as-child>
-                        <Button variant="secondary">{{
-                            t('form.cancel')
-                        }}</Button>
+                        <Button
+                            variant="secondary"
+                            data-testid="passkey-item__cancel"
+                            >{{ t('form.cancel') }}</Button
+                        >
                     </DialogClose>
                     <Button
                         variant="destructive"
                         :disabled="isDeleting"
+                        data-testid="passkey-item__confirm"
                         @click="handleDelete"
                     >
                         {{

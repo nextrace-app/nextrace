@@ -17,25 +17,40 @@ const user = computed(() => page.props.auth.user);
     <Head :title="t('account.dashboard.title')" />
 
     <DefaultShell>
-        <main class="mx-auto w-full max-w-6xl px-4 pt-8 pb-12 sm:px-6 lg:px-8">
+        <main
+            class="mx-auto w-full max-w-6xl px-4 pt-8 pb-12 sm:px-6 lg:px-8"
+            data-testid="dashboard-page"
+        >
             <div
                 class="rounded-3xl border bg-card p-6 text-card-foreground sm:p-10"
             >
-                <h1 class="text-3xl font-extrabold tracking-tight">
+                <h1
+                    class="text-3xl font-extrabold tracking-tight"
+                    data-testid="dashboard-page__title"
+                >
                     {{ t('account.dashboard.welcome', { name: user.name }) }}
                 </h1>
-                <p class="mt-2 text-muted-foreground">
+                <p
+                    class="mt-2 text-muted-foreground"
+                    data-testid="dashboard-page__lead"
+                >
                     {{ t('account.dashboard.lead') }}
                 </p>
 
                 <div class="mt-6 flex flex-wrap gap-3">
                     <Button as-child>
-                        <Link :href="localeRoute(eventsIndex())">
+                        <Link
+                            :href="localeRoute(eventsIndex())"
+                            data-testid="dashboard-page__races"
+                        >
                             {{ t('account.dashboard.races') }}
                         </Link>
                     </Button>
                     <Button as-child variant="outline">
-                        <Link :href="localeRoute(favoritesIndex())">
+                        <Link
+                            :href="localeRoute(favoritesIndex())"
+                            data-testid="dashboard-page__favorites"
+                        >
                             {{ t('account.dashboard.favorites') }}
                         </Link>
                     </Button>

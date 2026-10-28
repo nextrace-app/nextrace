@@ -76,22 +76,30 @@ const rightNavItems: NavItem[] = [
 </script>
 
 <template>
-    <div>
+    <div data-testid="app-header">
         <div class="border-b border-sidebar-border/80">
-            <div class="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
+            <div
+                class="mx-auto flex h-16 items-center px-4 md:max-w-7xl"
+                data-testid="app-header__bar"
+            >
                 <!-- Mobile Menu -->
-                <div class="lg:hidden">
+                <div class="lg:hidden" data-testid="app-header__mobile-menu">
                     <Sheet>
                         <SheetTrigger :as-child="true">
                             <Button
                                 variant="ghost"
                                 size="icon"
                                 class="mr-2 h-9 w-9"
+                                data-testid="app-header__menu-toggle"
                             >
                                 <Menu class="h-5 w-5" />
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="left" class="w-[300px] p-6">
+                        <SheetContent
+                            side="left"
+                            class="w-[300px] p-6"
+                            data-testid="app-header__menu"
+                        >
                             <SheetTitle class="sr-only"
                                 >Navigation menu</SheetTitle
                             >
@@ -101,11 +109,15 @@ const rightNavItems: NavItem[] = [
                             <div
                                 class="flex h-full flex-1 flex-col justify-between space-y-4 py-6"
                             >
-                                <nav class="-mx-3 space-y-1">
+                                <nav
+                                    class="-mx-3 space-y-1"
+                                    data-testid="app-header__menu-nav"
+                                >
                                     <Link
                                         v-for="item in mainNavItems"
                                         :key="item.title"
                                         :href="item.href"
+                                        data-testid="app-header__menu-link"
                                         class="flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent"
                                         :class="
                                             whenCurrentUrl(
@@ -122,7 +134,10 @@ const rightNavItems: NavItem[] = [
                                         {{ item.title }}
                                     </Link>
                                 </nav>
-                                <div class="flex flex-col space-y-4">
+                                <div
+                                    class="flex flex-col space-y-4"
+                                    data-testid="app-header__menu-external"
+                                >
                                     <a
                                         v-for="item in rightNavItems"
                                         :key="item.title"
@@ -130,6 +145,7 @@ const rightNavItems: NavItem[] = [
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         class="flex items-center space-x-2 text-sm font-medium"
+                                        data-testid="app-header__menu-external-link"
                                     >
                                         <component
                                             v-if="item.icon"
@@ -144,12 +160,19 @@ const rightNavItems: NavItem[] = [
                     </Sheet>
                 </div>
 
-                <Link :href="dashboard()" class="flex items-center gap-x-2">
+                <Link
+                    :href="dashboard()"
+                    class="flex items-center gap-x-2"
+                    data-testid="app-header__logo"
+                >
                     <AppLogo />
                 </Link>
 
                 <!-- Desktop Menu -->
-                <div class="hidden h-full lg:flex lg:flex-1">
+                <div
+                    class="hidden h-full lg:flex lg:flex-1"
+                    data-testid="app-header__desktop-nav"
+                >
                     <NavigationMenu class="ml-10 flex h-full items-stretch">
                         <NavigationMenuList
                             class="flex h-full items-stretch space-x-2"
@@ -158,6 +181,7 @@ const rightNavItems: NavItem[] = [
                                 v-for="(item, index) in mainNavItems"
                                 :key="index"
                                 class="relative flex h-full items-center"
+                                data-testid="app-header__nav-item"
                             >
                                 <Link
                                     :class="[
@@ -169,6 +193,7 @@ const rightNavItems: NavItem[] = [
                                         'h-9 cursor-pointer px-3',
                                     ]"
                                     :href="item.href"
+                                    data-testid="app-header__nav-link"
                                 >
                                     <component
                                         v-if="item.icon"
@@ -179,6 +204,7 @@ const rightNavItems: NavItem[] = [
                                 </Link>
                                 <div
                                     v-if="isCurrentUrl(item.href)"
+                                    data-testid="app-header__nav-indicator"
                                     class="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"
                                 ></div>
                             </NavigationMenuItem>
@@ -192,13 +218,17 @@ const rightNavItems: NavItem[] = [
                             variant="ghost"
                             size="icon"
                             class="group h-9 w-9 cursor-pointer"
+                            data-testid="app-header__search"
                         >
                             <Search
                                 class="size-5 opacity-80 group-hover:opacity-100"
                             />
                         </Button>
 
-                        <div class="hidden space-x-1 lg:flex">
+                        <div
+                            class="hidden space-x-1 lg:flex"
+                            data-testid="app-header__external-links"
+                        >
                             <template
                                 v-for="item in rightNavItems"
                                 :key="item.title"
@@ -214,6 +244,7 @@ const rightNavItems: NavItem[] = [
                                             >
                                                 <a
                                                     :href="toUrl(item.href)"
+                                                    data-testid="app-header__external-link"
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                 >
@@ -242,6 +273,7 @@ const rightNavItems: NavItem[] = [
                                 variant="ghost"
                                 size="icon"
                                 class="relative size-10 w-auto rounded-full p-1 focus-within:ring-2 focus-within:ring-primary"
+                                data-testid="app-header__user-menu-trigger"
                             >
                                 <Avatar
                                     class="size-8 overflow-hidden rounded-full"
@@ -259,7 +291,11 @@ const rightNavItems: NavItem[] = [
                                 </Avatar>
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" class="w-56">
+                        <DropdownMenuContent
+                            align="end"
+                            class="w-56"
+                            data-testid="app-header__user-menu"
+                        >
                             <UserMenuContent :user="auth.user" />
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -270,6 +306,7 @@ const rightNavItems: NavItem[] = [
         <div
             v-if="props.breadcrumbs.length > 1"
             class="flex w-full border-b border-sidebar-border/70"
+            data-testid="app-header__breadcrumbs"
         >
             <div
                 class="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl"

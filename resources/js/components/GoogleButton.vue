@@ -7,12 +7,12 @@ const { t } = useI18n();
 </script>
 
 <template>
-    <div class="grid gap-4">
+    <div class="grid gap-4" data-testid="google-button">
         <!-- A full page load: the visitor leaves the site for Google. -->
         <a
             :href="redirect().url"
             :class="[buttonVariants({ variant: 'outline' }), 'w-full']"
-            data-test="google-button"
+            data-testid="google-button__link"
         >
             <svg class="size-4" viewBox="0 0 24 24" aria-hidden="true">
                 <path
@@ -38,6 +38,7 @@ const { t } = useI18n();
         <div
             class="flex items-center gap-3 text-xs text-muted-foreground uppercase"
             aria-hidden="true"
+            data-testid="google-button__separator"
         >
             <span class="h-px flex-1 bg-border" />
             {{ t('auth.google.separator') }}

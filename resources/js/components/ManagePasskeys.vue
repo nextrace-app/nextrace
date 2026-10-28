@@ -35,14 +35,21 @@ const handleRegisterSuccess = () => {
 </script>
 
 <template>
-    <div v-if="canManagePasskeys" class="space-y-6">
+    <div
+        v-if="canManagePasskeys"
+        class="space-y-6"
+        data-testid="manage-passkeys"
+    >
         <Heading
             variant="small"
             :title="t('settings.passkeys.title')"
             :description="t('settings.passkeys.description')"
         />
 
-        <div class="overflow-hidden rounded-lg border border-border">
+        <div
+            class="overflow-hidden rounded-lg border border-border"
+            data-testid="manage-passkeys__list"
+        >
             <template v-if="passkeys.length">
                 <PasskeyItem
                     v-for="passkey in passkeys"
@@ -52,7 +59,11 @@ const handleRegisterSuccess = () => {
                 />
             </template>
 
-            <div v-else class="p-8 text-center">
+            <div
+                v-else
+                class="p-8 text-center"
+                data-testid="manage-passkeys__empty"
+            >
                 <div
                     class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-muted"
                 >

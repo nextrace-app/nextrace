@@ -19,25 +19,39 @@ const { localeRoute } = useLocale();
     <Head :title="t('favorites.title')" />
 
     <DefaultShell>
-        <main class="mx-auto w-full max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
-            <h1 class="mb-6 text-3xl font-extrabold tracking-tight">
+        <main
+            class="mx-auto w-full max-w-6xl px-4 pt-8 sm:px-6 lg:px-8"
+            data-testid="favorites-page"
+        >
+            <h1
+                class="mb-6 text-3xl font-extrabold tracking-tight"
+                data-testid="favorites-page__title"
+            >
                 {{ t('favorites.title') }}
             </h1>
 
             <div
                 v-if="props.events.length === 0"
                 class="flex flex-col items-center gap-4 rounded-3xl border border-dashed bg-card py-16 text-center"
+                data-testid="favorites-page__empty"
             >
                 <Heart class="size-8 text-muted-foreground" />
                 <p class="text-muted-foreground">{{ t('favorites.empty') }}</p>
                 <Button as-child variant="outline">
-                    <Link :href="localeRoute(eventsIndex())">
+                    <Link
+                        :href="localeRoute(eventsIndex())"
+                        data-testid="favorites-page__browse"
+                    >
                         {{ t('favorites.cta') }}
                     </Link>
                 </Button>
             </div>
 
-            <div v-else class="grid gap-4 lg:grid-cols-2">
+            <div
+                v-else
+                class="grid gap-4 lg:grid-cols-2"
+                data-testid="favorites-page__list"
+            >
                 <EventCard
                     v-for="event in props.events"
                     :key="event.id"

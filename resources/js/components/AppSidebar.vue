@@ -46,12 +46,15 @@ const footerNavItems: NavItem[] = [
 </script>
 
 <template>
-    <Sidebar collapsible="icon" variant="inset">
+    <Sidebar collapsible="icon" variant="inset" data-testid="app-sidebar">
         <SidebarHeader>
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="dashboard()">
+                        <Link
+                            :href="dashboard()"
+                            data-testid="app-sidebar__logo"
+                        >
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>

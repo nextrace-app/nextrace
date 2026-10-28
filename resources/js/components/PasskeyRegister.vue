@@ -55,16 +55,26 @@ const handleCancel = () => {
 </script>
 
 <template>
-    <div v-if="!isSupported" class="text-sm text-muted-foreground">
+    <div
+        v-if="!isSupported"
+        class="text-sm text-muted-foreground"
+        data-testid="passkey-register__unsupported"
+    >
         {{ t('settings.passkeys.unsupported') }}
     </div>
 
-    <Button v-else-if="!showForm" variant="outline" @click="showForm = true">
+    <Button
+        v-else-if="!showForm"
+        variant="outline"
+        data-testid="passkey-register__add"
+        @click="showForm = true"
+    >
         {{ t('settings.passkeys.add') }}
     </Button>
 
     <form
         v-else
+        data-testid="passkey-register"
         @submit="handleSubmit"
         class="space-y-4 rounded-lg border border-border bg-muted/50 p-4"
     >
@@ -72,6 +82,7 @@ const handleCancel = () => {
             <Label for="passkey-name">{{ t('settings.passkeys.name') }}</Label>
             <Input
                 id="passkey-name"
+                data-testid="passkey-register__name"
                 type="text"
                 v-model="name"
                 :placeholder="t('settings.passkeys.name_placeholder')"
@@ -86,14 +97,23 @@ const handleCancel = () => {
         <InputError v-if="error" :message="error" />
 
         <div class="flex gap-2">
-            <Button type="submit" :disabled="isLoading || !name.trim()">
+            <Button
+                type="submit"
+                :disabled="isLoading || !name.trim()"
+                data-testid="passkey-register__submit"
+            >
                 {{
                     isLoading
                         ? t('settings.passkeys.registering')
                         : t('settings.passkeys.register')
                 }}
             </Button>
-            <Button type="button" variant="ghost" @click="handleCancel">
+            <Button
+                type="button"
+                variant="ghost"
+                data-testid="passkey-register__cancel"
+                @click="handleCancel"
+            >
                 {{ t('form.cancel') }}
             </Button>
         </div>

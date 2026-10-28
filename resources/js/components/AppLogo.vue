@@ -5,7 +5,10 @@ import AppWordmark from '@/components/AppWordmark.vue';
 
 <template>
     <AppLogoIcon class="size-8 shrink-0" />
-    <div class="ml-1 grid flex-1 text-left text-base">
+    <div
+        class="ml-1 grid flex-1 text-left text-base"
+        data-testid="app-logo__label"
+    >
         <AppWordmark class="truncate leading-tight" />
     </div>
 </template>

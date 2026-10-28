@@ -77,18 +77,26 @@ const menuRow =
 </script>
 
 <template>
-    <header class="sticky top-0 z-30 border-b bg-card/95 backdrop-blur">
-        <div class="flex h-14 items-center gap-3 px-4 sm:px-6 md:h-16 md:gap-4">
+    <header
+        class="sticky top-0 z-30 border-b bg-card/95 backdrop-blur"
+        data-testid="site-header"
+    >
+        <div
+            class="flex h-14 items-center gap-3 px-4 sm:px-6 md:h-16 md:gap-4"
+            data-testid="site-header__bar"
+        >
             <Link
                 :href="localeRoute(home())"
                 :aria-label="t('nav.home')"
                 class="-ml-1 flex items-center rounded-md px-1 text-xl text-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                data-testid="site-header__home"
             >
                 <AppWordmark />
             </Link>
 
             <form
                 class="relative ml-4 hidden max-w-md flex-1 md:block"
+                data-testid="site-header__search-form"
                 role="search"
                 @submit.prevent="submitSearch"
             >
@@ -102,15 +110,22 @@ const menuRow =
                     :placeholder="t('nav.search_placeholder')"
                     :aria-label="t('nav.search')"
                     :class="searchInput"
-                    data-test="header-search"
+                    data-testid="site-header__search"
                 />
             </form>
 
-            <div class="ml-auto flex items-center gap-1.5 md:gap-2">
-                <div class="hidden items-center gap-2 md:flex">
+            <div
+                class="ml-auto flex items-center gap-1.5 md:gap-2"
+                data-testid="site-header__actions"
+            >
+                <div
+                    class="hidden items-center gap-2 md:flex"
+                    data-testid="site-header__desktop-nav"
+                >
                     <Link
                         v-if="user"
                         :href="localeRoute(favorites())"
+                        data-testid="site-header__favorites"
                         :class="[
                             pill,
                             isCurrentOrParentUrl(localeRoute(favorites()))
@@ -123,6 +138,7 @@ const menuRow =
                     <Link
                         v-if="user"
                         :href="localeRoute(profile())"
+                        data-testid="site-header__profile"
                         :class="[
                             pill,
                             isCurrentOrParentUrl(localeRoute(profile()))
@@ -139,7 +155,7 @@ const menuRow =
                             :href="localeRoute(logout())"
                             as="button"
                             :class="[pill, 'text-muted-foreground']"
-                            data-test="logout-button"
+                            data-testid="site-header__logout"
                             @click="handleLogout"
                         >
                             {{ t('nav.logout') }}
@@ -148,6 +164,7 @@ const menuRow =
                     <template v-else>
                         <Link
                             :href="localeRoute(login())"
+                            data-testid="site-header__login"
                             :class="
                                 buttonVariants({
                                     variant: 'outline',
@@ -159,6 +176,7 @@ const menuRow =
                         </Link>
                         <Link
                             :href="localeRoute(register())"
+                            data-testid="site-header__register"
                             :class="buttonVariants({ size: 'sm' })"
                         >
                             {{ t('nav.register') }}
@@ -173,7 +191,7 @@ const menuRow =
                     class="size-11 md:hidden"
                     :aria-label="t('nav.search')"
                     :aria-expanded="searchOpen"
-                    data-test="search-toggle"
+                    data-testid="site-header__search-toggle"
                     @click="searchOpen = !searchOpen"
                 >
                     <X v-if="searchOpen" class="size-5" aria-hidden="true" />
@@ -188,7 +206,7 @@ const menuRow =
                             size="icon"
                             class="size-11 md:hidden"
                             :aria-label="t('nav.menu')"
-                            data-test="menu-toggle"
+                            data-testid="site-header__menu-toggle"
                         >
                             <Menu class="size-5" aria-hidden="true" />
                         </Button>
@@ -196,6 +214,7 @@ const menuRow =
                     <SheetContent
                         side="right"
                         class="w-full gap-0 overflow-y-auto p-0 sm:max-w-sm"
+                        data-testid="site-header__menu"
                     >
                         <SheetHeader class="border-b px-5 py-3">
                             <SheetTitle class="text-xl">
@@ -206,7 +225,10 @@ const menuRow =
                             </SheetDescription>
                         </SheetHeader>
 
-                        <nav :aria-label="t('nav.main')">
+                        <nav
+                            :aria-label="t('nav.main')"
+                            data-testid="site-header__menu-races"
+                        >
                             <p
                                 class="px-5 pt-3 pb-1 text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase"
                             >
@@ -216,6 +238,7 @@ const menuRow =
                                 v-for="item in categoryLinks"
                                 :key="item.key"
                                 :href="localeRoute(item.route)"
+                                data-testid="site-header__menu-category"
                                 :class="[
                                     menuRow,
                                     activeDistance === item.key &&
@@ -230,10 +253,14 @@ const menuRow =
                             </Link>
                         </nav>
 
-                        <div class="mt-auto bg-muted/50">
+                        <div
+                            class="mt-auto bg-muted/50"
+                            data-testid="site-header__menu-account"
+                        >
                             <Link
                                 v-if="user"
                                 :href="localeRoute(favorites())"
+                                data-testid="site-header__menu-favorites"
                                 :class="menuRow"
                             >
                                 {{ t('nav.favorites') }}
@@ -245,6 +272,7 @@ const menuRow =
                             <Link
                                 v-if="user"
                                 :href="localeRoute(profile())"
+                                data-testid="site-header__menu-profile"
                                 :class="menuRow"
                             >
                                 {{ t('nav.profile') }}
@@ -258,7 +286,7 @@ const menuRow =
                                 :href="localeRoute(logout())"
                                 as="button"
                                 :class="[menuRow, 'w-full']"
-                                data-test="logout-button"
+                                data-testid="site-header__menu-logout"
                                 @click="handleLogout"
                             >
                                 {{ t('nav.logout') }}
@@ -266,6 +294,7 @@ const menuRow =
                             <template v-else>
                                 <Link
                                     :href="localeRoute(login())"
+                                    data-testid="site-header__menu-login"
                                     :class="menuRow"
                                 >
                                     {{ t('nav.login') }}
@@ -276,6 +305,7 @@ const menuRow =
                                 </Link>
                                 <Link
                                     :href="localeRoute(register())"
+                                    data-testid="site-header__menu-register"
                                     :class="menuRow"
                                 >
                                     {{ t('nav.register') }}
@@ -303,6 +333,7 @@ const menuRow =
         <form
             v-if="searchOpen"
             class="flex gap-2 border-t px-4 py-2 sm:px-6 md:hidden"
+            data-testid="site-header__mobile-search-form"
             role="search"
             @submit.prevent="submitSearch"
         >
@@ -317,16 +348,21 @@ const menuRow =
                     :placeholder="t('nav.search_placeholder')"
                     :aria-label="t('nav.search')"
                     :class="searchInput"
-                    data-test="mobile-search"
+                    data-testid="site-header__mobile-search"
                 />
             </div>
-            <Button type="submit" class="h-11">{{ t('nav.search') }}</Button>
+            <Button
+                type="submit"
+                class="h-11"
+                data-testid="site-header__mobile-search-submit"
+                >{{ t('nav.search') }}</Button
+            >
         </form>
 
         <nav
             :aria-label="t('nav.races')"
             class="hidden border-t md:block"
-            data-test="category-bar"
+            data-testid="site-header__category-bar"
         >
             <div
                 class="flex items-center gap-1 overflow-x-auto px-4 py-2 sm:px-6"
@@ -335,6 +371,7 @@ const menuRow =
                     v-for="item in categoryLinks"
                     :key="item.key"
                     :href="localeRoute(item.route)"
+                    data-testid="site-header__category"
                     :class="[
                         pill,
                         activeDistance === item.key

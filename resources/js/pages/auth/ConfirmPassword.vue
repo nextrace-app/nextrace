@@ -39,13 +39,18 @@ defineOptions({
         :separator="t('auth.confirm.separator')"
     />
 
-    <p v-if="!hasPassword" class="mt-4 text-sm text-muted-foreground">
+    <p
+        v-if="!hasPassword"
+        class="mt-4 text-sm text-muted-foreground"
+        data-testid="confirm-password-page__no-password"
+    >
         {{ t('auth.confirm.no_password') }}
     </p>
 
     <Form
         v-else
         v-bind="localeRoute(store.form())"
+        data-testid="confirm-password-page"
         reset-on-success
         v-slot="{ errors, processing }"
     >
@@ -54,6 +59,7 @@ defineOptions({
                 <Label for="password">{{ t('form.password') }}</Label>
                 <PasswordInput
                     id="password"
+                    data-testid="confirm-password-page__password"
                     name="password"
                     class="mt-1 block w-full"
                     required
@@ -68,7 +74,7 @@ defineOptions({
                 <Button
                     class="w-full"
                     :disabled="processing"
-                    data-test="confirm-password-button"
+                    data-testid="confirm-password-page__submit"
                 >
                     <Spinner v-if="processing" />
                     {{ t('auth.confirm.submit') }}

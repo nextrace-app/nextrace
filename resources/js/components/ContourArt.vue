@@ -83,6 +83,7 @@ const rings = computed(() => {
         preserveAspectRatio="xMidYMid slice"
         aria-hidden="true"
         class="h-full w-full"
+        data-testid="contour-art"
     >
         <path
             v-for="(ring, index) in rings"

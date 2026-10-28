@@ -28,6 +28,7 @@ defineProps<{
 
     <div
         v-if="status === 'verification-link-sent'"
+        data-testid="verify-email-page__status"
         class="mb-4 text-center text-sm font-medium text-green-600"
     >
         {{ t('auth.verify.link_sent') }}
@@ -36,9 +37,14 @@ defineProps<{
     <Form
         v-bind="localeRoute(send.form())"
         class="space-y-6 text-center"
+        data-testid="verify-email-page"
         v-slot="{ processing }"
     >
-        <Button :disabled="processing" variant="secondary">
+        <Button
+            :disabled="processing"
+            variant="secondary"
+            data-testid="verify-email-page__resend"
+        >
             <Spinner v-if="processing" />
             {{ t('auth.verify.resend') }}
         </Button>
@@ -47,6 +53,7 @@ defineProps<{
             :href="localeRoute(logout())"
             as="button"
             class="mx-auto block text-sm"
+            data-testid="verify-email-page__logout"
         >
             {{ t('auth.verify.logout') }}
         </TextLink>

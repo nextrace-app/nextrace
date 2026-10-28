@@ -45,12 +45,13 @@ const { verify, isLoading, error, isSupported } = usePasskeyVerify({
 </script>
 
 <template>
-    <div v-if="isSupported">
+    <div v-if="isSupported" data-testid="passkey-verify">
         <div class="grid gap-2">
             <Button
                 type="button"
                 variant="outline"
                 class="w-full"
+                data-testid="passkey-verify__button"
                 @click="verify"
                 :disabled="isLoading"
             >
@@ -64,12 +65,16 @@ const { verify, isLoading, error, isSupported } = usePasskeyVerify({
                 }}
             </Button>
 
-            <div v-if="error" class="text-center">
+            <div
+                v-if="error"
+                class="text-center"
+                data-testid="passkey-verify__error"
+            >
                 <InputError :message="error" />
             </div>
         </div>
 
-        <div class="relative my-6">
+        <div class="relative my-6" data-testid="passkey-verify__separator">
             <div class="absolute inset-0 flex items-center">
                 <Separator class="w-full" />
             </div>

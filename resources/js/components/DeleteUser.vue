@@ -26,7 +26,7 @@ const passwordInput = useTemplateRef('passwordInput');
 </script>
 
 <template>
-    <div class="space-y-6">
+    <div class="space-y-6" data-testid="delete-user">
         <Heading
             variant="small"
             :title="t('account.delete.title')"
@@ -34,6 +34,7 @@ const passwordInput = useTemplateRef('passwordInput');
         />
         <div
             class="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10"
+            data-testid="delete-user__warning"
         >
             <div class="relative space-y-0.5 text-red-600 dark:text-red-100">
                 <p class="font-medium">{{ t('account.delete.warning') }}</p>
@@ -45,11 +46,11 @@ const passwordInput = useTemplateRef('passwordInput');
                 <DialogTrigger as-child>
                     <Button
                         variant="destructive"
-                        data-test="delete-user-button"
+                        data-testid="delete-user__trigger"
                         >{{ t('account.delete.title') }}</Button
                     >
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent data-testid="delete-user__dialog">
                     <Form
                         v-bind="localeRoute(destroy.form())"
                         reset-on-success
@@ -58,6 +59,7 @@ const passwordInput = useTemplateRef('passwordInput');
                             preserveScroll: true,
                         }"
                         class="space-y-6"
+                        data-testid="delete-user__form"
                         v-slot="{ errors, processing, reset, clearErrors }"
                     >
                         <DialogHeader class="space-y-3">
@@ -76,6 +78,7 @@ const passwordInput = useTemplateRef('passwordInput');
                             <PasswordInput
                                 id="password"
                                 name="password"
+                                data-testid="delete-user__password"
                                 ref="passwordInput"
                                 :placeholder="t('form.password')"
                             />
@@ -86,6 +89,7 @@ const passwordInput = useTemplateRef('passwordInput');
                             <DialogClose as-child>
                                 <Button
                                     variant="secondary"
+                                    data-testid="delete-user__cancel"
                                     @click="
                                         () => {
                                             clearErrors();
@@ -101,7 +105,7 @@ const passwordInput = useTemplateRef('passwordInput');
                                 type="submit"
                                 variant="destructive"
                                 :disabled="processing"
-                                data-test="confirm-delete-user-button"
+                                data-testid="delete-user__confirm"
                             >
                                 {{ t('account.delete.title') }}
                             </Button>

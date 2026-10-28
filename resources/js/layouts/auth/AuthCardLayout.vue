@@ -22,11 +22,13 @@ defineProps<{
 <template>
     <div
         class="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10"
+        data-testid="auth-card-layout"
     >
         <div class="flex w-full max-w-md flex-col gap-6">
             <Link
                 :href="localeRoute(home())"
                 class="flex items-center gap-2 self-center font-medium"
+                data-testid="auth-card-layout__home"
             >
                 <div class="flex h-9 w-9 items-center justify-center">
                     <AppLogoIcon class="size-10" />
@@ -34,10 +36,16 @@ defineProps<{
             </Link>
 
             <div class="flex flex-col gap-6">
-                <Card class="rounded-xl">
+                <Card class="rounded-xl" data-testid="auth-card-layout__card">
                     <CardHeader class="px-10 pt-8 pb-0 text-center">
-                        <CardTitle class="text-xl">{{ title }}</CardTitle>
-                        <CardDescription>
+                        <CardTitle
+                            class="text-xl"
+                            data-testid="auth-card-layout__title"
+                            >{{ title }}</CardTitle
+                        >
+                        <CardDescription
+                            data-testid="auth-card-layout__description"
+                        >
                             {{ description }}
                         </CardDescription>
                     </CardHeader>
