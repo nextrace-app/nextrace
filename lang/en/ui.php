@@ -209,6 +209,15 @@ return [
             'timing' => 'Timing',
             'other' => 'Link',
         ],
+        'course' => [
+            'title' => 'Course details',
+            'start' => 'Start',
+            'finish' => 'Finish',
+            'route' => 'View the route',
+        ],
+        'sidebar' => [
+            'title' => 'Entry and registration',
+        ],
         'details' => 'View details',
         'favorite' => [
             'add' => 'Add to favorites',

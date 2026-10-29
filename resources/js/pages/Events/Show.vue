@@ -173,6 +173,26 @@ const facts = computed(() => {
     return items;
 });
 
+function lowestPrice(race: Event['races'][number]): string | null {
+    if (race.prices.length === 0) {
+        return null;
+    }
+
+    const cheapest = race.prices.reduce((least, price) =>
+        price.amount < least.amount ? price : least,
+    );
+
+    return cheapest.amount === 0
+        ? t('events.races.free')
+        : formatPrice(cheapest.amount, cheapest.currency);
+}
+
+const courseRaces = computed(() =>
+    props.event.races.filter(
+        (race) => race.start_location || race.finish_location || race.route_url,
+    ),
+);
+
 const hasContact = computed(
     () => props.event.contact.email || props.event.contact.phone,
 );
@@ -183,7 +203,7 @@ const hasContact = computed(
 
     <DefaultShell>
         <main
-            class="mx-auto w-full max-w-6xl px-4 pt-6 sm:px-6 lg:px-8"
+            class="mx-auto w-full max-w-6xl px-4 pt-4 sm:px-6 sm:pt-6"
             data-testid="event-page"
         >
             <Link
@@ -197,21 +217,21 @@ const hasContact = computed(
 
             <header data-testid="event-page__header">
                 <div
-                    class="relative mt-3 h-44 overflow-hidden rounded-3xl border bg-sand sm:h-60"
+                    class="relative mt-3 h-56 overflow-hidden rounded-xl border bg-sand sm:h-80"
                     data-testid="event-page__hero"
                 >
                     <img
                         v-if="event.image"
                         :src="event.image"
                         :alt="event.name"
-                        class="absolute inset-0 h-full w-full object-cover opacity-30"
+                        class="absolute inset-0 h-full w-full object-cover"
                         data-testid="event-page__image"
                     />
                     <ContourArt
                         v-else
                         :seed="event.slug"
                         :width="1000"
-                        :height="260"
+                        :height="320"
                     />
                     <div
                         class="absolute inset-x-4 top-4 flex items-start justify-between gap-3"
@@ -257,11 +277,11 @@ const hasContact = computed(
                     <li
                         v-for="fact in facts"
                         :key="fact.key"
-                        class="flex min-w-0 items-center gap-3 rounded-2xl border bg-card py-3 pr-4 pl-3 max-sm:w-full"
+                        class="flex min-w-0 items-center gap-3 rounded-xl border bg-card py-3 pr-4 pl-3 max-sm:w-full"
                         data-testid="event-page__summary-item"
                     >
                         <span
-                            class="grid size-10 shrink-0 place-items-center rounded-xl bg-secondary text-primary"
+                            class="grid size-10 shrink-0 place-items-center rounded-lg bg-secondary text-primary"
                         >
                             <component
                                 :is="fact.icon"
@@ -348,7 +368,7 @@ const hasContact = computed(
                             <li
                                 v-for="race in event.races"
                                 :key="race.id"
-                                class="rounded-2xl border bg-card p-5"
+                                class="rounded-xl border bg-card p-5"
                                 data-testid="event-page__race"
                             >
                                 <div
@@ -364,21 +384,25 @@ const hasContact = computed(
                                         <Badge
                                             v-if="race.is_main"
                                             data-testid="event-page__race-main"
-                                            >{ t('events.races.main') }}</Badge
+                                            >{{ t('events.races.main') }}</Badge
                                         >
                                         <Badge
                                             variant="secondary"
                                             data-testid="event-page__race-distance"
-                                            >{
-                                            formatDistance(race.distance_meters)
+                                            >{{
+                                                formatDistance(
+                                                    race.distance_meters,
+                                                )
                                             }}</Badge
                                         >
                                         <Badge
                                             variant="outline"
                                             data-testid="event-page__race-discipline"
-                                            >{ t(
-                                            `events.races.discipline.${race.discipline}`,
-                                            ) }}</Badge
+                                            >{{
+                                                t(
+                                                    `events.races.discipline.${race.discipline}`,
+                                                )
+                                            }}</Badge
                                         >
                                         <Badge
                                             v-if="race.terrain"
@@ -568,6 +592,57 @@ const hasContact = computed(
                                         {{ t('events.races.register') }}
                                     </a>
                                 </Button>
+                            </li>
+                        </ul>
+                    </section>
+                    <section
+                        v-if="courseRaces.length > 0"
+                        data-testid="event-page__course"
+                    >
+                        <h2 class="mb-3 text-xl font-extrabold tracking-tight">
+                            {{ t('events.course.title') }}
+                        </h2>
+                        <ul class="flex flex-col gap-3">
+                            <li
+                                v-for="race in courseRaces"
+                                :key="race.id"
+                                class="rounded-xl border bg-card p-5"
+                                data-testid="event-page__course-race"
+                            >
+                                <h3 class="font-semibold">{{ race.name }}</h3>
+                                <dl
+                                    class="mt-2 grid gap-2 text-sm sm:grid-cols-2"
+                                >
+                                    <div
+                                        v-if="race.start_location"
+                                        class="flex flex-col"
+                                    >
+                                        <dt class="text-muted-foreground">
+                                            {{ t('events.course.start') }}
+                                        </dt>
+                                        <dd>{{ race.start_location }}</dd>
+                                    </div>
+                                    <div
+                                        v-if="race.finish_location"
+                                        class="flex flex-col"
+                                    >
+                                        <dt class="text-muted-foreground">
+                                            {{ t('events.course.finish') }}
+                                        </dt>
+                                        <dd>{{ race.finish_location }}</dd>
+                                    </div>
+                                </dl>
+                                <a
+                                    v-if="race.route_url"
+                                    :href="race.route_url"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary underline-offset-4 hover:underline"
+                                    data-testid="event-page__course-route"
+                                >
+                                    <Route class="size-4" aria-hidden="true" />
+                                    {{ t('events.course.route') }}
+                                </a>
                             </li>
                         </ul>
                     </section>
@@ -785,8 +860,38 @@ const hasContact = computed(
                     data-testid="event-page__sidebar"
                 >
                     <div
-                        class="flex flex-col gap-3 rounded-2xl border bg-card p-5"
+                        class="flex flex-col gap-3 rounded-xl border bg-card p-5"
                     >
+                        <h2 class="text-lg font-extrabold tracking-tight">
+                            {{ t('events.sidebar.title') }}
+                        </h2>
+                        <ul
+                            v-if="event.races.length > 0"
+                            class="flex flex-col divide-y text-sm"
+                            data-testid="event-page__sidebar-races"
+                        >
+                            <li
+                                v-for="race in event.races"
+                                :key="race.id"
+                                class="flex items-baseline justify-between gap-3 py-2 first:pt-0 last:pb-0"
+                                data-testid="event-page__sidebar-race"
+                            >
+                                <span class="min-w-0">
+                                    <span class="block font-semibold">{{
+                                        race.name
+                                    }}</span>
+                                    <span class="text-muted-foreground">{{
+                                        formatDistance(race.distance_meters)
+                                    }}</span>
+                                </span>
+                                <span
+                                    v-if="lowestPrice(race)"
+                                    class="shrink-0 font-bold"
+                                    data-testid="event-page__sidebar-price"
+                                    >{{ lowestPrice(race) }}</span
+                                >
+                            </li>
+                        </ul>
                         <Button
                             v-if="event.registration_url"
                             as-child
