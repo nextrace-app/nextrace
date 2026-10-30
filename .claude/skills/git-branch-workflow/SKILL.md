@@ -32,6 +32,6 @@ Do this before the first push of the branch, before `gh pr create`, and once mor
 
 ## Rules
 
-- Merge a PR only when the user says so.
+- Merge a PR only when the user says so. Merging goes through the GitHub merge queue: `gh pr merge <n> --auto` (or the "Merge when ready" button). The queue tests the PR together with the latest main and the PRs ahead of it; a PR with conflicts or failed checks is dropped from the queue. Never use `--admin` or bypass the queue.
 - Never force-push, never rewrite pushed history, never delete a branch the user did not ask to delete.
 - Keep `public/robots.txt` as the closed version when syncing (see CLAUDE.md); if a merge touches it, restore it with `git checkout origin/main -- public/robots.txt`.
