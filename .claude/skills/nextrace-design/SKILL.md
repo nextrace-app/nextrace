@@ -31,7 +31,7 @@ Source of truth: the Figma file **NextRace – Photo-led design** (https://www.f
 
 - **Header and footer are full width.** Only the body sits in a centred container: 1152px wide with 32px side padding on desktop (`max-w-6xl`).
 - Breakpoints: Mobile 390, Tablet 768, Desktop 1440. Side padding: 16 / 24 / container. Grid: 1 / 2 / 3 columns, gap 16-20.
-- Frames in Figma: `Events page / Desktop 1440`, `Tablet 768`, `Mobile 390`, plus `Mobile 390 / Menu`, `/ Filters sheet`, `/ Search open`, and the component `Event card`.
+- Frames in Figma (synced with the site on 2026-10-30): `Events page / Desktop 1440`, `Tablet 768`, `Mobile 390`, plus `Mobile 390 / Menu`, `/ Search open`, `/ Filters sheet` (designed, not built in code) and the component `Event card`; `Event page / Desktop 1440` and `/ Mobile 390` (event detail); `Home`, `Favorites (empty)`, `Login` and `Register` at `Desktop 1440`. The events page has no hero, filters row or race count, the footer is white, the wordmark is `Nextrace`, and there is no theme toggle. Profile and settings pages are not in Figma.
 - Header heights: the user cut them by hand from about 105px to about 70px. Keep the header around 70px; verify it again when the file is reachable (see Open items).
 
 ## Components
@@ -60,5 +60,5 @@ Do it on a new branch from `origin/main` (follow the `git-branch-workflow` skill
 
 - Verify the manual header cut to about 70px in Figma once the quota is available: header height, 44px buttons, and the Search-open and Menu frames.
 - Real photos: events have an `image_url` field but the data is empty. Stock photos from Wikimedia Commons were used only in a throwaway HTML mockup; they require author attribution (CC BY and CC BY-SA) and must not be shown as photos of the specific race. Get photos from organisers with permission.
-- Not designed yet: event detail page, dark theme, empty and loading states, an expanded burger with sub-categories, tablet menu.
+- Not designed yet: dark theme (removed from the site on purpose; `ThemeToggle.vue` and `useAppearance` stay for later), loading states, an expanded burger with sub-categories, tablet menu, mobile Home/Favorites/Login/Register, Profile and settings pages. The event detail frames use sample data and flat colours, no photo (the hero was removed from the page).
 - The throwaway mockup `.claude/photo-led-mockup.html` is not part of the repository; delete it when no longer needed.
