@@ -71,7 +71,7 @@ function submitSearch() {
 const pill =
     'inline-flex shrink-0 items-center rounded-full px-3.5 py-2 text-sm font-bold whitespace-nowrap outline-none transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50';
 const searchInput =
-    'h-11 w-full min-w-0 rounded-md border bg-background pr-3 pl-10 text-base outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 md:h-10 md:text-sm';
+    'h-11 w-full min-w-0 rounded-md border bg-background pr-3 pl-10 text-base outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 lg:h-10 lg:text-sm';
 const menuRow =
     'flex min-h-12 items-center justify-between border-b px-5 text-base font-medium outline-none hover:bg-secondary focus-visible:bg-secondary';
 </script>
@@ -82,7 +82,7 @@ const menuRow =
         data-testid="site-header"
     >
         <div
-            class="flex h-14 items-center gap-3 px-4 sm:px-6 md:h-16 md:gap-4"
+            class="flex h-14 items-center gap-3 px-4 sm:px-6 lg:h-16 lg:gap-4"
             data-testid="site-header__bar"
         >
             <Link
@@ -95,7 +95,7 @@ const menuRow =
             </Link>
 
             <form
-                class="relative ml-4 hidden max-w-md flex-1 md:block"
+                class="relative ml-4 hidden max-w-md flex-1 lg:block"
                 data-testid="site-header__search-form"
                 role="search"
                 @submit.prevent="submitSearch"
@@ -115,11 +115,11 @@ const menuRow =
             </form>
 
             <div
-                class="ml-auto flex items-center gap-1.5 md:gap-2"
+                class="ml-auto flex items-center gap-1.5 lg:gap-2"
                 data-testid="site-header__actions"
             >
                 <div
-                    class="hidden items-center gap-2 md:flex"
+                    class="hidden items-center gap-2 lg:flex"
                     data-testid="site-header__desktop-nav"
                 >
                     <Link
@@ -187,7 +187,7 @@ const menuRow =
                     type="button"
                     variant="outline"
                     size="icon"
-                    class="size-11 md:hidden"
+                    class="size-11 lg:hidden"
                     :aria-label="t('nav.search')"
                     :aria-expanded="searchOpen"
                     data-testid="site-header__search-toggle"
@@ -203,7 +203,7 @@ const menuRow =
                             type="button"
                             variant="outline"
                             size="icon"
-                            class="size-11 md:hidden"
+                            class="size-11 lg:hidden"
                             :aria-label="t('nav.menu')"
                             data-testid="site-header__menu-toggle"
                         >
@@ -330,7 +330,7 @@ const menuRow =
 
         <form
             v-if="searchOpen"
-            class="flex gap-2 border-t px-4 py-2 sm:px-6 md:hidden"
+            class="flex gap-2 border-t px-4 py-2 sm:px-6 lg:hidden"
             data-testid="site-header__mobile-search-form"
             role="search"
             @submit.prevent="submitSearch"
@@ -359,7 +359,7 @@ const menuRow =
 
         <nav
             :aria-label="t('nav.races')"
-            class="hidden border-t md:block"
+            class="hidden border-t lg:block"
             data-testid="site-header__category-bar"
         >
             <div
