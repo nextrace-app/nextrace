@@ -24,7 +24,7 @@ const { t } = useI18n();
             >
                 <div class="mb-6 space-y-2 text-center">
                     <h1
-                        class="text-2xl font-extrabold tracking-tight"
+                        class="text-xl font-extrabold tracking-tight"
                         data-testid="auth-simple-layout__title"
                     >
                         {{ title ? t(title) : '' }}

@@ -71,7 +71,7 @@ const statusLabel = computed(() =>
                     day
                 }}</span>
                 <span
-                    class="text-[10px] font-bold tracking-widest text-muted-foreground uppercase"
+                    class="text-[11px] font-bold tracking-widest text-muted-foreground uppercase"
                     >{{ month }}</span
                 >
             </div>
@@ -172,7 +172,7 @@ const statusLabel = computed(() =>
                 <Badge
                     v-if="event.registration.status === 'open'"
                     variant="outline"
-                    class="border-olive font-semibold text-olive"
+                    class="border-olive font-bold text-olive"
                     data-testid="event-card__registration-open"
                     >{{ t('events.registration_status.open') }}</Badge
                 >

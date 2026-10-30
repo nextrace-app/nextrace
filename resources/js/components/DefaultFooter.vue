@@ -18,7 +18,7 @@ const links = computed(() => [
 ]);
 
 const linkClass =
-    'rounded-sm py-2 font-semibold text-foreground underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50';
+    'rounded-sm py-2 font-bold text-foreground underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50';
 </script>
 
 <template>

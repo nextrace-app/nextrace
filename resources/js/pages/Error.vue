@@ -23,14 +23,14 @@ const { localeRoute } = useLocale();
         class="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-16 text-center text-foreground"
     >
         <div
-            class="mb-10 flex items-center gap-2.5 text-2xl"
+            class="mb-10 flex items-center gap-2.5 text-xl"
             data-testid="error-page__brand"
         >
             <AppLogoIcon class="size-10 shrink-0" />
             <AppWordmark />
         </div>
         <h1
-            class="text-3xl font-extrabold tracking-tight sm:text-4xl"
+            class="text-3xl font-extrabold tracking-tight sm:text-5xl"
             data-testid="error-page__title"
         >
             {{ t(`error.title.${props.status}`) }}

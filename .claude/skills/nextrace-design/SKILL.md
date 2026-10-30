@@ -23,7 +23,7 @@ Source of truth: the Figma file **NextRace – Photo-led design** (https://www.f
 
 ## Tokens
 
-- Font: Manrope (Regular, Medium, Bold, ExtraBold). The Figma variable collection is **NextRace colors**: bg `#F6F4EE`, card `#FFFFFF`, ink `#14231F`, muted `#5D6B66`, line `#E2DDD0`, accent `#0F7A5C`, on-accent `#FFFFFF`, soft `#E3F2EA`, soft-ink `#0B5A43`, warn `#FBF0D4`, warn-ink `#6B4A07`, footer-line `#D6CFBD`, chip `#EEF0EE`. Always bind fills and strokes to these variables; do not hardcode hex.
+- Font: Inter (Regular, Medium, Bold, ExtraBold), self-hosted through the `fonts` option of `laravel-vite-plugin` in `vite.config.ts`. The Figma variable collection is **NextRace colors**: bg `#F6F4EE`, card `#FFFFFF`, ink `#14231F`, muted `#5D6B66`, line `#E2DDD0`, accent `#0F7A5C`, on-accent `#FFFFFF`, soft `#E3F2EA`, soft-ink `#0B5A43`, warn `#FBF0D4`, warn-ink `#6B4A07`, footer-line `#D6CFBD`, chip `#EEF0EE`. Always bind fills and strokes to these variables; do not hardcode hex.
 - Radius: the user wants small corners. In Figma: cards and mobile hero 10, desktop hero 12, buttons, inputs and selects 6-8, chips 5, bottom sheet top 16. Pills (fully round chips and tabs) and circles (favorite button) stay round. In code the single token `--radius` in `resources/css/app.css` is currently `0.75rem` (12px, merged in PR smaller-border-radius); it is a little larger than the Figma cards, so align it when porting.
 - Touch targets are at least 44px on mobile and tablet (buttons, chips, menu rows 48px).
 
