@@ -148,7 +148,6 @@ const menuRow =
                     >
                         {{ t('nav.profile') }}
                     </Link>
-                    <ThemeToggle />
                     <LocaleSwitcher />
                     <template v-if="user">
                         <Link
@@ -321,7 +320,6 @@ const menuRow =
                                 >
                                     {{ t('nav.language') }}
                                 </span>
-                                <ThemeToggle />
                                 <LocaleSwitcher />
                             </div>
                         </div>

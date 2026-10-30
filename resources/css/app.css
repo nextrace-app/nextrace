@@ -5,6 +5,7 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
+/* Dark theme is not implemented yet; keeping the class-based variant stops dark: utilities following the OS setting. */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -135,46 +136,6 @@
     --sidebar-border: #e4e0d6;
     --sidebar-ring: #1f7a78;
     --sidebar: #efeadd;
-}
-
-.dark {
-    --background: #0f1719;
-    --foreground: #e9f1ef;
-    --card: #172326;
-    --card-foreground: #e9f1ef;
-    --popover: #172326;
-    --popover-foreground: #e9f1ef;
-    --primary: #5cc3bc;
-    --primary-foreground: #06201f;
-    --secondary: #1e3234;
-    --secondary-foreground: #e9f1ef;
-    --muted: #1a2a2c;
-    --muted-foreground: #9db0ad;
-    --accent: #1e3234;
-    --accent-foreground: #e9f1ef;
-    --destructive: #e5645a;
-    --destructive-foreground: #1b0a08;
-    --border: #263538;
-    --input: #3a5054;
-    --ring: #5cc3bc;
-    --olive: #b4c46b;
-    --land: #1c2d30;
-    --cn: #2f5a58;
-    --sand: #1a2a2c;
-    --chart-1: #5cc3bc;
-    --chart-2: #b4c46b;
-    --chart-3: #e9f1ef;
-    --chart-4: #e0a84e;
-    --chart-5: #2f5a58;
-    --sidebar-background: #121d1f;
-    --sidebar-foreground: #e9f1ef;
-    --sidebar-primary: #5cc3bc;
-    --sidebar-primary-foreground: #06201f;
-    --sidebar-accent: #1e3234;
-    --sidebar-accent-foreground: #e9f1ef;
-    --sidebar-border: #263538;
-    --sidebar-ring: #5cc3bc;
-    --sidebar: #121d1f;
 }
 
 @layer base {
