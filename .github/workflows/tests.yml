@@ -11,6 +11,7 @@ on:
       - main
       - master
       - workos
+  merge_group:
 
 permissions:
   contents: read
