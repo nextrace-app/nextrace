@@ -46,7 +46,7 @@ const features = [
                         {{ t('home.eyebrow') }}
                     </p>
                     <h1
-                        class="text-4xl leading-[1.06] font-extrabold tracking-tight text-balance sm:text-6xl"
+                        class="text-3xl leading-[1.06] font-extrabold tracking-tight text-balance sm:text-6xl"
                         data-testid="home-page__heading"
                     >
                         {{ t('home.heading') }}

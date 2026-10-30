@@ -69,7 +69,7 @@ function submitSearch() {
 }
 
 const pill =
-    'inline-flex shrink-0 items-center rounded-full px-3.5 py-2 text-sm font-semibold whitespace-nowrap outline-none transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50';
+    'inline-flex shrink-0 items-center rounded-full px-3.5 py-2 text-sm font-bold whitespace-nowrap outline-none transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50';
 const searchInput =
     'h-11 w-full min-w-0 rounded-md border bg-background pr-3 pl-10 text-base outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 md:h-10 md:text-sm';
 const menuRow =

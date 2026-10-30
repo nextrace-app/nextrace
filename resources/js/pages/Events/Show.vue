@@ -375,7 +375,7 @@ const hasContact = computed(
                                     class="flex flex-wrap items-center justify-between gap-2"
                                 >
                                     <h3
-                                        class="font-semibold"
+                                        class="font-bold"
                                         data-testid="event-page__race-name"
                                     >
                                         {{ race.name }}
@@ -609,7 +609,7 @@ const hasContact = computed(
                                 class="rounded-xl border bg-card p-5"
                                 data-testid="event-page__course-race"
                             >
-                                <h3 class="font-semibold">{{ race.name }}</h3>
+                                <h3 class="font-bold">{{ race.name }}</h3>
                                 <dl
                                     class="mt-2 grid gap-2 text-sm sm:grid-cols-2"
                                 >
@@ -637,7 +637,7 @@ const hasContact = computed(
                                     :href="race.route_url"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary underline-offset-4 hover:underline"
+                                    class="mt-3 inline-flex items-center gap-1 text-sm font-bold text-primary underline-offset-4 hover:underline"
                                     data-testid="event-page__course-route"
                                 >
                                     <Route class="size-4" aria-hidden="true" />
@@ -877,7 +877,7 @@ const hasContact = computed(
                                 data-testid="event-page__sidebar-race"
                             >
                                 <span class="min-w-0">
-                                    <span class="block font-semibold">{{
+                                    <span class="block font-bold">{{
                                         race.name
                                     }}</span>
                                     <span class="text-muted-foreground">{{
