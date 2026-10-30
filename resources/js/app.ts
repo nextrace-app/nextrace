@@ -1,5 +1,4 @@
 import { createInertiaApp, router } from '@inertiajs/vue3';
-import { initializeTheme } from '@/composables/useAppearance';
 import { createAppI18n } from '@/i18n';
 import type { Translations } from '@/i18n';
 import AuthLayout from '@/layouts/AuthLayout.vue';
@@ -57,9 +56,6 @@ router.on('navigate', (event) => {
     i18n.global.setLocaleMessage(locale, translations);
     i18n.global.locale.value = locale;
 });
-
-// This will set light / dark mode on page load...
-initializeTheme();
 
 // This will listen for flash toast data from the server...
 initializeFlashToast();
