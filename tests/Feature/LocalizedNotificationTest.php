@@ -21,10 +21,10 @@ class LocalizedNotificationTest extends TestCase
 
         $user = User::factory()->create();
 
-        $this->post(route('el.password.email'), ['email' => $user->email]);
+        $this->post(route('en.password.email'), ['email' => $user->email]);
 
         Notification::assertSentTo($user, ResetPassword::class, function (ResetPassword $notification) use ($user) {
-            return str_contains($this->mailFor($notification, $user)->actionUrl, '/el/reset-password/');
+            return str_contains($this->mailFor($notification, $user)->actionUrl, '/en/reset-password/');
         });
     }
 
@@ -39,7 +39,7 @@ class LocalizedNotificationTest extends TestCase
         Notification::assertSentTo($user, ResetPassword::class, function (ResetPassword $notification) use ($user) {
             $url = $this->mailFor($notification, $user)->actionUrl;
 
-            return str_contains($url, '/reset-password/') && ! str_contains($url, '/el/');
+            return str_contains($url, '/reset-password/') && ! str_contains($url, '/en/');
         });
     }
 
@@ -47,7 +47,7 @@ class LocalizedNotificationTest extends TestCase
     {
         Notification::fake();
 
-        $this->post(route('el.register'), [
+        $this->post(route('en.register'), [
             'name' => 'Nikos',
             'email' => 'nikos@example.com',
             'password' => 'Password!2345',
@@ -56,28 +56,28 @@ class LocalizedNotificationTest extends TestCase
 
         $user = User::whereEmail('nikos@example.com')->firstOrFail();
 
-        $this->assertSame('el', $user->locale);
+        $this->assertSame('en', $user->locale);
 
         Notification::assertSentTo($user, VerifyEmail::class, function (VerifyEmail $notification) use ($user) {
-            return str_contains($this->mailFor($notification, $user)->actionUrl, '/el/email/verify/');
+            return str_contains($this->mailFor($notification, $user)->actionUrl, '/en/email/verify/');
         });
     }
 
     public function test_notifications_follow_the_recipients_preferred_locale(): void
     {
-        $user = User::factory()->create(['locale' => 'el']);
+        $user = User::factory()->create(['locale' => 'en']);
 
-        $this->assertSame('el', $user->preferredLocale());
+        $this->assertSame('en', $user->preferredLocale());
 
-        // Requested from the English side of the site, but the account is Greek:
+        // Requested from the Greek side of the site, but the account is English:
         // Laravel switches into the recipient's locale while formatting, which
-        // is also what puts the '/el' prefix on the link.
+        // is also what puts the '/en' prefix on the link.
         $this->post(route('password.email'), ['email' => $user->email]);
 
         $body = $this->lastMailBody();
 
-        $this->assertStringContainsString('/el/reset-password/', $body);
-        $this->assertStringContainsString('Επαναφορά κωδικού', $body);
+        $this->assertStringContainsString('/en/reset-password/', $body);
+        $this->assertStringContainsString('Reset Password', $body);
     }
 
     public function test_notifications_are_written_in_the_locale_of_the_request_by_default(): void
@@ -88,8 +88,8 @@ class LocalizedNotificationTest extends TestCase
 
         $body = $this->lastMailBody();
 
-        $this->assertStringContainsString('Reset Password', $body);
-        $this->assertStringNotContainsString('/el/reset-password/', $body);
+        $this->assertStringContainsString('Επαναφορά κωδικού', $body);
+        $this->assertStringNotContainsString('/en/reset-password/', $body);
     }
 
     /**

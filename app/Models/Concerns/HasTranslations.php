@@ -9,7 +9,8 @@ trait HasTranslations
 {
     /**
      * The value of a translated attribute in the given locale, which defaults to
-     * the one the application is running in, falling back to the fallback locale.
+     * the one the application is running in, falling back to the fallback locale
+     * and then to English, so content that is not translated yet still shows.
      */
     public function translated(string $attribute, ?string $locale = null): string
     {
@@ -26,6 +27,6 @@ trait HasTranslations
 
         $locale ??= app()->getLocale();
 
-        return $values[$locale] ?? $values[config('app.fallback_locale')] ?? null;
+        return $values[$locale] ?? $values[config('app.fallback_locale')] ?? $values['en'] ?? null;
     }
 }

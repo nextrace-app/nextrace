@@ -63,7 +63,7 @@ class EventControllerTest extends TestCase
             'image_url' => 'https://example.com/athens.jpg',
         ]);
 
-        $this->get(route('events.index'))->assertInertia(
+        $this->get(route('en.events.index'))->assertInertia(
             fn ($page) => $page
                 ->component('Events/Index')
                 ->where('events.0.slug', 'athens-marathon')
@@ -115,7 +115,7 @@ class EventControllerTest extends TestCase
             'city' => 'Athens',
         ]);
 
-        $this->get(route('el.events.index'))->assertInertia(
+        $this->get(route('events.index'))->assertInertia(
             fn ($page) => $page
                 ->where('events.0.name', 'Μαραθώνιος Αθήνας')
                 ->where('events.0.location', 'Athens, Ελλάδα')
@@ -251,7 +251,7 @@ class EventControllerTest extends TestCase
 
         $this->assertSame(url('/events/crete-marathon'), route('events.show', $event));
         $this->get('/events/crete-marathon')->assertOk();
-        $this->get('/el/events/crete-marathon')->assertOk();
+        $this->get('/en/events/crete-marathon')->assertOk();
     }
 
     public function test_an_id_is_not_an_address_for_an_event(): void

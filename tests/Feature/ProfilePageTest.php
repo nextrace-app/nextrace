@@ -13,7 +13,7 @@ class ProfilePageTest extends TestCase
     public function test_guests_are_sent_to_the_login_page_of_their_locale(): void
     {
         $this->get(route('profile.show'))->assertRedirect(route('login'));
-        $this->get(route('el.profile.show'))->assertRedirect(route('el.login'));
+        $this->get(route('en.profile.show'))->assertRedirect(route('en.login'));
     }
 
     public function test_a_signed_in_user_sees_their_profile(): void
@@ -32,8 +32,8 @@ class ProfilePageTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->actingAs($user)->get(route('el.profile.show'))->assertInertia(
-            fn ($page) => $page->component('Profile')->where('locale', 'el')
+        $this->actingAs($user)->get(route('en.profile.show'))->assertInertia(
+            fn ($page) => $page->component('Profile')->where('locale', 'en')
         );
     }
 

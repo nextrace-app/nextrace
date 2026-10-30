@@ -195,6 +195,14 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'code' => 'authentication code',
+        'current_password' => 'current password',
+        'email' => 'email',
+        'name' => 'name',
+        'password' => 'password',
+        'password_confirmation' => 'password confirmation',
+        'recovery_code' => 'recovery code',
+    ],
 
 ];

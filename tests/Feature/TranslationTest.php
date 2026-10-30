@@ -15,13 +15,13 @@ class TranslationTest extends TestCase
     public function test_validation_errors_are_translated_for_the_default_locale(): void
     {
         $this->post(route('login'), ['email' => '', 'password' => ''])
-            ->assertSessionHasErrors(['email' => 'The email field is required.']);
+            ->assertSessionHasErrors(['email' => 'Το πεδίο email είναι υποχρεωτικό.']);
     }
 
     public function test_validation_errors_are_translated_for_a_prefixed_locale(): void
     {
-        $this->post(route('el.login'), ['email' => '', 'password' => ''])
-            ->assertSessionHasErrors(['email' => 'Το πεδίο email είναι υποχρεωτικό.']);
+        $this->post(route('en.login'), ['email' => '', 'password' => ''])
+            ->assertSessionHasErrors(['email' => 'The email field is required.']);
     }
 
     public function test_failed_login_is_reported_in_the_locale_of_the_request(): void
@@ -29,41 +29,59 @@ class TranslationTest extends TestCase
         $user = User::factory()->create();
 
         $this->post(route('login'), ['email' => $user->email, 'password' => 'wrong-password'])
-            ->assertSessionHasErrors(['email' => 'These credentials do not match our records.']);
-
-        $this->post(route('el.login'), ['email' => $user->email, 'password' => 'wrong-password'])
             ->assertSessionHasErrors(['email' => 'Τα στοιχεία σύνδεσης δεν ταιριάζουν με τα δεδομένα μας.']);
+
+        $this->post(route('en.login'), ['email' => $user->email, 'password' => 'wrong-password'])
+            ->assertSessionHasErrors(['email' => 'These credentials do not match our records.']);
     }
 
     public function test_interface_translations_are_shared_with_the_frontend(): void
     {
         $this->get(route('home'))->assertInertia(
-            fn ($page) => $page->where('translations.nav.events', 'Events')
+            fn ($page) => $page->where('translations.nav.events', 'Εκδηλώσεις')
         );
 
-        $this->get(route('el.home'))->assertInertia(
-            fn ($page) => $page->where('translations.nav.events', 'Εκδηλώσεις')
+        $this->get(route('en.home'))->assertInertia(
+            fn ($page) => $page->where('translations.nav.events', 'Events')
         );
     }
 
     public function test_json_strings_are_translated_for_the_default_locale(): void
     {
-        $this->app->setLocale('el');
-
         $this->assertSame('Το προφίλ ενημερώθηκε.', __('Profile updated.'));
+
+        $this->app->setLocale('en');
+
+        $this->assertSame('Profile updated.', __('Profile updated.'));
     }
 
-    public function test_missing_translations_fall_back_to_english(): void
+    public function test_missing_translations_fall_back_to_greek(): void
     {
-        $this->app->setLocale('el');
+        $this->app->setLocale('en');
 
-        // No 'el' line exists for this key, so the fallback locale has to answer
+        // No 'en' line exists for this key, so the fallback locale has to answer
         // rather than the key itself being shown to the user.
         $this->assertSame(
-            trans('validation.custom.attribute-name.rule-name', [], 'en'),
+            trans('validation.custom.attribute-name.rule-name', [], 'el'),
             __('validation.custom.attribute-name.rule-name')
         );
-        $this->assertSame('en', config('app.fallback_locale'));
+        $this->assertSame('el', config('app.fallback_locale'));
+    }
+
+    /**
+     * An English line missing from lang/en.json would fall back to the Greek one.
+     */
+    public function test_every_locale_ships_the_same_json_strings(): void
+    {
+        $reference = array_keys(json_decode(File::get(lang_path('el.json')), true, flags: JSON_THROW_ON_ERROR));
+        sort($reference);
+
+        foreach (config('app.supported_locales') as $locale) {
+            $keys = array_keys(json_decode(File::get(lang_path("{$locale}.json")), true, flags: JSON_THROW_ON_ERROR));
+            sort($keys);
+
+            $this->assertSame($reference, $keys, "lang/{$locale}.json does not carry the same strings as the default locale.");
+        }
     }
 
     /**

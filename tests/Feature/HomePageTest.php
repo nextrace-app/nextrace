@@ -18,8 +18,8 @@ class HomePageTest extends TestCase
 
     public function test_the_home_page_renders_the_home_component_for_every_locale(): void
     {
-        $this->get(route('el.home'))->assertInertia(
-            fn ($page) => $page->component('Home')->where('locale', 'el')
+        $this->get(route('en.home'))->assertInertia(
+            fn ($page) => $page->component('Home')->where('locale', 'en')
         );
     }
 }

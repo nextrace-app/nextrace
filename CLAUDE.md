@@ -226,7 +226,7 @@ Vue components must have a single root element.
 ## NextRace project context
 
 - NextRace is a calendar of running races in Greece. It covers all of Greece, and more features will be added later.
-- The site is multilingual: English (default) and Greek. The language is detected automatically on the first visit and can be switched with the standard language switcher; the choice is remembered.
+- The site is multilingual: Greek (default, served at the root) and English (under `/en`). Every first visit lands on Greek: the browser language is not detected. The language can be switched with the standard language switcher and the choice is remembered.
 - Translatable content (event name, description) is stored per locale; interface strings live in `lang/` and are served through vue-i18n.
 - Search engine indexing is gated by `SITE_INDEXABLE` (`config/site.php`, default `false`; see README.md). While it is false the site is closed: `robots.txt` disallows everything, responses carry `X-Robots-Tag: noindex`, and `/sitemap.xml` is a 404.
   - `public/robots.txt` is a static, generated file and the committed version must always be the closed one (`User-agent: *` / `Disallow: /`); a test enforces it. After running `php artisan seo:robots` with the flag on, restore it with `git checkout public/robots.txt` and never commit the open version.
