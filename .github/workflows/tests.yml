@@ -11,7 +11,7 @@ on:
       - main
       - master
       - workos
-  workflow_dispatch:
+  merge_group:
 
 permissions:
   contents: read
