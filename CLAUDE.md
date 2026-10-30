@@ -232,3 +232,20 @@ Vue components must have a single root element.
   - `public/robots.txt` is a static, generated file and the committed version must always be the closed one (`User-agent: *` / `Disallow: /`); a test enforces it. After running `php artisan seo:robots` with the flag on, restore it with `git checkout public/robots.txt` and never commit the open version.
   - Never set `SITE_INDEXABLE=true` on a Forge site, and never run `php artisan up` on production, unless the user explicitly says the site is launching.
   - The test suite sets `SITE_INDEXABLE=true` in `phpunit.xml` so it is independent of `.env`; tests for the closed mode set `config(['site.indexable' => false])`.
+
+## Change workflow: ticket, then design, then code
+
+Every UI or design change follows this order. Do not skip or reorder the steps.
+
+1. **Ticket first.** Describe the change in a ClickUp ticket (list "NextRace", https://app.clickup.com/1500530000009189/v/l/li/1500530000060970): what changes, where, and what done looks like. No work starts without a ticket.
+2. **Design second.** Update the Figma file (fvBPi385tS8VokeCk8ah3J) to match the ticket: pages, components and the Style guide. The design is the source of truth for the site.
+3. **Code last.** Take the ticket into development only after the design is updated and the ticket describes the change. Change the site only to match the design; never introduce a visual change in code that is not in Figma.
+4. **Link everything.** The branch and PR reference the ticket, and the ticket links the Figma frames it changed.
+
+Skills: `nextrace-ticket` (how a request becomes a ticket: discussion first), `nextrace-figma-design` (how to build and change the design), `nextrace-design` (the design decisions), `git-branch-workflow` (branches and PRs).
+
+Rules:
+- A request to change anything starts a discussion with the user (details, dependencies, approach, design impact), not work.
+- If a request arrives without a ticket, create the ticket (or ask the user to confirm its text) before touching Figma or code.
+- If the code and the design disagree, the design wins; fix the code, or update the design first if the code is the intended behaviour.
+- Pure backend or tooling changes with no visible effect do not need a design step, but still need a ticket.
