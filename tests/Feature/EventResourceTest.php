@@ -26,6 +26,8 @@ class EventResourceTest extends TestCase
 
     public function test_it_keeps_every_key_the_current_pages_read(): void
     {
+        $this->app->setLocale('en');
+
         $event = Event::factory()->withMainRace([
             'distance_class' => 'marathon',
             'distance_meters' => 42195,
@@ -57,6 +59,8 @@ class EventResourceTest extends TestCase
 
     public function test_it_adds_races_prices_links_and_the_related_records(): void
     {
+        $this->app->setLocale('en');
+
         $organizer = Organizer::factory()->create(['name' => ['en' => 'Club', 'el' => 'Σύλλογος'], 'email' => 'a@example.com']);
         $series = EventSeries::factory()->create(['slug' => 'crete-marathon', 'name' => ['en' => 'Crete Marathon', 'el' => 'Μαραθώνιος Κρήτης']]);
         $region = Region::factory()->create(['slug' => 'test-region', 'name' => ['en' => 'Chania', 'el' => 'Χανιά']]);

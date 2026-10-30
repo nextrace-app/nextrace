@@ -60,7 +60,7 @@ class GoogleAuthTest extends TestCase
         $this->assertSame('Maria Papadaki', $user->name);
         $this->assertNotNull($user->email_verified_at);
         $this->assertFalse($user->hasPassword());
-        $this->assertSame('en', $user->locale);
+        $this->assertSame('el', $user->locale);
         $this->assertDatabaseHas('social_accounts', [
             'user_id' => $user->id,
             'provider' => 'google',
@@ -72,11 +72,11 @@ class GoogleAuthTest extends TestCase
     {
         $this->fakeGoogle();
 
-        $this->withCookie(RememberLocale::COOKIE, 'el')
+        $this->withCookie(RememberLocale::COOKIE, 'en')
             ->get(route('auth.google.callback'))
-            ->assertRedirect(route('el.home'));
+            ->assertRedirect(route('en.home'));
 
-        $this->assertSame('el', User::where('email', 'maria@example.com')->firstOrFail()->locale);
+        $this->assertSame('en', User::where('email', 'maria@example.com')->firstOrFail()->locale);
     }
 
     public function test_a_returning_visitor_signs_in_to_the_linked_account(): void

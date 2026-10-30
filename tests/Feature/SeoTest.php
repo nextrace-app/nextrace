@@ -52,15 +52,16 @@ class SeoTest extends TestCase
         $this->assertStringStartsWith('application/xml', $response->headers->get('Content-Type'));
         $xml = $response->getContent();
 
-        foreach ([route('home'), route('el.home'), route('events.index'), route('el.events.index'), route('events.show', $published), route('el.events.show', $published)] as $url) {
+        foreach ([route('home'), route('en.home'), route('events.index'), route('en.events.index'), route('events.show', $published), route('en.events.show', $published)] as $url) {
             $this->assertStringContainsString("<loc>{$url}</loc>", $xml);
         }
 
         $this->assertStringContainsString('hreflang="x-default" href="'.route('events.show', $published).'"', $xml);
-        $this->assertStringContainsString('hreflang="el" href="'.route('el.events.show', $published).'"', $xml);
+        $this->assertStringContainsString('hreflang="el" href="'.route('events.show', $published).'"', $xml);
+        $this->assertStringContainsString('hreflang="en" href="'.route('en.events.show', $published).'"', $xml);
         $this->assertStringContainsString('<lastmod>', $xml);
         $this->assertStringNotContainsString(route('events.show', $draft), $xml);
-        $this->assertStringNotContainsString(route('el.events.show', $draft), $xml);
+        $this->assertStringNotContainsString(route('en.events.show', $draft), $xml);
     }
 
     public function test_the_robots_command_hides_account_pages_and_points_to_the_sitemap(): void
@@ -74,7 +75,7 @@ class SeoTest extends TestCase
         unlink($path);
 
         $this->assertStringContainsString("User-agent: *\nAllow: /", $body);
-        foreach (['/login', '/el/login', '/register', '/el/register', '/forgot-password', '/reset-password', '/profile', '/el/profile', '/settings', '/dashboard', '/el/dashboard', '/favorites', '/el/favorites'] as $path) {
+        foreach (['/login', '/en/login', '/register', '/en/register', '/forgot-password', '/reset-password', '/profile', '/en/profile', '/settings', '/dashboard', '/en/dashboard', '/favorites', '/en/favorites'] as $path) {
             $this->assertStringContainsString("Disallow: {$path}\n", $body);
         }
         $this->assertStringContainsString("Sitemap: https://example.test/sitemap.xml\n", $body);
@@ -97,15 +98,16 @@ class SeoTest extends TestCase
     {
         $event = $this->event();
 
-        $html = $this->get(route('events.show', $event))->assertOk()->getContent();
-        $url = route('events.show', $event);
+        $html = $this->get(route('en.events.show', $event))->assertOk()->getContent();
+        $url = route('en.events.show', $event);
 
         $this->assertStringContainsString('<title>Heraklion Half Marathon: 21.1 km race in Heraklion - ', $html);
         $this->assertStringContainsString('<meta name="description" content="Heraklion Half Marathon, 21.1 km in Heraklion on April 18, 2027. A fast course by the sea.">', $html);
         $this->assertStringContainsString('<meta name="robots" content="index, follow">', $html);
         $this->assertStringContainsString("<link rel=\"canonical\" href=\"{$url}\">", $html);
-        $this->assertStringContainsString('hreflang="el" href="'.route('el.events.show', $event).'"', $html);
-        $this->assertStringContainsString('hreflang="x-default" href="'.$url.'"', $html);
+        $this->assertStringContainsString('hreflang="el" href="'.route('events.show', $event).'"', $html);
+        $this->assertStringContainsString('hreflang="en" href="'.$url.'"', $html);
+        $this->assertStringContainsString('hreflang="x-default" href="'.route('events.show', $event).'"', $html);
         $this->assertStringContainsString('<meta property="og:type" content="article">', $html);
         $this->assertStringContainsString("<meta property=\"og:url\" content=\"{$url}\">", $html);
         $this->assertStringContainsString('<meta property="og:locale" content="en_US">', $html);
@@ -134,17 +136,17 @@ class SeoTest extends TestCase
     {
         $event = $this->event();
 
-        $html = $this->get(route('el.events.show', $event))->assertOk()->getContent();
+        $html = $this->get(route('events.show', $event))->assertOk()->getContent();
 
         $this->assertStringContainsString('<title>Ημιμαραθώνιος Ηρακλείου: αγώνας 21.1 km, Heraklion - ', $html);
         $this->assertStringContainsString('<meta property="og:locale" content="el_GR">', $html);
         $this->assertStringContainsString('<meta property="og:locale:alternate" content="en_US">', $html);
-        $this->assertStringContainsString('<link rel="canonical" href="'.route('el.events.show', $event).'">', $html);
+        $this->assertStringContainsString('<link rel="canonical" href="'.route('events.show', $event).'">', $html);
 
         $data = $this->jsonLd($html);
         $this->assertSame('Ημιμαραθώνιος Ηρακλείου', $data['name']);
         $this->assertSame('el', $data['inLanguage']);
-        $this->assertSame(route('el.events.show', $event), $data['url']);
+        $this->assertSame(route('events.show', $event), $data['url']);
     }
 
     public function test_a_midnight_start_is_a_plain_date_and_optional_fields_are_left_out(): void
@@ -159,7 +161,7 @@ class SeoTest extends TestCase
             'registration_url' => null,
         ], ['starts_at' => '2027-04-18 00:00:00', 'start_time_known' => false]);
 
-        $html = $this->get(route('events.show', $event))->assertOk()->getContent();
+        $html = $this->get(route('en.events.show', $event))->assertOk()->getContent();
         $data = $this->jsonLd($html);
 
         $this->assertSame('2027-04-18', $data['startDate']);
@@ -178,7 +180,7 @@ class SeoTest extends TestCase
         $this->assertSame('2027-01-10T07:00:00+02:00', PageMeta::schemaDate(Carbon::parse('2027-01-10 07:00:00')));
 
         $event = $this->event(['name' => ['en' => 'Run </script><b>&', 'el' => 'x']]);
-        $html = $this->get(route('events.show', $event))->assertOk()->getContent();
+        $html = $this->get(route('en.events.show', $event))->assertOk()->getContent();
 
         $this->assertStringNotContainsString('Run </script>', $html);
         $this->assertSame('Run </script><b>&', $this->jsonLd($html)['name']);
@@ -186,21 +188,21 @@ class SeoTest extends TestCase
 
     public function test_the_home_and_events_pages_have_their_own_meta(): void
     {
-        $this->get(route('home'))->assertOk()
+        $this->get(route('en.home'))->assertOk()
             ->assertSee('<title>Running races in Greece - ', false)
             ->assertSee('<meta property="og:type" content="website">', false)
             ->assertDontSee('application/ld+json', false);
 
-        $this->get(route('el.events.index'))->assertOk()
+        $this->get(route('events.index'))->assertOk()
             ->assertSee('<title>Αγώνες δρόμου Ελλάδα: ημερολόγιο αγώνων - ', false)
-            ->assertSee('<link rel="canonical" href="'.route('el.events.index').'">', false)
+            ->assertSee('<link rel="canonical" href="'.route('events.index').'">', false)
             ->assertSee('hreflang="x-default" href="'.route('events.index').'"', false);
     }
 
     public function test_account_pages_are_not_indexable(): void
     {
         $this->get(route('login'))->assertSee('<meta name="robots" content="noindex, nofollow">', false);
-        $this->get(route('el.register'))->assertSee('<meta name="robots" content="noindex, nofollow">', false);
+        $this->get(route('en.register'))->assertSee('<meta name="robots" content="noindex, nofollow">', false);
     }
 
     public function test_an_unpublished_event_stays_hidden_and_leaks_no_structured_data(): void
@@ -208,13 +210,13 @@ class SeoTest extends TestCase
         $draft = $this->event(['name' => ['en' => 'Hidden Draft Race', 'el' => 'Κρυφός']]);
         $draft->forceFill(['published_at' => null])->save();
 
-        foreach ([route('events.show', $draft), route('el.events.show', $draft)] as $url) {
+        foreach ([route('events.show', $draft), route('en.events.show', $draft)] as $url) {
             $response = $this->get($url)->assertNotFound();
             $this->assertStringNotContainsString('Hidden Draft Race', $response->getContent());
             $this->assertStringNotContainsString('application/ld+json', $response->getContent());
         }
 
-        $this->assertStringNotContainsString('Hidden Draft Race', $this->get(route('events.index'))->getContent());
+        $this->assertStringNotContainsString('Hidden Draft Race', $this->get(route('en.events.index'))->getContent());
         $this->assertStringNotContainsString((string) route('events.show', $draft), $this->get('/sitemap.xml')->getContent());
     }
 
@@ -233,7 +235,7 @@ class SeoTest extends TestCase
         RacePrice::factory()->for($tenK)->create(['amount_cents' => 0, 'currency' => 'EUR', 'valid_from' => null, 'valid_until' => null]);
         Race::factory()->for($event)->startTimeUnknown()->create(['name' => ['en' => '5 km', 'el' => '5 χλμ'], 'distance_meters' => 5000, 'starts_at' => '2027-04-18 00:00:00']);
 
-        $html = $this->get(route('events.show', $event))->assertOk()->getContent();
+        $html = $this->get(route('en.events.show', $event))->assertOk()->getContent();
         $data = $this->jsonLd($html);
 
         $this->assertCount(3, $data['subEvent']);
@@ -260,7 +262,7 @@ class SeoTest extends TestCase
 
     public function test_a_single_race_event_keeps_its_description_and_one_sub_event(): void
     {
-        $data = $this->jsonLd($this->get(route('events.show', $this->event()))->assertOk()->getContent());
+        $data = $this->jsonLd($this->get(route('en.events.show', $this->event()))->assertOk()->getContent());
 
         $this->assertCount(1, $data['subEvent']);
         $this->assertArrayNotHasKey('organizer', $data);
@@ -277,7 +279,7 @@ class SeoTest extends TestCase
 
         foreach ($cases as $status => $expected) {
             $event = $this->event(['status' => $status, 'name' => ['en' => "Race {$status}", 'el' => "Αγώνας {$status}"]]);
-            $data = $this->jsonLd($this->get(route('events.show', $event))->assertOk()->getContent());
+            $data = $this->jsonLd($this->get(route('en.events.show', $event))->assertOk()->getContent());
 
             $this->assertSame($expected, $data['eventStatus']);
             $this->assertSame($expected, $data['subEvent'][0]['eventStatus']);
@@ -289,7 +291,7 @@ class SeoTest extends TestCase
         $event = $this->event();
         Race::factory()->for($event)->create(['name' => ['en' => '</script><i>&', 'el' => 'x'], 'distance_meters' => 3000]);
 
-        $html = $this->get(route('events.show', $event))->assertOk()->getContent();
+        $html = $this->get(route('en.events.show', $event))->assertOk()->getContent();
 
         $this->assertStringNotContainsString('</script><i>', $html);
         $this->assertContains('</script><i>&', array_column($this->jsonLd($html)['subEvent'], 'name'));
@@ -303,6 +305,6 @@ class SeoTest extends TestCase
         $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
 
         $this->assertSame(1, substr_count($xml, '<loc>'.route('events.show', $event).'</loc>'));
-        $this->assertSame(1, substr_count($xml, '<loc>'.route('el.events.show', $event).'</loc>'));
+        $this->assertSame(1, substr_count($xml, '<loc>'.route('en.events.show', $event).'</loc>'));
     }
 }

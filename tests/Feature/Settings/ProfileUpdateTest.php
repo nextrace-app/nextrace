@@ -64,14 +64,14 @@ class ProfileUpdateTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->from(route('el.profile.show'))
-            ->patch(route('el.profile.update'), ['name' => 'Test User', 'email' => $user->email])
-            ->assertRedirect(route('el.profile.show'));
+            ->from(route('en.profile.show'))
+            ->patch(route('en.profile.update'), ['name' => 'Test User', 'email' => $user->email])
+            ->assertRedirect(route('en.profile.show'));
 
         $this->actingAs($user)
-            ->from(route('el.profile.edit'))
-            ->patch(route('el.profile.update'), ['name' => 'Test User', 'email' => $user->email])
-            ->assertRedirect(route('el.profile.edit'));
+            ->from(route('en.profile.edit'))
+            ->patch(route('en.profile.update'), ['name' => 'Test User', 'email' => $user->email])
+            ->assertRedirect(route('en.profile.edit'));
     }
 
     public function test_email_verification_status_is_unchanged_when_the_email_address_is_unchanged()
@@ -116,9 +116,9 @@ class ProfileUpdateTest extends TestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->from(route('el.profile.show'))
-            ->delete(route('el.profile.destroy'), ['password' => 'password'])
-            ->assertRedirect(route('el.home'));
+            ->from(route('en.profile.show'))
+            ->delete(route('en.profile.destroy'), ['password' => 'password'])
+            ->assertRedirect(route('en.home'));
 
         $this->assertGuest();
     }

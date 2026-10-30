@@ -122,12 +122,12 @@ class EventTest extends TestCase
             'name' => ['el' => 'Μαραθώνιος Αθήνας', 'en' => 'Athens Marathon'],
         ]);
 
-        $this->assertSame('Athens Marathon', $event->translated('name'));
-        $this->assertSame('Μαραθώνιος Αθήνας', $event->translated('name', 'el'));
-
-        $this->app->setLocale('el');
-
         $this->assertSame('Μαραθώνιος Αθήνας', $event->translated('name'));
+        $this->assertSame('Athens Marathon', $event->translated('name', 'en'));
+
+        $this->app->setLocale('en');
+
+        $this->assertSame('Athens Marathon', $event->translated('name'));
     }
 
     public function test_translated_text_falls_back_when_a_locale_is_missing(): void
@@ -137,8 +137,7 @@ class EventTest extends TestCase
             'venue' => null,
         ]);
 
-        $this->app->setLocale('el');
-
+        // Greek is the default and has no text here, so English fills in for content.
         $this->assertSame('Athens Marathon', $event->translated('name'));
         $this->assertSame('', $event->translated('venue'));
         $this->assertNull($event->translatedOrNull('venue'));

@@ -1,6 +1,6 @@
 # NextRace
 
-A calendar of running races across all of Greece. Laravel, Inertia and Vue; English (default) and Greek.
+A calendar of running races across all of Greece. Laravel, Inertia and Vue; Greek (default, at the root) and English (under `/en`).
 
 ## Search engine indexing
 

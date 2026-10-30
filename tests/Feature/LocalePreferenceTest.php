@@ -14,53 +14,53 @@ class LocalePreferenceTest extends TestCase
 
     public function test_choosing_a_locale_is_remembered_and_cleans_up_the_url(): void
     {
-        $this->get('/events?locale=el')
-            ->assertRedirect('/el/events')
-            ->assertCookie(RememberLocale::COOKIE, 'el');
+        $this->get('/events?locale=en')
+            ->assertRedirect('/en/events')
+            ->assertCookie(RememberLocale::COOKIE, 'en');
     }
 
     public function test_choosing_the_default_locale_is_remembered_too(): void
     {
-        $this->withCookie(RememberLocale::COOKIE, 'el')
-            ->get('/events?locale=en')
+        $this->withCookie(RememberLocale::COOKIE, 'en')
+            ->get('/events?locale=el')
             ->assertRedirect('/events')
-            ->assertCookie(RememberLocale::COOKIE, 'en');
+            ->assertCookie(RememberLocale::COOKIE, 'el');
     }
 
     public function test_choosing_the_locale_a_page_already_carries_does_not_prefix_it_twice(): void
     {
         // The switcher links to the page in the target locale, so the choice
         // usually arrives on a URL that is already prefixed.
-        $this->get('/el/events?locale=el')
-            ->assertRedirect('/el/events')
-            ->assertCookie(RememberLocale::COOKIE, 'el');
+        $this->get('/en/events?locale=en')
+            ->assertRedirect('/en/events')
+            ->assertCookie(RememberLocale::COOKIE, 'en');
     }
 
     public function test_switching_away_from_a_prefixed_page_drops_the_prefix(): void
     {
-        $this->get('/el/events?locale=en')
+        $this->get('/en/events?locale=el')
             ->assertRedirect('/events')
-            ->assertCookie(RememberLocale::COOKIE, 'en');
+            ->assertCookie(RememberLocale::COOKIE, 'el');
     }
 
     public function test_query_parameters_survive_the_switch(): void
     {
-        $this->get('/events?locale=el&page=2')->assertRedirect('/el/events?page=2');
-        $this->get('/el/events?locale=en&page=2')->assertRedirect('/events?page=2');
+        $this->get('/events?locale=en&page=2')->assertRedirect('/en/events?page=2');
+        $this->get('/en/events?locale=el&page=2')->assertRedirect('/events?page=2');
     }
 
     public function test_visiting_a_prefixed_url_is_remembered(): void
     {
-        $this->get('/el/events')
+        $this->get('/en/events')
             ->assertOk()
-            ->assertCookie(RememberLocale::COOKIE, 'el');
+            ->assertCookie(RememberLocale::COOKIE, 'en');
     }
 
     public function test_returning_visitors_are_sent_to_the_locale_they_chose(): void
     {
-        $this->withCookie(RememberLocale::COOKIE, 'el')
+        $this->withCookie(RememberLocale::COOKIE, 'en')
             ->get('/events')
-            ->assertRedirect('/el/events');
+            ->assertRedirect('/en/events');
     }
 
     public function test_visitors_without_a_preference_stay_on_the_default_locale(): void
@@ -68,16 +68,11 @@ class LocalePreferenceTest extends TestCase
         $this->get('/events')->assertOk();
     }
 
-    public function test_a_first_visit_from_a_greek_browser_is_sent_to_the_greek_site(): void
-    {
-        $this->withHeader('Accept-Language', 'el-GR,el;q=0.9,en;q=0.5')
-            ->get('/events')
-            ->assertRedirect('/el/events');
-    }
-
     public function test_a_first_visit_from_an_english_browser_stays_on_the_default_locale(): void
     {
         $this->withHeader('Accept-Language', 'en-US,en;q=0.9')->get('/events')->assertOk();
+
+        $this->assertSame('el', app()->getLocale());
     }
 
     public function test_a_browser_asking_for_an_unsupported_language_stays_on_the_default_locale(): void
@@ -85,33 +80,28 @@ class LocalePreferenceTest extends TestCase
         $this->withHeader('Accept-Language', 'de-DE,de;q=0.9')->get('/events')->assertOk();
     }
 
-    public function test_a_browser_that_ranks_english_above_greek_stays_on_the_default_locale(): void
-    {
-        $this->withHeader('Accept-Language', 'en;q=0.9,el;q=0.5')->get('/events')->assertOk();
-    }
-
     public function test_a_remembered_choice_beats_the_browser_language(): void
     {
         $this->withHeader('Accept-Language', 'el')
             ->withCookie(RememberLocale::COOKIE, 'en')
             ->get('/events')
-            ->assertOk();
+            ->assertRedirect('/en/events');
     }
 
     public function test_choosing_the_default_locale_overrides_the_browser_language(): void
     {
-        $this->withHeader('Accept-Language', 'el')
-            ->get('/el/events?locale=en')
+        $this->withHeader('Accept-Language', 'en')
+            ->get('/en/events?locale=el')
             ->assertRedirect('/events')
-            ->assertCookie(RememberLocale::COOKIE, 'en');
+            ->assertCookie(RememberLocale::COOKIE, 'el');
     }
 
     public function test_an_account_locale_beats_the_browser_language(): void
     {
-        $user = User::factory()->create(['locale' => 'en']);
+        $user = User::factory()->create(['locale' => 'el']);
 
         $this->actingAs($user)
-            ->withHeader('Accept-Language', 'el')
+            ->withHeader('Accept-Language', 'en')
             ->get('/events')
             ->assertOk();
     }
@@ -125,19 +115,19 @@ class LocalePreferenceTest extends TestCase
     {
         $user = User::factory()->create(['locale' => null]);
 
-        $this->actingAs($user)->get('/el/events')->assertOk();
+        $this->actingAs($user)->get('/en/events')->assertOk();
 
-        $this->assertSame('el', $user->refresh()->locale);
+        $this->assertSame('en', $user->refresh()->locale);
     }
 
     public function test_the_account_preference_wins_over_the_cookie(): void
     {
-        $user = User::factory()->create(['locale' => 'el']);
+        $user = User::factory()->create(['locale' => 'en']);
 
         $this->actingAs($user)
-            ->withCookie(RememberLocale::COOKIE, 'en')
+            ->withCookie(RememberLocale::COOKIE, 'el')
             ->get('/events')
-            ->assertRedirect('/el/events');
+            ->assertRedirect('/en/events');
     }
 
     public function test_signed_links_are_never_redirected(): void
@@ -151,7 +141,7 @@ class LocalePreferenceTest extends TestCase
 
         // Moving the visitor to another locale would break the signature.
         $this->actingAs($user)
-            ->withCookie(RememberLocale::COOKIE, 'el')
+            ->withCookie(RememberLocale::COOKIE, 'en')
             ->get($url)
             ->assertRedirectContains('/dashboard');
 
@@ -162,7 +152,7 @@ class LocalePreferenceTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->withCookie(RememberLocale::COOKIE, 'el')
+        $this->withCookie(RememberLocale::COOKIE, 'en')
             ->post('/login', ['email' => $user->email, 'password' => 'password'])
             ->assertRedirect(route('profile.show', absolute: false));
 

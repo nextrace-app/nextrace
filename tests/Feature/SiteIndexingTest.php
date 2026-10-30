@@ -18,7 +18,7 @@ class SiteIndexingTest extends TestCase
             ->assertOk()
             ->assertHeader('X-Robots-Tag', 'noindex, nofollow')
             ->assertSee('<meta name="robots" content="noindex, nofollow">', false);
-        $this->get(route('el.events.index'))
+        $this->get(route('en.events.index'))
             ->assertHeader('X-Robots-Tag', 'noindex, nofollow')
             ->assertSee('<meta name="robots" content="noindex, nofollow">', false);
         $this->get(route('sitemap'))->assertNotFound();
@@ -66,14 +66,14 @@ class SiteIndexingTest extends TestCase
     {
         config(['site.indexable' => false]);
         Route::get('/maintenance-preview', fn () => abort(503, '', ['Retry-After' => '3600']));
-        Route::get('/el/maintenance-preview', fn () => abort(503));
+        Route::get('/en/maintenance-preview', fn () => abort(503));
 
         $this->get('/maintenance-preview')
             ->assertStatus(503)
             ->assertHeader('X-Robots-Tag', 'noindex, nofollow')
             ->assertHeader('Retry-After', '3600')
             ->assertInertia(fn ($page) => $page->component('Error')->where('status', 503));
-        $this->get('/el/maintenance-preview')
+        $this->get('/en/maintenance-preview')
             ->assertStatus(503)
             ->assertInertia(fn ($page) => $page->component('Error')->where('status', 503));
     }

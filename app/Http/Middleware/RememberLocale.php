@@ -24,9 +24,8 @@ class RememberLocale
      * The default locale is served without a prefix, so a visitor who picked
      * another language would land back on the default every time they enter
      * the site through a bare URL. Their choice is remembered and applied here.
-     * Only a first visit, with nothing remembered, falls back to the browser's
-     * Accept-Language, and only to pick a prefixed locale: the bare URL is
-     * never rewritten for requests that send no such header.
+     * A first visit, with nothing remembered, stays on the default locale: the
+     * browser's Accept-Language is deliberately not consulted.
      *
      * @param  Closure(Request): (Response)  $next
      */
@@ -43,7 +42,7 @@ class RememberLocale
         if ($requested !== null) {
             $this->remember($request, $requested);
         } elseif ($this->mayRedirect($request)) {
-            $preferred = $this->preferredLocale($request);
+            $preferred = $this->rememberedLocale($request);
 
             if ($preferred !== null && $preferred !== Locale::default()) {
                 return redirect()->to($this->urlIn($request, $preferred));
@@ -76,40 +75,16 @@ class RememberLocale
     }
 
     /**
-     * The locale this visitor was last seen using.
+     * The locale this visitor was last seen using, if any.
      */
-    private function preferredLocale(Request $request): ?string
+    private function rememberedLocale(Request $request): ?string
     {
         $user = $request->user();
 
         $locale = ($user instanceof User ? $user->locale : null)
             ?? $request->cookie(self::COOKIE);
 
-        if (is_string($locale) && Locale::isSupported($locale)) {
-            return $locale;
-        }
-
-        return $this->browserLocale($request);
-    }
-
-    /**
-     * The supported locale the browser asks for, for a first visit that has no
-     * choice on record yet.
-     *
-     * Requests without an Accept-Language header, such as search engine
-     * crawlers, are not guessed at and stay on the default locale.
-     */
-    private function browserLocale(Request $request): ?string
-    {
-        if (! $request->hasHeader('Accept-Language')) {
-            return null;
-        }
-
-        // The default goes first: it is what Symfony falls back to when the
-        // browser asks for nothing the site speaks.
-        $supported = array_values(array_unique([Locale::default(), ...config('app.supported_locales')]));
-
-        return $request->getPreferredLanguage($supported);
+        return is_string($locale) && Locale::isSupported($locale) ? $locale : null;
     }
 
     /**

@@ -14,42 +14,42 @@ class LocaleRoutingTest extends TestCase
     {
         $this->get('/events')->assertOk();
 
-        $this->assertSame('en', app()->getLocale());
+        $this->assertSame('el', app()->getLocale());
     }
 
     public function test_home_page_is_served_without_a_url_prefix(): void
     {
         $this->get('/')->assertOk();
 
-        $this->assertSame('en', app()->getLocale());
+        $this->assertSame('el', app()->getLocale());
     }
 
     public function test_non_default_locale_is_served_behind_its_prefix(): void
     {
-        $this->get('/el/events')->assertOk();
+        $this->get('/en/events')->assertOk();
 
-        $this->assertSame('el', app()->getLocale());
+        $this->assertSame('en', app()->getLocale());
     }
 
     public function test_non_default_locale_home_page_is_served_behind_its_prefix(): void
     {
-        $this->get('/el')->assertOk();
+        $this->get('/en')->assertOk();
 
-        $this->assertSame('el', app()->getLocale());
+        $this->assertSame('en', app()->getLocale());
     }
 
     public function test_default_locale_prefix_is_not_routable(): void
     {
-        $this->get('/en/events')->assertNotFound();
-        $this->get('/en')->assertNotFound();
+        $this->get('/el/events')->assertNotFound();
+        $this->get('/el')->assertNotFound();
     }
 
     public function test_locale_is_shared_with_inertia(): void
     {
-        $this->get('/el/events')->assertInertia(
+        $this->get('/en/events')->assertInertia(
             fn ($page) => $page
-                ->where('locale', 'el')
-                ->where('defaultLocale', 'en')
+                ->where('locale', 'en')
+                ->where('defaultLocale', 'el')
                 ->where('supportedLocales', ['el', 'en'])
         );
     }
@@ -62,22 +62,22 @@ class LocaleRoutingTest extends TestCase
 
     public function test_prefixed_route_names_point_at_their_locale(): void
     {
-        $this->assertSame(url('/el/events'), route('el.events.index'));
-        $this->assertSame(url('/el'), route('el.home'));
+        $this->assertSame(url('/en/events'), route('en.events.index'));
+        $this->assertSame(url('/en'), route('en.home'));
     }
 
     public function test_auth_pages_are_served_behind_the_locale_prefix(): void
     {
-        $this->get('/el/login')->assertOk();
-        $this->get('/el/register')->assertOk();
-        $this->get('/el/forgot-password')->assertOk();
+        $this->get('/en/login')->assertOk();
+        $this->get('/en/register')->assertOk();
+        $this->get('/en/forgot-password')->assertOk();
 
-        $this->assertSame(url('/el/login'), route('el.login'));
+        $this->assertSame(url('/en/login'), route('en.login'));
     }
 
     public function test_guests_are_redirected_to_the_login_page_of_their_locale(): void
     {
-        $this->get('/el/settings/profile')->assertRedirect(route('el.login'));
+        $this->get('/en/settings/profile')->assertRedirect(route('en.login'));
         $this->get('/settings/profile')->assertRedirect(route('login'));
     }
 
@@ -85,7 +85,7 @@ class LocaleRoutingTest extends TestCase
     {
         // A user per request: visiting a locale is remembered on the account,
         // so the same user would be carried back to the locale of the first one.
-        $this->actingAs(User::factory()->create())->get('/el/settings')->assertRedirect(route('el.profile.edit'));
+        $this->actingAs(User::factory()->create())->get('/en/settings')->assertRedirect(route('en.profile.edit'));
         $this->actingAs(User::factory()->create())->get('/settings')->assertRedirect(route('profile.edit'));
     }
 
@@ -93,35 +93,35 @@ class LocaleRoutingTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->post('/el/login', [
+        $this->post('/en/login', [
             'email' => $user->email,
             'password' => 'password',
-        ])->assertRedirect(route('el.profile.show'));
+        ])->assertRedirect(route('en.profile.show'));
 
         $this->assertAuthenticated();
     }
 
     public function test_pages_point_search_engines_at_their_other_languages(): void
     {
-        $this->get('/el/events')
-            ->assertSee('<link rel="canonical" href="'.url('/el/events').'">', false)
-            ->assertSee('hreflang="en" href="'.url('/events').'"', false)
-            ->assertSee('hreflang="el" href="'.url('/el/events').'"', false)
+        $this->get('/en/events')
+            ->assertSee('<link rel="canonical" href="'.url('/en/events').'">', false)
+            ->assertSee('hreflang="el" href="'.url('/events').'"', false)
+            ->assertSee('hreflang="en" href="'.url('/en/events').'"', false)
             ->assertSee('hreflang="x-default" href="'.url('/events').'"', false);
     }
 
     public function test_alternate_links_keep_the_query_string(): void
     {
-        $this->get('/el/events?page=2')
-            ->assertSee('hreflang="en" href="'.url('/events?page=2').'"', false)
-            ->assertSee('<link rel="canonical" href="'.url('/el/events?page=2').'">', false);
+        $this->get('/en/events?page=2')
+            ->assertSee('hreflang="el" href="'.url('/events?page=2').'"', false)
+            ->assertSee('<link rel="canonical" href="'.url('/en/events?page=2').'">', false);
     }
 
     public function test_logging_out_keeps_the_visitor_in_their_locale(): void
     {
         $user = User::factory()->create();
 
-        $this->actingAs($user)->post(route('el.logout'))->assertRedirect(route('el.home'));
+        $this->actingAs($user)->post(route('en.logout'))->assertRedirect(route('en.home'));
         $this->assertGuest();
 
         $this->actingAs($user)->post(route('logout'))->assertRedirect(route('home'));
@@ -135,8 +135,8 @@ class LocaleRoutingTest extends TestCase
         $prefixed = User::factory()->create();
         $default = User::factory()->create();
 
-        $this->post('/el/login', ['email' => $prefixed->email, 'password' => 'password'])
-            ->assertRedirect(route('el.profile.show'));
+        $this->post('/en/login', ['email' => $prefixed->email, 'password' => 'password'])
+            ->assertRedirect(route('en.profile.show'));
 
         $this->post('/logout');
 
@@ -146,10 +146,10 @@ class LocaleRoutingTest extends TestCase
 
     public function test_locale_prefix_is_recomputed_for_each_request(): void
     {
-        $this->get('/el/events')->assertOk();
-        $this->assertSame('el', app()->getLocale());
+        $this->get('/en/events')->assertOk();
+        $this->assertSame('en', app()->getLocale());
 
         $this->get('/events')->assertOk();
-        $this->assertSame('en', app()->getLocale());
+        $this->assertSame('el', app()->getLocale());
     }
 }
