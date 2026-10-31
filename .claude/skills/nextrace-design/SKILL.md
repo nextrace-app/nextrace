@@ -23,34 +23,39 @@ Source of truth: the Figma file **NextRace – Photo-led design** (https://www.f
 
 ## Tokens
 
-- Font: Inter (Regular, Medium, Bold, ExtraBold), self-hosted through the `fonts` option of `laravel-vite-plugin` in `vite.config.ts`. The Figma variable collection is **NextRace colors**: bg `#F6F4EE`, card `#FFFFFF`, ink `#14231F`, muted `#5D6B66`, line `#E2DDD0`, accent `#0F7A5C`, on-accent `#FFFFFF`, soft `#E3F2EA`, soft-ink `#0B5A43`, warn `#FBF0D4`, warn-ink `#6B4A07`, footer-line `#D6CFBD`, chip `#EEF0EE`. Always bind fills and strokes to these variables; do not hardcode hex.
-- Radius: the user wants small corners. In Figma: cards and mobile hero 10, desktop hero 12, buttons, inputs and selects 6-8, chips 5, bottom sheet top 16. Pills (fully round chips and tabs) and circles (favorite button) stay round. In code the single token `--radius` in `resources/css/app.css` is currently `0.75rem` (12px, merged in PR smaller-border-radius); it is a little larger than the Figma cards, so align it when porting.
-- Touch targets are at least 44px on mobile and tablet (buttons, chips, menu rows 48px).
+- Font: Inter (Regular, Medium, Bold, ExtraBold), self-hosted through the `fonts` option of `laravel-vite-plugin` in `vite.config.ts`. The type scale lives in the Style guide page (all Inter): Display / Hero 60/64 ExtraBold, Heading / H1 48/52, H1 mobile 30/34, H2 20/26, Card title 17/22 Bold, Logo / Wordmark 20/27 ExtraBold, Body Large 18/28, Body Default 16/26, Body Small 14/20 (and Medium), Label / Button 14/20 Bold, Label / Chip 12/16 Bold, Caption 13/18, Overline 11/14 Bold.
+- Colours: 11 variables in the collection **NextRace colors**: bg `#F6F4EE`, card `#FFFFFF`, ink `#14231F`, muted `#5D6B66`, line `#E2DDD0`, accent `#0F7A5C`, soft `#E3F2EA`, soft-ink `#0B5A43`, warn `#FBF0D4`, warn-ink `#6B4A07`, favorite `#EF4444`. Always bind fills and strokes to these variables; do not hardcode hex.
+- Radius: only two values. **8px** for buttons, inputs, chips, badges, cards, panels, dialogs and the hero; **full (999)** for pills and the favorite button.
+- Spacing scale: 8, 16, 24, 32, 48, 64.
+- Icons (24px, `icon/...`): calendar, clock, pin, route, heart, globe, search, menu, close, back, check.
+- Touch targets are at least 44px on mobile and tablet (buttons, menu rows 48px).
 
 ## Layout
 
 - **Header and footer are full width.** Only the body sits in a centred container: 1152px wide with 32px side padding on desktop (`max-w-6xl`).
 - Breakpoints: Mobile 390, Tablet 768, Desktop 1440. Side padding: 16 / 24 / container. Grid: 1 / 2 / 3 columns, gap 16-20.
-- Frames in Figma (synced with the site on 2026-10-30): `Events page / Desktop 1440`, `Tablet 768`, `Mobile 390`, plus `Mobile 390 / Menu`, `/ Search open`, `/ Filters sheet` (designed, not built in code) and the component `Event card`; `Event page / Desktop 1440` and `/ Mobile 390` (event detail); `Home`, `Favorites (empty)`, `Login` and `Register` at `Desktop 1440`. The events page has no hero, filters row or race count, the footer is white, the wordmark is `Nextrace`, and there is no theme toggle. Profile and settings pages are not in Figma.
-- Header heights: the user cut them by hand from about 105px to about 70px. Keep the header around 70px; verify it again when the file is reachable (see Open items).
+- Pages in the Figma file: `Style guide`, `Components`, `Home` (Desktop 1440, Tablet 768, Mobile 390), `Home | Language modal`, `Events` (Desktop 1440, Tablet 768, Mobile 390, plus `Mobile 390 / Menu` and `Mobile 390 / Search open`), `Single event page`, `Favorites`, `Favorites | Empty state`, `Login`, `Register`. Profile and settings pages are not in Figma.
+- The events page is just the header, a card grid and the footer: no hero, no filters row or Filters sheet, no race count. The wordmark is `Nextrace`; there is no theme toggle.
+- Components page: `Header` (Desktop 1440 x 119, Tablet and Mobile x 70), `Footer` (Desktop, Tablet, Mobile), `Badge` (Neutral, Accent, Outline), `Button` (Primary, Outline, Language), `Field / Text input`, `Event card` (`Favorited=No/Yes`) and `Upcoming events` (Desktop, Tablet, Mobile). Pages use instances of these; never draw a copy.
+- Header heights: 70px on tablet and mobile; desktop is 119px (70px bar plus a 49px distance bar). In code the mobile header is used up to 1024px and the desktop header from `lg`.
 
 ## Components
 
 - **Event card** (one Figma component, reuse via instances): photo on top (16:10), date chip top-left, favorite button top-right, then title, city and region, distance chips (up to four, extra ones hidden) and one status badge (`Registration open` green, `Date TBC` amber). If `image_url` is empty, show the placeholder (contour or flat colour), never a stock photo of another race.
-- **Footer**: a single minimal line. Left: NextRace, copyright, "Dates come from organisers". Right: Events, Favorites and the language toggle. The user removed **Log in** and the **theme toggle** from the footer. On mobile it stacks: brand, note, links and language toggle.
+- **Upcoming events**: a section component (Desktop, Tablet, Mobile) shown on Home between the hero and the three features.
+- **Footer**: a single line, 49px on desktop and tablet. Left: `© 2026 Nextrace`. Right: Events and Favorites links. No note, no Log in, no language toggle and no theme toggle. The mobile variant (90px) stacks the same content.
 
 ## Desktop and tablet
 
-- Header: logo, search field (fills the width), `EN / EL`, Log in. Under it a full-width bar of distance tabs (All races, Marathon, Half marathon, 10K, 5K, Ultra, Trail). It fits in one line; when categories outgrow it, show the main ones plus `More ▾`.
-- Body: hero (rounded, text on terrain placeholder), filters row (Region, Month, Distance, Status) with the race count, then the grid.
+- Header: logo, a search field with a `Search` button, the language button (`Button / Language`) and Log in. On desktop a full-width bar of distance tabs sits under it (All races, Marathon, Half marathon, 10K, 5K, Ultra, Trail). Tablet uses the 70px header without the tab bar.
+- Body: a card grid (3 columns on desktop, 2 on tablet) on the events page. Home has a hero with the primary button, Upcoming events, then three feature cards.
 
 ## Mobile patterns
 
 - Header: logo, a search (magnifier) button and a burger button, 44px each, with tight vertical padding (2px).
 - **Distance categories live in the burger menu**, like worldsmarathons.com: a scrollable list (All races, Full marathons, Half marathons, 10 km, 5 km, Ultra, Trail, Other) with counts and chevrons, then Favorites, Log in and the EN/EL toggle. The list scrolls, so more categories can be added without redesign. There is no category chip row on the page itself (we tried it and the clipped last chip looked bad).
 - **No search field in the menu or the header.** The magnifier slides a search panel down under the header (input plus a `Search` button), the magnifier becomes a close icon and the content below is dimmed (frame `Search open`).
-- Page body: hero, a single `Filters` button with the race count, and a one-column card list.
-- **Filters sheet** (bottom sheet): Distance, Region, Month and Status as wrapping option chips (multi-select with a check), a sticky bar with `Reset` and `Show N races`. Wrapping chips scale to any number of options.
+- Page body: a one-column card list. There is no Filters button or sheet in the current design (it was removed).
 
 ## Porting to code
 
@@ -58,7 +63,7 @@ Do it on a new branch from `origin/main` (follow the `git-branch-workflow` skill
 
 ## Open items
 
-- Verify the manual header cut to about 70px in Figma once the quota is available: header height, 44px buttons, and the Search-open and Menu frames.
 - Real photos: events have an `image_url` field but the data is empty. Stock photos from Wikimedia Commons were used only in a throwaway HTML mockup; they require author attribution (CC BY and CC BY-SA) and must not be shown as photos of the specific race. Get photos from organisers with permission.
-- Not designed yet: dark theme (removed from the site on purpose; `ThemeToggle.vue` and `useAppearance` stay for later), loading states, an expanded burger with sub-categories, tablet menu, mobile Home/Favorites/Login/Register, Profile and settings pages. The event detail frames use sample data and flat colours, no photo (the hero was removed from the page).
+- Not designed yet: dark theme (removed from the site on purpose; `ThemeToggle.vue` and `useAppearance` stay for later), loading states, an expanded burger with sub-categories, tablet menu, mobile Favorites/Login/Register, Profile and settings pages. The event detail page uses sample data and flat colours, no photo.
+- Header Login/Register: the design has one button, the site has two. To be aligned in a separate ticket.
 - The throwaway mockup `.claude/photo-led-mockup.html` is not part of the repository; delete it when no longer needed.
