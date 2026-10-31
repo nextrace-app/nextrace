@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\AdminMenu;
 use App\Support\Locale;
 use App\Support\PageMeta;
 use Illuminate\Http\Request;
@@ -47,6 +48,8 @@ class HandleInertiaRequests extends Middleware
                 // still enforces access; this is never a security check.
                 'roles' => $request->user()?->getRoleNames()->values()->all() ?? [],
             ],
+            // The admin sections this user may open; empty outside the admin area.
+            'adminMenu' => fn () => $request->routeIs('admin.*', '*.admin.*') ? AdminMenu::for($request->user()) : [],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'locale' => app()->getLocale(),
             'defaultLocale' => Locale::default(),

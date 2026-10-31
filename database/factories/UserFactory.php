@@ -4,10 +4,10 @@ namespace Database\Factories;
 
 use App\Enums\UserRole;
 use App\Models\User;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Spatie\Permission\Models\Role;
 
 /**
  * @extends Factory<User>
@@ -65,12 +65,13 @@ class UserFactory extends Factory
     }
 
     /**
-     * Give the user a role, creating it if the seeder has not run.
+     * Give the user a role, creating the roles and permissions first if the
+     * seeder has not run, so an admin really holds the admin permissions.
      */
     private function withRole(UserRole $role): static
     {
         return $this->afterCreating(function (User $user) use ($role): void {
-            Role::findOrCreate($role->value, 'web');
+            app(RoleSeeder::class)->run();
             $user->assignRole($role->value);
         });
     }

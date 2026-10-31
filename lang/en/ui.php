@@ -415,17 +415,36 @@ return [
         ],
     ],
 
+    'admin' => [
+        'badge' => 'Admin',
+        'back_to_site' => 'Back to site',
+        'nav' => [
+            'label' => 'Admin sections',
+            'overview' => 'Overview',
+            'events' => 'Events',
+            'regions' => 'Regions',
+            'series' => 'Series',
+        ],
+        'overview' => [
+            'title' => 'Overview',
+            'lead' => 'Manage races, regions and series.',
+            'empty_title' => 'Nothing here yet',
+            'empty_text' => 'Sections you can manage appear in the menu.',
+        ],
+    ],
+
     'error' => [
         'back' => 'Back to races',
+        'home' => 'Back to home',
         'title' => [
-            '403' => 'Access denied',
+            '403' => "You don't have access to this page",
             '404' => 'Page not found',
             '419' => 'Page expired',
             '500' => 'Something went wrong',
             '503' => 'Coming soon',
         ],
         'text' => [
-            '403' => 'You do not have access to this page.',
+            '403' => "Your account can't open the admin area. If you think this is a mistake, contact the site administrator.",
             '404' => 'The page you are looking for does not exist or has moved.',
             '419' => 'This page has expired. Please reload it and try again.',
             '500' => 'We hit an unexpected problem. Please try again in a moment.',
