@@ -7,6 +7,7 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Middleware\RememberLocale;
 use App\Support\Locale;
+use App\Support\Permissions;
 use Illuminate\Support\Facades\Route;
 
 $localized = function () {
@@ -27,9 +28,9 @@ $localized = function () {
         Route::inertia('dashboard', 'Dashboard')->name('dashboard');
     });
 
-    // Example of a role-protected route; the admin area itself comes later.
-    Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-        Route::inertia('admin', 'Dashboard')->name('admin.dashboard');
+    // The admin area is open to whoever holds the permission, whatever their role.
+    Route::middleware(['auth', 'verified', 'can:'.Permissions::ADMIN_ACCESS])->prefix('admin')->name('admin.')->group(function () {
+        Route::inertia('/', 'Admin/Overview')->name('dashboard');
     });
 
     require __DIR__.'/settings.php';

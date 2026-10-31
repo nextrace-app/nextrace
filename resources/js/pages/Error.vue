@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { Button } from '@/components/ui/button';
 import { useLocale } from '@/composables/useLocale';
+import { home } from '@/routes';
 import { index as eventsIndex } from '@/routes/events';
 
 const props = defineProps<{
@@ -42,6 +43,40 @@ const { localeRoute } = useLocale();
             {{ t(`error.text.${props.status}`) }}
         </p>
     </main>
+
+    <DefaultShell v-else-if="props.status === 403">
+        <main
+            class="mx-auto flex w-full max-w-md px-4 pt-12 sm:pt-16"
+            data-testid="error-page--forbidden"
+        >
+            <div
+                class="flex w-full flex-col gap-6 rounded-lg border bg-card p-6 text-card-foreground sm:p-8"
+            >
+                <div class="flex flex-col gap-2">
+                    <h1
+                        class="text-xl font-bold"
+                        data-testid="error-page__title"
+                    >
+                        {{ t('error.title.403') }}
+                    </h1>
+                    <p
+                        class="text-sm text-muted-foreground"
+                        data-testid="error-page__text"
+                    >
+                        {{ t('error.text.403') }}
+                    </p>
+                </div>
+                <Button as-child>
+                    <Link
+                        :href="localeRoute(home())"
+                        data-testid="error-page__home"
+                    >
+                        {{ t('error.home') }}
+                    </Link>
+                </Button>
+            </div>
+        </main>
+    </DefaultShell>
 
     <DefaultShell v-else>
         <main
