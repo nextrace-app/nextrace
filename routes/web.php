@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Middleware\RememberLocale;
@@ -9,7 +10,7 @@ use App\Support\Locale;
 use Illuminate\Support\Facades\Route;
 
 $localized = function () {
-    Route::inertia('/', 'Home')->name('home');
+    Route::get('/', HomeController::class)->name('home');
 
     Route::get('events', [EventController::class, 'index'])->name('events.index');
     Route::get('events/{event}', [EventController::class, 'show'])->name('events.show');
