@@ -6,6 +6,12 @@ import { useI18n } from 'vue-i18n';
 import { Button } from '@/components/ui/button';
 import { useLocale } from '@/composables/useLocale';
 import { index as eventsIndex } from '@/routes/events';
+import type { Event } from '@/types';
+
+defineProps<{
+    events: Event[];
+    favorites: number[];
+}>();
 
 const { t } = useI18n();
 const page = usePage();
@@ -68,8 +74,42 @@ const features = [
                 </div>
             </section>
 
+            <section
+                v-if="events.length > 0"
+                class="mt-8"
+                data-testid="home-page__upcoming"
+            >
+                <div class="flex items-baseline justify-between gap-4">
+                    <h2
+                        class="text-xl font-bold"
+                        data-testid="home-page__upcoming-title"
+                    >
+                        {{ t('events.index.title') }}
+                    </h2>
+                    <Link
+                        :href="localeRoute(eventsIndex())"
+                        class="text-sm font-bold text-primary hover:underline"
+                        data-testid="home-page__upcoming-link"
+                    >
+                        {{ t('nav.all_races') }} →
+                    </Link>
+                </div>
+                <div
+                    class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+                    data-testid="home-page__upcoming-list"
+                >
+                    <EventCard
+                        v-for="event in events"
+                        :key="event.id"
+                        :event="event"
+                        :favorited="favorites.includes(event.id)"
+                        class="sm:max-lg:nth-3:hidden"
+                    />
+                </div>
+            </section>
+
             <ul
-                class="mt-6 grid gap-4 sm:grid-cols-3"
+                class="mt-8 grid gap-4 sm:grid-cols-3"
                 data-testid="home-page__features"
             >
                 <li
