@@ -58,16 +58,16 @@ class RoleAccessTest extends TestCase
     {
         $this->actingAs(User::factory()->organizer()->create())
             ->get(route('admin.dashboard'))
-            ->assertForbidden();
+            ->assertNotFound();
 
         $this->actingAs(User::factory()->create())
             ->get(route('admin.dashboard'))
-            ->assertForbidden();
+            ->assertNotFound();
     }
 
-    public function test_guests_are_sent_to_login_from_the_admin_page(): void
+    public function test_guests_get_a_404_from_the_admin_page(): void
     {
-        $this->get(route('admin.dashboard'))->assertRedirect(route('login'));
+        $this->get(route('admin.dashboard'))->assertNotFound();
     }
 
     public function test_roles_are_shared_with_the_frontend(): void
