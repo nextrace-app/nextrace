@@ -36,7 +36,7 @@ defineProps<{
             </Link>
 
             <div class="flex flex-col gap-6">
-                <Card class="rounded-xl" data-testid="auth-card-layout__card">
+                <Card class="rounded-lg" data-testid="auth-card-layout__card">
                     <CardHeader class="px-10 pt-8 pb-0 text-center">
                         <CardTitle
                             class="text-xl"

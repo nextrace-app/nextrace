@@ -19,7 +19,7 @@ const { t } = useI18n();
             data-testid="auth-simple-layout"
         >
             <div
-                class="rounded-3xl border bg-card p-6 text-card-foreground shadow-sm sm:p-8"
+                class="rounded-lg border bg-card p-6 text-card-foreground shadow-sm sm:p-8"
                 data-testid="auth-simple-layout__card"
             >
                 <div class="mb-6 space-y-2 text-center">

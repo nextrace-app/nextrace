@@ -34,7 +34,7 @@ const features = [
             data-testid="home-page"
         >
             <section
-                class="relative mt-6 overflow-hidden rounded-3xl border bg-sand px-6 py-14 sm:mt-10 sm:px-12 sm:py-24"
+                class="relative mt-6 overflow-hidden rounded-lg border bg-sand px-6 py-14 sm:mt-10 sm:px-12 sm:py-24"
                 data-testid="home-page__hero"
             >
                 <div class="absolute inset-0" aria-hidden="true">
@@ -115,11 +115,11 @@ const features = [
                 <li
                     v-for="feature in features"
                     :key="feature.key"
-                    class="rounded-2xl border bg-card p-5"
+                    class="rounded-lg border bg-card p-5"
                     data-testid="home-page__feature"
                 >
                     <span
-                        class="grid size-10 place-items-center rounded-xl bg-secondary text-primary"
+                        class="grid size-10 place-items-center rounded-lg bg-secondary text-primary"
                     >
                         <component
                             :is="feature.icon"

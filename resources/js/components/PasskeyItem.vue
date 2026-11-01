@@ -40,7 +40,7 @@ const handleDelete = () => {
     >
         <div class="flex items-center gap-4">
             <div
-                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted"
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted"
             >
                 <KeyRound class="h-5 w-5 text-muted-foreground" />
             </div>
@@ -55,7 +55,7 @@ const handleDelete = () => {
                     <span
                         v-if="passkey.authenticator"
                         data-testid="passkey-item__authenticator"
-                        class="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium tracking-wide text-muted-foreground uppercase ring-1 ring-border ring-inset"
+                        class="inline-flex items-center gap-1 rounded-lg bg-muted px-2 py-0.5 text-[11px] font-medium tracking-wide text-muted-foreground uppercase ring-1 ring-border ring-inset"
                     >
                         {{ passkey.authenticator }}
                     </span>

@@ -217,7 +217,7 @@ const hasContact = computed(
 
             <header data-testid="event-page__header">
                 <div
-                    class="relative mt-3 h-56 overflow-hidden rounded-xl border bg-sand sm:h-80"
+                    class="relative mt-3 h-56 overflow-hidden rounded-lg border bg-sand sm:h-80"
                     data-testid="event-page__hero"
                 >
                     <img
@@ -277,7 +277,7 @@ const hasContact = computed(
                     <li
                         v-for="fact in facts"
                         :key="fact.key"
-                        class="flex min-w-0 items-center gap-3 rounded-xl border bg-card py-3 pr-4 pl-3 max-sm:w-full"
+                        class="flex min-w-0 items-center gap-3 rounded-lg border bg-card py-3 pr-4 pl-3 max-sm:w-full"
                         data-testid="event-page__summary-item"
                     >
                         <span
@@ -368,7 +368,7 @@ const hasContact = computed(
                             <li
                                 v-for="race in event.races"
                                 :key="race.id"
-                                class="rounded-xl border bg-card p-5"
+                                class="rounded-lg border bg-card p-5"
                                 data-testid="event-page__race"
                             >
                                 <div
@@ -537,7 +537,7 @@ const hasContact = computed(
                                                         price, index
                                                     ) in race.prices"
                                                     :key="index"
-                                                    class="rounded-md bg-muted px-2.5 py-1"
+                                                    class="rounded-lg bg-muted px-2.5 py-1"
                                                     data-testid="event-page__race-price"
                                                 >
                                                     <span class="font-medium">{{
@@ -606,7 +606,7 @@ const hasContact = computed(
                             <li
                                 v-for="race in courseRaces"
                                 :key="race.id"
-                                class="rounded-xl border bg-card p-5"
+                                class="rounded-lg border bg-card p-5"
                                 data-testid="event-page__course-race"
                             >
                                 <h3 class="font-bold">{{ race.name }}</h3>
@@ -860,7 +860,7 @@ const hasContact = computed(
                     data-testid="event-page__sidebar"
                 >
                     <div
-                        class="flex flex-col gap-3 rounded-xl border bg-card p-5"
+                        class="flex flex-col gap-3 rounded-lg border bg-card p-5"
                     >
                         <h2 class="text-lg font-extrabold tracking-tight">
                             {{ t('events.sidebar.title') }}

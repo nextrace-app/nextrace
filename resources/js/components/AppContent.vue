@@ -25,7 +25,7 @@ const className = computed(() => props.class);
     <main
         v-else
         data-testid="app-content"
-        class="mx-auto flex h-full w-full max-w-7xl flex-1 flex-col gap-4 rounded-xl"
+        class="mx-auto flex h-full w-full max-w-7xl flex-1 flex-col gap-4 rounded-lg"
         :class="className"
     >
         <slot />
