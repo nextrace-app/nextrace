@@ -24,7 +24,7 @@ const { localeRoute } = useLocale();
         class="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-16 text-center text-foreground"
     >
         <div
-            class="mb-10 flex items-center gap-2.5 text-xl"
+            class="mb-12 flex items-center gap-2 text-xl"
             data-testid="error-page__brand"
         >
             <AppLogoIcon class="size-10 shrink-0" />
@@ -37,7 +37,7 @@ const { localeRoute } = useLocale();
             {{ t(`error.title.${props.status}`) }}
         </h1>
         <p
-            class="mt-3 max-w-md text-muted-foreground"
+            class="mt-4 max-w-md text-muted-foreground"
             data-testid="error-page__text"
         >
             {{ t(`error.text.${props.status}`) }}
@@ -97,7 +97,7 @@ const { localeRoute } = useLocale();
                 {{ t(`error.title.${props.status}`) }}
             </h1>
             <p
-                class="mt-3 text-muted-foreground"
+                class="mt-4 text-muted-foreground"
                 data-testid="error-page__text"
             >
                 {{ t(`error.text.${props.status}`) }}

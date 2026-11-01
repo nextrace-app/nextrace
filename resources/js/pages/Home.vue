@@ -34,7 +34,7 @@ const features = [
             data-testid="home-page"
         >
             <section
-                class="relative mt-6 overflow-hidden rounded-lg border bg-secondary px-6 py-14 sm:mt-10 sm:px-12 sm:py-24"
+                class="relative mt-6 overflow-hidden rounded-lg border bg-secondary px-6 py-16 sm:mt-12 sm:px-12 sm:py-24"
                 data-testid="home-page__hero"
             >
                 <div class="absolute inset-0" aria-hidden="true">
@@ -44,7 +44,7 @@ const features = [
                         :height="520"
                     />
                 </div>
-                <div class="relative flex max-w-2xl flex-col items-start gap-5">
+                <div class="relative flex max-w-2xl flex-col items-start gap-6">
                     <p
                         class="text-xs font-bold tracking-[0.12em] text-primary uppercase"
                         data-testid="home-page__eyebrow"
@@ -115,7 +115,7 @@ const features = [
                 <li
                     v-for="feature in features"
                     :key="feature.key"
-                    class="rounded-lg border bg-card p-5"
+                    class="rounded-lg border bg-card p-6"
                     data-testid="home-page__feature"
                 >
                     <span
@@ -128,7 +128,7 @@ const features = [
                         />
                     </span>
                     <h2
-                        class="mt-3 text-lg font-bold"
+                        class="mt-4 text-lg font-bold"
                         data-testid="home-page__feature-title"
                     >
                         {{ t(`home.features.${feature.key}.title`) }}
