@@ -90,7 +90,7 @@ const rings = computed(() => {
             :key="index"
             :d="ring.path"
             fill="none"
-            class="stroke-contour"
+            class="stroke-primary"
             :stroke-opacity="ring.opacity"
             stroke-width="1.4"
         />

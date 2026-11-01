@@ -217,7 +217,7 @@ const hasContact = computed(
 
             <header data-testid="event-page__header">
                 <div
-                    class="relative mt-3 h-56 overflow-hidden rounded-lg border bg-sand sm:h-80"
+                    class="relative mt-3 h-56 overflow-hidden rounded-lg border bg-secondary sm:h-80"
                     data-testid="event-page__hero"
                 >
                     <img
@@ -325,7 +325,7 @@ const hasContact = computed(
                         class="flex items-start gap-3 rounded-lg border p-4 text-sm"
                         :class="
                             event.status === 'scheduled'
-                                ? 'border-amber-500/50 bg-amber-500/10 text-amber-900 dark:text-amber-200'
+                                ? 'border-transparent bg-warn text-warn-foreground'
                                 : 'border-destructive/50 bg-destructive/10 text-destructive'
                         "
                         data-testid="event-page__banner"

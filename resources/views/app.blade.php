@@ -7,7 +7,7 @@
         {{-- Inline style to set the HTML background color (the light theme in app.css) --}}
         <style>
             html {
-                background-color: #f7f5f0;
+                background-color: #f6f4ee;
             }
         </style>
 
