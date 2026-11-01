@@ -245,6 +245,7 @@ const hasContact = computed(
                             <Badge
                                 v-if="event.races.length > 1"
                                 variant="secondary"
+                                class="border-border"
                                 data-testid="event-page__race-count"
                                 >{{
                                     t('events.races.count', {
