@@ -34,7 +34,7 @@ const features = [
             data-testid="home-page"
         >
             <section
-                class="relative mt-6 overflow-hidden rounded-lg border bg-sand px-6 py-14 sm:mt-10 sm:px-12 sm:py-24"
+                class="relative mt-6 overflow-hidden rounded-lg border bg-secondary px-6 py-14 sm:mt-10 sm:px-12 sm:py-24"
                 data-testid="home-page__hero"
             >
                 <div class="absolute inset-0" aria-hidden="true">
@@ -46,7 +46,7 @@ const features = [
                 </div>
                 <div class="relative flex max-w-2xl flex-col items-start gap-5">
                     <p
-                        class="text-xs font-bold tracking-[0.12em] text-olive uppercase"
+                        class="text-xs font-bold tracking-[0.12em] text-primary uppercase"
                         data-testid="home-page__eyebrow"
                     >
                         {{ t('home.eyebrow') }}

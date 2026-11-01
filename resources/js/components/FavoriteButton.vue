@@ -65,7 +65,7 @@ function toggle() {
         :aria-pressed="isFavorite"
         data-testid="favorite-button"
         class="flex size-9 items-center justify-center rounded-full bg-background/80 text-muted-foreground shadow-xs backdrop-blur transition-colors hover:text-red-500 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
-        :class="{ 'text-red-500': isFavorite }"
+        :class="{ 'text-favorite': isFavorite }"
         @click.stop.prevent="toggle"
     >
         <Heart class="size-5" :class="{ 'fill-current': isFavorite }" />

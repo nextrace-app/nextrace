@@ -38,7 +38,7 @@ defineProps<{
     <div
         v-if="status"
         data-testid="login-page__status"
-        class="mb-4 text-center text-sm font-medium text-green-600"
+        class="mb-4 text-center text-sm font-medium text-primary"
     >
         {{ status }}
     </div>

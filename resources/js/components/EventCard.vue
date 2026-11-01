@@ -49,7 +49,7 @@ const statusLabel = computed(() =>
         data-testid="event-card"
     >
         <div
-            class="relative aspect-[16/10] overflow-hidden bg-sand"
+            class="relative aspect-[16/10] overflow-hidden bg-secondary"
             data-testid="event-card__media"
         >
             <img
@@ -172,14 +172,14 @@ const statusLabel = computed(() =>
                 <Badge
                     v-if="event.registration.status === 'open'"
                     variant="outline"
-                    class="border-olive font-bold text-olive"
+                    class="border-transparent bg-secondary font-bold text-secondary-foreground"
                     data-testid="event-card__registration-open"
                     >{{ t('events.registration_status.open') }}</Badge
                 >
                 <Badge
                     v-if="!event.date_confirmed"
                     variant="outline"
-                    class="border-amber-600/60 text-amber-800 dark:text-amber-400"
+                    class="border-transparent bg-warn font-bold text-warn-foreground"
                     data-testid="event-card__date-unconfirmed"
                     >{{ t('events.status.date_unconfirmed') }}</Badge
                 >
