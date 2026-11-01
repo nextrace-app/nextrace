@@ -53,7 +53,7 @@ const open = ref(false);
                         :lang="code"
                         data-testid="locale-switcher__option"
                         :hreflang="code"
-                        class="flex items-center justify-between rounded-xl border px-4 py-3 text-sm transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                        class="flex items-center justify-between rounded-lg border px-4 py-3 text-sm transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                         :class="
                             code === locale
                                 ? 'border-primary font-medium'

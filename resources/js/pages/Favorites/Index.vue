@@ -32,7 +32,7 @@ const { localeRoute } = useLocale();
 
             <div
                 v-if="props.events.length === 0"
-                class="flex flex-col items-center gap-4 rounded-3xl border border-dashed bg-card py-16 text-center"
+                class="flex flex-col items-center gap-4 rounded-lg border border-dashed bg-card py-16 text-center"
                 data-testid="favorites-page__empty"
             >
                 <Heart class="size-8 text-muted-foreground" />

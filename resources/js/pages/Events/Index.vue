@@ -168,7 +168,7 @@ function goToPage(value: number) {
 
                 <div
                     v-if="visibleEvents.length === 0"
-                    class="flex flex-col items-center gap-4 rounded-xl border border-dashed bg-card py-16 text-center"
+                    class="flex flex-col items-center gap-4 rounded-lg border border-dashed bg-card py-16 text-center"
                     data-testid="events-page__empty"
                 >
                     <CalendarX

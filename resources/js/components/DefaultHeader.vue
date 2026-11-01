@@ -71,7 +71,7 @@ function submitSearch() {
 const pill =
     'inline-flex shrink-0 items-center rounded-full px-3.5 py-2 text-sm font-bold whitespace-nowrap outline-none transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50';
 const searchInput =
-    'h-11 w-full min-w-0 rounded-md border bg-background pr-3 pl-10 text-base outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 lg:h-10 lg:text-sm';
+    'h-11 w-full min-w-0 rounded-lg border bg-background pr-3 pl-10 text-base outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 lg:h-10 lg:text-sm';
 const menuRow =
     'flex min-h-12 items-center justify-between border-b px-5 text-base font-medium outline-none hover:bg-secondary focus-visible:bg-secondary';
 </script>
@@ -88,7 +88,7 @@ const menuRow =
             <Link
                 :href="localeRoute(home())"
                 :aria-label="t('nav.home')"
-                class="-ml-1 flex items-center rounded-md px-1 text-xl text-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                class="-ml-1 flex items-center rounded-lg px-1 text-xl text-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 data-testid="site-header__home"
             >
                 <AppWordmark />

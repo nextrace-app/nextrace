@@ -45,7 +45,7 @@ const statusLabel = computed(() =>
 
 <template>
     <article
-        class="group relative flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-[box-shadow,transform,border-color] focus-within:ring-[3px] focus-within:ring-ring/50 hover:border-primary hover:shadow-lg motion-safe:hover:-translate-y-0.5"
+        class="group relative flex flex-col overflow-hidden rounded-lg border bg-card text-card-foreground shadow-xs transition-[box-shadow,transform,border-color] focus-within:ring-[3px] focus-within:ring-ring/50 hover:border-primary hover:shadow-lg motion-safe:hover:-translate-y-0.5"
         data-testid="event-card"
     >
         <div
@@ -63,7 +63,7 @@ const statusLabel = computed(() =>
             <ContourArt v-else :seed="event.slug" :width="480" :height="300" />
 
             <div
-                class="absolute top-3 left-3 flex flex-col items-center rounded-md bg-card px-2.5 py-1 text-card-foreground shadow-xs"
+                class="absolute top-3 left-3 flex flex-col items-center rounded-lg bg-card px-2.5 py-1 text-card-foreground shadow-xs"
                 aria-hidden="true"
                 data-testid="event-card__date-badge"
             >
@@ -104,7 +104,7 @@ const statusLabel = computed(() =>
                 >
                     <Link
                         :href="localeRoute(eventsShow(event.slug))"
-                        class="rounded-sm outline-none after:absolute after:inset-0 after:content-['']"
+                        class="rounded-lg outline-none after:absolute after:inset-0 after:content-['']"
                         data-testid="event-card__link"
                     >
                         {{ event.name }}

@@ -22,7 +22,7 @@ const user = computed(() => page.props.auth.user);
             data-testid="dashboard-page"
         >
             <div
-                class="rounded-3xl border bg-card p-6 text-card-foreground sm:p-10"
+                class="rounded-lg border bg-card p-6 text-card-foreground sm:p-10"
             >
                 <h1
                     class="text-3xl font-extrabold tracking-tight"

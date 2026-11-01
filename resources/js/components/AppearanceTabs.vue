@@ -26,7 +26,7 @@ const tabs = [
             :aria-pressed="appearance === value"
             @click="updateAppearance(value)"
             :class="[
-                'flex items-center rounded-md px-3.5 py-1.5 transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+                'flex items-center rounded-lg px-3.5 py-1.5 transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
                 appearance === value
                     ? 'bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100'
                     : 'text-neutral-500 hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60',
