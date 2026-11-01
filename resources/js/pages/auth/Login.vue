@@ -126,7 +126,7 @@ defineProps<{
                 :href="localeRoute(register())"
                 :tabindex="5"
                 data-testid="login-page__register"
-                >{ t('auth.login.sign_up') }</TextLink
+                >{{ t('auth.login.sign_up') }}</TextLink
             >
         </div>
     </Form>
