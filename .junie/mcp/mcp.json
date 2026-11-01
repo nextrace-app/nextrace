@@ -1,0 +1,10 @@
+{
+    "mcpServers": {
+        "herd": {
+            "command": "herd",
+            "args": [
+                "mcp"
+            ]
+        }
+    }
+}
