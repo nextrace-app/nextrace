@@ -84,12 +84,12 @@ class AdminAccessTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page->component('Admin/Overview')->where('locale', 'en'));
     }
 
-    public function test_a_user_without_the_permission_gets_the_forbidden_page(): void
+    public function test_a_user_without_the_permission_gets_the_not_found_page(): void
     {
         $this->actingAs(User::factory()->create())
             ->get(route('admin.dashboard'))
-            ->assertForbidden()
-            ->assertInertia(fn (Assert $page) => $page->component('Error')->where('status', 403));
+            ->assertNotFound()
+            ->assertInertia(fn (Assert $page) => $page->component('Error')->where('status', 404));
     }
 
     public function test_a_role_with_only_the_admin_permission_can_open_the_overview_without_a_code_change(): void
@@ -106,7 +106,7 @@ class AdminAccessTest extends TestCase
     {
         $this->actingAs($this->userWithPermissions(['events.viewAny']))
             ->get(route('admin.dashboard'))
-            ->assertForbidden();
+            ->assertNotFound();
     }
 
     public function test_the_menu_lists_only_the_sections_the_user_may_open(): void

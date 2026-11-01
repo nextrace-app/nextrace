@@ -5,9 +5,9 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SocialAuthController;
+use App\Http\Middleware\HideAdminArea;
 use App\Http\Middleware\RememberLocale;
 use App\Support\Locale;
-use App\Support\Permissions;
 use Illuminate\Support\Facades\Route;
 
 $localized = function () {
@@ -28,8 +28,9 @@ $localized = function () {
         Route::inertia('dashboard', 'Dashboard')->name('dashboard');
     });
 
-    // The admin area is open to whoever holds the permission, whatever their role.
-    Route::middleware(['auth', 'verified', 'can:'.Permissions::ADMIN_ACCESS])->prefix('admin')->name('admin.')->group(function () {
+    // The admin area is open to whoever holds the permission, whatever their role;
+    // everyone else, guests included, gets a 404.
+    Route::middleware(HideAdminArea::class)->prefix('admin')->name('admin.')->group(function () {
         Route::inertia('/', 'Admin/Overview')->name('dashboard');
     });
 
