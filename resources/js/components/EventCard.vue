@@ -63,7 +63,7 @@ const statusLabel = computed(() =>
             <ContourArt v-else :seed="event.slug" :width="480" :height="300" />
 
             <div
-                class="absolute top-3 left-3 flex flex-col items-center rounded-lg bg-card px-2.5 py-1 text-card-foreground shadow-xs"
+                class="absolute top-3 left-3 flex flex-col items-center rounded-lg bg-card px-2 py-1 text-card-foreground shadow-xs"
                 aria-hidden="true"
                 data-testid="event-card__date-badge"
             >
@@ -94,7 +94,7 @@ const statusLabel = computed(() =>
         </div>
 
         <div
-            class="flex flex-1 flex-col gap-3 p-4"
+            class="flex flex-1 flex-col gap-4 p-4"
             data-testid="event-card__body"
         >
             <div class="min-w-0">

@@ -69,11 +69,11 @@ function submitSearch() {
 }
 
 const pill =
-    'inline-flex shrink-0 items-center rounded-full px-3.5 py-2 text-sm font-bold whitespace-nowrap outline-none transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50';
+    'inline-flex shrink-0 items-center rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap outline-none transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50';
 const searchInput =
-    'h-11 w-full min-w-0 rounded-lg border bg-background pr-3 pl-10 text-base outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 lg:h-10 lg:text-sm';
+    'h-11 w-full min-w-0 rounded-lg border bg-background pr-4 pl-10 text-base outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 lg:h-10 lg:text-sm';
 const menuRow =
-    'flex min-h-12 items-center justify-between border-b px-5 text-base font-medium outline-none hover:bg-secondary focus-visible:bg-secondary';
+    'flex min-h-12 items-center justify-between border-b px-6 text-base font-medium outline-none hover:bg-secondary focus-visible:bg-secondary';
 </script>
 
 <template>
@@ -82,7 +82,7 @@ const menuRow =
         data-testid="site-header"
     >
         <div
-            class="flex h-14 items-center gap-3 px-4 sm:px-6 lg:h-16 lg:gap-4"
+            class="flex h-14 items-center gap-4 px-4 sm:px-6 lg:h-16 lg:gap-4"
             data-testid="site-header__bar"
         >
             <Link
@@ -215,7 +215,7 @@ const menuRow =
                         class="w-full gap-0 overflow-y-auto p-0 sm:max-w-sm"
                         data-testid="site-header__menu"
                     >
-                        <SheetHeader class="border-b px-5 py-3">
+                        <SheetHeader class="border-b px-6 py-4">
                             <SheetTitle class="text-xl">
                                 <AppWordmark />
                             </SheetTitle>
@@ -229,7 +229,7 @@ const menuRow =
                             data-testid="site-header__menu-races"
                         >
                             <p
-                                class="px-5 pt-3 pb-1 text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase"
+                                class="px-6 pt-4 pb-1 text-[11px] font-extrabold tracking-widest text-muted-foreground uppercase"
                             >
                                 {{ t('nav.races') }}
                             </p>
@@ -314,7 +314,7 @@ const menuRow =
                                     />
                                 </Link>
                             </template>
-                            <div class="flex items-center gap-2 px-5 py-4">
+                            <div class="flex items-center gap-2 px-6 py-4">
                                 <span
                                     class="mr-auto text-sm text-muted-foreground"
                                 >

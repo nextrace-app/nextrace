@@ -217,7 +217,7 @@ const hasContact = computed(
 
             <header data-testid="event-page__header">
                 <div
-                    class="relative mt-3 h-56 overflow-hidden rounded-lg border bg-secondary sm:h-80"
+                    class="relative mt-4 h-56 overflow-hidden rounded-lg border bg-secondary sm:h-80"
                     data-testid="event-page__hero"
                 >
                     <img
@@ -234,7 +234,7 @@ const hasContact = computed(
                         :height="320"
                     />
                     <div
-                        class="absolute inset-x-4 top-4 flex items-start justify-between gap-3"
+                        class="absolute inset-x-4 top-4 flex items-start justify-between gap-4"
                     >
                         <div class="flex flex-wrap items-center gap-2">
                             <Badge
@@ -272,13 +272,13 @@ const hasContact = computed(
                 </h1>
 
                 <ul
-                    class="mt-5 flex flex-wrap gap-3"
+                    class="mt-6 flex flex-wrap gap-4"
                     data-testid="event-page__summary"
                 >
                     <li
                         v-for="fact in facts"
                         :key="fact.key"
-                        class="flex min-w-0 items-center gap-3 rounded-lg border bg-card py-3 pr-4 pl-3 max-sm:w-full"
+                        class="flex min-w-0 items-center gap-4 rounded-lg border bg-card py-4 pr-4 pl-4 max-sm:w-full"
                         data-testid="event-page__summary-item"
                     >
                         <span
@@ -322,7 +322,7 @@ const hasContact = computed(
                     <div
                         v-if="banner"
                         role="alert"
-                        class="flex items-start gap-3 rounded-lg border p-4 text-sm"
+                        class="flex items-start gap-4 rounded-lg border p-4 text-sm"
                         :class="
                             event.status === 'scheduled'
                                 ? 'border-transparent bg-warn text-warn-foreground'
@@ -359,17 +359,17 @@ const hasContact = computed(
                         v-if="event.races.length > 0"
                         data-testid="event-page__races"
                     >
-                        <h2 class="mb-3 text-xl font-extrabold tracking-tight">
+                        <h2 class="mb-4 text-xl font-extrabold tracking-tight">
                             {{ t('events.races.title') }}
                         </h2>
                         <ul
-                            class="flex flex-col gap-3"
+                            class="flex flex-col gap-4"
                             data-testid="event-page__race-list"
                         >
                             <li
                                 v-for="race in event.races"
                                 :key="race.id"
-                                class="rounded-lg border bg-card p-5"
+                                class="rounded-lg border bg-card p-6"
                                 data-testid="event-page__race"
                             >
                                 <div
@@ -440,7 +440,7 @@ const hasContact = computed(
                                 </div>
 
                                 <dl
-                                    class="mt-3 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2"
+                                    class="mt-4 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2"
                                     data-testid="event-page__race-details"
                                 >
                                     <div class="flex flex-col">
@@ -538,7 +538,7 @@ const hasContact = computed(
                                                         price, index
                                                     ) in race.prices"
                                                     :key="index"
-                                                    class="rounded-lg bg-muted px-2.5 py-1"
+                                                    class="rounded-lg bg-muted px-2 py-1"
                                                     data-testid="event-page__race-price"
                                                 >
                                                     <span class="font-medium">{{
@@ -581,7 +581,7 @@ const hasContact = computed(
                                     as-child
                                     variant="outline"
                                     size="sm"
-                                    class="mt-3 w-full sm:w-auto"
+                                    class="mt-4 w-full sm:w-auto"
                                 >
                                     <a
                                         data-testid="event-page__race-register"
@@ -600,14 +600,14 @@ const hasContact = computed(
                         v-if="courseRaces.length > 0"
                         data-testid="event-page__course"
                     >
-                        <h2 class="mb-3 text-xl font-extrabold tracking-tight">
+                        <h2 class="mb-4 text-xl font-extrabold tracking-tight">
                             {{ t('events.course.title') }}
                         </h2>
-                        <ul class="flex flex-col gap-3">
+                        <ul class="flex flex-col gap-4">
                             <li
                                 v-for="race in courseRaces"
                                 :key="race.id"
-                                class="rounded-lg border bg-card p-5"
+                                class="rounded-lg border bg-card p-6"
                                 data-testid="event-page__course-race"
                             >
                                 <h3 class="font-bold">{{ race.name }}</h3>
@@ -638,7 +638,7 @@ const hasContact = computed(
                                     :href="race.route_url"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="mt-3 inline-flex items-center gap-1 text-sm font-bold text-primary underline-offset-4 hover:underline"
+                                    class="mt-4 inline-flex items-center gap-1 text-sm font-bold text-primary underline-offset-4 hover:underline"
                                     data-testid="event-page__course-route"
                                 >
                                     <Route class="size-4" aria-hidden="true" />
@@ -648,10 +648,10 @@ const hasContact = computed(
                         </ul>
                     </section>
                     <section data-testid="event-page__facts">
-                        <h2 class="mb-3 text-xl font-extrabold tracking-tight">
+                        <h2 class="mb-4 text-xl font-extrabold tracking-tight">
                             {{ t('events.facts.title') }}
                         </h2>
-                        <dl class="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
+                        <dl class="grid gap-x-6 gap-y-4 text-sm sm:grid-cols-2">
                             <div
                                 v-if="event.organizer"
                                 class="flex gap-2"
@@ -861,7 +861,7 @@ const hasContact = computed(
                     data-testid="event-page__sidebar"
                 >
                     <div
-                        class="flex flex-col gap-3 rounded-lg border bg-card p-5"
+                        class="flex flex-col gap-4 rounded-lg border bg-card p-6"
                     >
                         <h2 class="text-lg font-extrabold tracking-tight">
                             {{ t('events.sidebar.title') }}
@@ -874,7 +874,7 @@ const hasContact = computed(
                             <li
                                 v-for="race in event.races"
                                 :key="race.id"
-                                class="flex items-baseline justify-between gap-3 py-2 first:pt-0 last:pb-0"
+                                class="flex items-baseline justify-between gap-4 py-2 first:pt-0 last:pb-0"
                                 data-testid="event-page__sidebar-race"
                             >
                                 <span class="min-w-0">
