@@ -91,7 +91,7 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
                     class="w-full"
                     :disabled="processing"
                     data-testid="two-factor-challenge-page__submit"
-                    >{ t('auth.two_factor.continue') }}</Button
+                    >{{ t('auth.two_factor.continue') }}</Button
                 >
                 <div class="text-center text-sm text-muted-foreground">
                     <span>{{ t('auth.two_factor.or_you_can') }} </span>
@@ -130,7 +130,7 @@ const toggleRecoveryMode = (clearErrors: () => void): void => {
                     class="w-full"
                     :disabled="processing"
                     data-testid="two-factor-challenge-page__submit"
-                    >{ t('auth.two_factor.continue') }}</Button
+                    >{{ t('auth.two_factor.continue') }}</Button
                 >
 
                 <div class="text-center text-sm text-muted-foreground">
