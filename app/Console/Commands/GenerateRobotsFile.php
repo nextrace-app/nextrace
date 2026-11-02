@@ -27,7 +27,8 @@ class GenerateRobotsFile extends Command
      */
     public function handle(): int
     {
-        $path = $this->option('path') ?: public_path('robots.txt');
+        $option = $this->option('path');
+        $path = is_string($option) && $option !== '' ? $option : public_path('robots.txt');
 
         if (! config()->boolean('site.indexable')) {
             file_put_contents($path, $this->closedContents());
