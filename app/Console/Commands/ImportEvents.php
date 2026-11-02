@@ -48,7 +48,8 @@ class ImportEvents extends Command
      */
     public function handle(): int
     {
-        $path = base_path($this->argument('file'));
+        $file = $this->argument('file');
+        $path = base_path(is_string($file) ? $file : '');
 
         if (! is_file($path)) {
             $this->error("File not found: {$path}");
