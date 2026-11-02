@@ -69,9 +69,8 @@ return [
     'footer' => [
         'tagline' => 'Running races across all of Greece.',
         'disclaimer' => 'Dates are collected from organisers. Always confirm on the official site before you travel.',
-        'copyright' => '© {year} NextRace',
+        'copyright' => '© {year} Nextrace',
         'browse' => 'Browse',
-        'note' => 'Dates come from organisers.',
     ],
 
     'events' => [
