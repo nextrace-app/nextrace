@@ -46,6 +46,21 @@ class TranslationTest extends TestCase
         );
     }
 
+    public function test_footer_shows_the_nextrace_copyright_and_no_note(): void
+    {
+        $this->get(route('home'))->assertInertia(
+            fn ($page) => $page
+                ->where('translations.footer.copyright', '© {year} Nextrace')
+                ->missing('translations.footer.note')
+        );
+
+        $this->get(route('en.home'))->assertInertia(
+            fn ($page) => $page
+                ->where('translations.footer.copyright', '© {year} Nextrace')
+                ->missing('translations.footer.note')
+        );
+    }
+
     public function test_json_strings_are_translated_for_the_default_locale(): void
     {
         $this->assertSame('Το προφίλ ενημερώθηκε.', __('Profile updated.'));

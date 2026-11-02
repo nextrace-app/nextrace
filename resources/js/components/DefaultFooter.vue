@@ -32,17 +32,8 @@ const linkClass =
             <div
                 class="flex flex-col gap-x-4 gap-y-1 md:flex-row md:items-center"
             >
-                <span
-                    class="text-base text-foreground"
-                    data-testid="site-footer__brand"
-                >
-                    <AppWordmark />
-                </span>
                 <span data-testid="site-footer__copyright">{{
                     t('footer.copyright', { year })
-                }}</span>
-                <span data-testid="site-footer__note">{{
-                    t('footer.note')
                 }}</span>
             </div>
             <nav
@@ -59,7 +50,6 @@ const linkClass =
                 >
                     {{ t(`nav.${link.key}`) }}
                 </Link>
-                <LocaleSwitcher />
             </nav>
         </div>
     </footer>
