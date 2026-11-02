@@ -27,6 +27,8 @@ return [
         'home' => 'Αρχική σελίδα NextRace',
         'favorites' => 'Αγαπημένα',
         'profile' => 'Προφίλ',
+        'welcome' => 'Καλώς ήρθες!',
+        'account_menu' => 'Μενού λογαριασμού',
         'logout' => 'Αποσύνδεση',
         'language' => 'Γλώσσα',
         'theme' => [
