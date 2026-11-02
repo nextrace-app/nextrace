@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\RegionController;
+use App\Http\Controllers\Admin\SeriesController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
@@ -32,6 +34,9 @@ $localized = function () {
     // everyone else, guests included, gets a 404.
     Route::middleware(HideAdminArea::class)->prefix('admin')->name('admin.')->group(function () {
         Route::inertia('/', 'Admin/Overview')->name('dashboard');
+
+        Route::resource('regions', RegionController::class)->except('show');
+        Route::resource('series', SeriesController::class)->except('show');
     });
 
     require __DIR__.'/settings.php';
