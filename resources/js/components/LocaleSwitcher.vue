@@ -25,9 +25,9 @@ const open = ref(false);
     <Dialog v-model:open="open">
         <DialogTrigger as-child>
             <Button
-                variant="secondary"
+                variant="ghost"
                 size="icon"
-                class="size-10"
+                class="size-10 hover:bg-background"
                 :aria-label="t('nav.language')"
                 :title="t('nav.language')"
                 data-testid="locale-switcher__trigger"

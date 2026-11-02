@@ -3,7 +3,14 @@ import { Link, router, usePage } from '@inertiajs/vue3';
 import { ChevronRight, Menu, Search, X } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button, buttonVariants } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
     Sheet,
     SheetContent,
@@ -13,8 +20,9 @@ import {
     SheetTrigger,
 } from '@/components/ui/sheet';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
+import { useInitials } from '@/composables/useInitials';
 import { useLocale } from '@/composables/useLocale';
-import { home, login, logout, register } from '@/routes';
+import { home, login, logout } from '@/routes';
 import { index as events } from '@/routes/events';
 import { index as favorites } from '@/routes/favorites';
 import { show as profile } from '@/routes/profile';
@@ -24,6 +32,7 @@ const { localeRoute } = useLocale();
 const { isCurrentOrParentUrl } = useCurrentUrl();
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+const { getInitials } = useInitials();
 
 // Anything prefetched for the signed in user is no longer theirs to see.
 const handleLogout = () => router.flushAll();
@@ -94,25 +103,23 @@ const menuRow =
                 <AppWordmark />
             </Link>
 
-            <form
-                class="relative ml-4 hidden max-w-md flex-1 lg:block"
-                data-testid="site-header__search-form"
-                role="search"
-                @submit.prevent="submitSearch"
+            <span
+                class="hidden h-6 w-px bg-border lg:block"
+                aria-hidden="true"
+            ></span>
+            <Link
+                :href="localeRoute(events())"
+                :class="[
+                    pill,
+                    'max-lg:hidden',
+                    isCurrentOrParentUrl(localeRoute(events()))
+                        ? 'bg-secondary text-foreground'
+                        : 'text-foreground',
+                ]"
+                data-testid="site-header__races"
             >
-                <Search
-                    class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
-                    aria-hidden="true"
-                />
-                <input
-                    v-model="searchQuery"
-                    type="search"
-                    :placeholder="t('nav.search_placeholder')"
-                    :aria-label="t('nav.search')"
-                    :class="searchInput"
-                    data-testid="site-header__search"
-                />
-            </form>
+                {{ t('nav.races') }}
+            </Link>
 
             <div
                 class="ml-auto flex items-center gap-1.5 lg:gap-2"
@@ -122,65 +129,100 @@ const menuRow =
                     class="hidden items-center gap-2 lg:flex"
                     data-testid="site-header__desktop-nav"
                 >
-                    <Link
-                        v-if="user"
-                        :href="localeRoute(favorites())"
-                        data-testid="site-header__favorites"
-                        :class="[
-                            pill,
-                            isCurrentOrParentUrl(localeRoute(favorites()))
-                                ? 'bg-secondary text-foreground'
-                                : 'text-muted-foreground',
-                        ]"
-                    >
-                        {{ t('nav.favorites') }}
-                    </Link>
-                    <Link
-                        v-if="user"
-                        :href="localeRoute(profile())"
-                        data-testid="site-header__profile"
-                        :class="[
-                            pill,
-                            isCurrentOrParentUrl(localeRoute(profile()))
-                                ? 'bg-secondary text-foreground'
-                                : 'text-muted-foreground',
-                        ]"
-                    >
-                        {{ t('nav.profile') }}
-                    </Link>
                     <LocaleSwitcher />
-                    <template v-if="user">
-                        <Link
-                            :href="localeRoute(logout())"
-                            as="button"
-                            :class="[pill, 'text-muted-foreground']"
-                            data-testid="site-header__logout"
-                            @click="handleLogout"
+                    <DropdownMenu v-if="user">
+                        <DropdownMenuTrigger as-child>
+                            <button
+                                type="button"
+                                class="rounded-full outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                :aria-label="t('nav.account_menu')"
+                                data-testid="site-header__account"
+                            >
+                                <Avatar class="size-10">
+                                    <AvatarImage
+                                        v-if="user.avatar"
+                                        :src="user.avatar"
+                                        :alt="user.name"
+                                    />
+                                    <AvatarFallback
+                                        class="bg-secondary text-sm font-bold text-secondary-foreground"
+                                        data-testid="site-header__initials"
+                                    >
+                                        {{ getInitials(user.name) }}
+                                    </AvatarFallback>
+                                </Avatar>
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            align="end"
+                            class="w-70 p-0"
+                            data-testid="site-header__account-menu"
                         >
-                            {{ t('nav.logout') }}
-                        </Link>
-                    </template>
-                    <template v-else>
-                        <Link
-                            :href="localeRoute(login())"
-                            data-testid="site-header__login"
-                            :class="
-                                buttonVariants({
-                                    variant: 'outline',
-                                    size: 'sm',
-                                })
-                            "
-                        >
-                            {{ t('nav.login') }}
-                        </Link>
-                        <Link
-                            :href="localeRoute(register())"
-                            data-testid="site-header__register"
-                            :class="buttonVariants({ size: 'sm' })"
-                        >
-                            {{ t('nav.register') }}
-                        </Link>
-                    </template>
+                            <div class="px-6 pt-4 pb-3">
+                                <p class="text-xs text-muted-foreground">
+                                    {{ t('nav.welcome') }}
+                                </p>
+                                <p
+                                    class="truncate text-sm font-medium"
+                                    data-testid="site-header__account-name"
+                                >
+                                    {{ user.name }}
+                                </p>
+                            </div>
+                            <DropdownMenuItem as-child>
+                                <Link
+                                    :href="localeRoute(favorites())"
+                                    data-testid="site-header__favorites"
+                                    :class="[menuRow, 'rounded-none']"
+                                >
+                                    {{ t('nav.favorites') }}
+                                    <ChevronRight
+                                        class="size-4 text-muted-foreground"
+                                        aria-hidden="true"
+                                    />
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem as-child>
+                                <Link
+                                    :href="localeRoute(profile())"
+                                    data-testid="site-header__profile"
+                                    :class="[menuRow, 'rounded-none']"
+                                >
+                                    {{ t('nav.profile') }}
+                                    <ChevronRight
+                                        class="size-4 text-muted-foreground"
+                                        aria-hidden="true"
+                                    />
+                                </Link>
+                            </DropdownMenuItem>
+                            <div class="p-4">
+                                <DropdownMenuItem as-child>
+                                    <Link
+                                        :href="localeRoute(logout())"
+                                        as="button"
+                                        :class="[
+                                            buttonVariants({
+                                                variant: 'outline',
+                                            }),
+                                            'w-full',
+                                        ]"
+                                        data-testid="site-header__logout"
+                                        @click="handleLogout"
+                                    >
+                                        {{ t('nav.logout') }}
+                                    </Link>
+                                </DropdownMenuItem>
+                            </div>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Link
+                        v-else
+                        :href="localeRoute(login())"
+                        data-testid="site-header__login"
+                        :class="buttonVariants({ size: 'sm' })"
+                    >
+                        {{ t('nav.login') }}
+                    </Link>
                 </div>
 
                 <Button
@@ -224,6 +266,86 @@ const menuRow =
                             </SheetDescription>
                         </SheetHeader>
 
+                        <div
+                            v-if="user"
+                            data-testid="site-header__menu-account"
+                        >
+                            <div class="flex items-center gap-3 px-6 py-4">
+                                <Avatar class="size-10">
+                                    <AvatarImage
+                                        v-if="user.avatar"
+                                        :src="user.avatar"
+                                        :alt="user.name"
+                                    />
+                                    <AvatarFallback
+                                        class="bg-secondary text-sm font-bold text-secondary-foreground"
+                                    >
+                                        {{ getInitials(user.name) }}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <div class="min-w-0">
+                                    <p class="text-xs text-muted-foreground">
+                                        {{ t('nav.welcome') }}
+                                    </p>
+                                    <p class="truncate text-sm font-medium">
+                                        {{ user.name }}
+                                    </p>
+                                </div>
+                            </div>
+                            <Link
+                                :href="localeRoute(favorites())"
+                                data-testid="site-header__menu-favorites"
+                                :class="[menuRow, 'border-t']"
+                            >
+                                {{ t('nav.favorites') }}
+                                <ChevronRight
+                                    class="size-4 text-muted-foreground"
+                                    aria-hidden="true"
+                                />
+                            </Link>
+                            <Link
+                                :href="localeRoute(profile())"
+                                data-testid="site-header__menu-profile"
+                                :class="menuRow"
+                            >
+                                {{ t('nav.profile') }}
+                                <ChevronRight
+                                    class="size-4 text-muted-foreground"
+                                    aria-hidden="true"
+                                />
+                            </Link>
+                            <div class="border-b px-6 py-4">
+                                <Link
+                                    :href="localeRoute(logout())"
+                                    as="button"
+                                    :class="[
+                                        buttonVariants({ variant: 'outline' }),
+                                        'h-11 w-full',
+                                    ]"
+                                    data-testid="site-header__menu-logout"
+                                    @click="handleLogout"
+                                >
+                                    {{ t('nav.logout') }}
+                                </Link>
+                            </div>
+                        </div>
+                        <div
+                            v-else
+                            class="border-b px-6 py-4"
+                            data-testid="site-header__menu-account"
+                        >
+                            <Link
+                                :href="localeRoute(login())"
+                                :class="[
+                                    buttonVariants({ variant: 'outline' }),
+                                    'h-11 w-full',
+                                ]"
+                                data-testid="site-header__menu-login"
+                            >
+                                {{ t('nav.login') }}
+                            </Link>
+                        </div>
+
                         <nav
                             :aria-label="t('nav.main')"
                             data-testid="site-header__menu-races"
@@ -253,75 +375,10 @@ const menuRow =
                         </nav>
 
                         <div
-                            class="mt-auto bg-muted/50"
-                            data-testid="site-header__menu-account"
+                            class="mt-auto flex justify-end border-t px-6 py-4"
+                            data-testid="site-header__menu-language"
                         >
-                            <Link
-                                v-if="user"
-                                :href="localeRoute(favorites())"
-                                data-testid="site-header__menu-favorites"
-                                :class="menuRow"
-                            >
-                                {{ t('nav.favorites') }}
-                                <ChevronRight
-                                    class="size-4 text-muted-foreground"
-                                    aria-hidden="true"
-                                />
-                            </Link>
-                            <Link
-                                v-if="user"
-                                :href="localeRoute(profile())"
-                                data-testid="site-header__menu-profile"
-                                :class="menuRow"
-                            >
-                                {{ t('nav.profile') }}
-                                <ChevronRight
-                                    class="size-4 text-muted-foreground"
-                                    aria-hidden="true"
-                                />
-                            </Link>
-                            <Link
-                                v-if="user"
-                                :href="localeRoute(logout())"
-                                as="button"
-                                :class="[menuRow, 'w-full']"
-                                data-testid="site-header__menu-logout"
-                                @click="handleLogout"
-                            >
-                                {{ t('nav.logout') }}
-                            </Link>
-                            <template v-else>
-                                <Link
-                                    :href="localeRoute(login())"
-                                    data-testid="site-header__menu-login"
-                                    :class="menuRow"
-                                >
-                                    {{ t('nav.login') }}
-                                    <ChevronRight
-                                        class="size-4 text-muted-foreground"
-                                        aria-hidden="true"
-                                    />
-                                </Link>
-                                <Link
-                                    :href="localeRoute(register())"
-                                    data-testid="site-header__menu-register"
-                                    :class="menuRow"
-                                >
-                                    {{ t('nav.register') }}
-                                    <ChevronRight
-                                        class="size-4 text-muted-foreground"
-                                        aria-hidden="true"
-                                    />
-                                </Link>
-                            </template>
-                            <div class="flex items-center gap-2 px-6 py-4">
-                                <span
-                                    class="mr-auto text-sm text-muted-foreground"
-                                >
-                                    {{ t('nav.language') }}
-                                </span>
-                                <LocaleSwitcher />
-                            </div>
+                            <LocaleSwitcher />
                         </div>
                     </SheetContent>
                 </Sheet>
@@ -356,33 +413,5 @@ const menuRow =
                 >{{ t('nav.search') }}</Button
             >
         </form>
-
-        <nav
-            :aria-label="t('nav.races')"
-            class="hidden border-t lg:block"
-            data-testid="site-header__category-bar"
-        >
-            <div
-                class="flex items-center gap-1 overflow-x-auto px-4 py-2 sm:px-6"
-            >
-                <Link
-                    v-for="item in categoryLinks"
-                    :key="item.key"
-                    :href="localeRoute(item.route)"
-                    data-testid="site-header__category"
-                    :class="[
-                        pill,
-                        activeDistance === item.key
-                            ? 'bg-foreground text-background hover:bg-foreground hover:text-background'
-                            : 'text-muted-foreground',
-                    ]"
-                    :aria-current="
-                        activeDistance === item.key ? 'page' : undefined
-                    "
-                >
-                    {{ item.label }}
-                </Link>
-            </div>
-        </nav>
     </header>
 </template>

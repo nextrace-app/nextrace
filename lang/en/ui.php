@@ -27,6 +27,8 @@ return [
         'home' => 'NextRace home',
         'favorites' => 'Favorites',
         'profile' => 'Profile',
+        'welcome' => 'Welcome!',
+        'account_menu' => 'Account menu',
         'logout' => 'Log out',
         'language' => 'Language',
         'theme' => [

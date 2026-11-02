@@ -46,6 +46,21 @@ class TranslationTest extends TestCase
         );
     }
 
+    public function test_account_menu_strings_are_translated(): void
+    {
+        $this->get(route('home'))->assertInertia(
+            fn ($page) => $page
+                ->where('translations.nav.welcome', 'Καλώς ήρθες!')
+                ->where('translations.nav.account_menu', 'Μενού λογαριασμού')
+        );
+
+        $this->get(route('en.home'))->assertInertia(
+            fn ($page) => $page
+                ->where('translations.nav.welcome', 'Welcome!')
+                ->where('translations.nav.account_menu', 'Account menu')
+        );
+    }
+
     public function test_footer_shows_the_nextrace_copyright_and_no_note(): void
     {
         $this->get(route('home'))->assertInertia(
