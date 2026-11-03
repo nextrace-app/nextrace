@@ -13,8 +13,7 @@ class RoleSeeder extends Seeder
 {
     /**
      * Create the permissions and the roles, and give the admin every permission.
-     * Safe to run again. The organizer has no permissions until organizers get
-     * their own part of the admin area.
+     * Safe to run again. The organizer may manage their own events, not publish them.
      */
     public function run(): void
     {
@@ -30,5 +29,6 @@ class RoleSeeder extends Seeder
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         Role::findByName(UserRole::Admin->value, 'web')->syncPermissions(Permissions::all());
+        Role::findByName(UserRole::Organizer->value, 'web')->syncPermissions(Permissions::forOrganizer());
     }
 }

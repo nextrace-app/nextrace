@@ -61,13 +61,17 @@ class AdminAccessTest extends TestCase
         );
     }
 
-    public function test_the_admin_role_holds_every_permission_and_the_organizer_none(): void
+    public function test_the_admin_role_holds_every_permission_and_the_organizer_only_manages_events(): void
     {
         $this->assertEqualsCanonicalizing(
             Permissions::all(),
             Role::findByName('admin')->permissions->pluck('name')->all(),
         );
-        $this->assertCount(0, Role::findByName('organizer')->permissions);
+        $this->assertEqualsCanonicalizing(
+            Permissions::forOrganizer(),
+            Role::findByName('organizer')->permissions->pluck('name')->all(),
+        );
+        $this->assertNotContains(Permissions::EVENTS_PUBLISH, Permissions::forOrganizer());
     }
 
     public function test_the_admin_overview_renders_for_an_admin(): void
@@ -161,7 +165,7 @@ class AdminAccessTest extends TestCase
 
     public function test_users_without_permissions_fail_every_policy_ability(): void
     {
-        foreach ([User::factory()->organizer()->create(), User::factory()->create()] as $user) {
+        foreach ([User::factory()->create()] as $user) {
             foreach ([Event::class, Race::class, EventSeries::class, Region::class] as $model) {
                 $this->assertFalse($user->can('viewAny', $model), "{$model} viewAny");
                 $this->assertFalse($user->can('create', $model), "{$model} create");

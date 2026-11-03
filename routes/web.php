@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\RegionController;
 use App\Http\Controllers\Admin\SeriesController;
 use App\Http\Controllers\EventController;
@@ -34,6 +35,11 @@ $localized = function () {
     // everyone else, guests included, gets a 404.
     Route::middleware(HideAdminArea::class)->prefix('admin')->name('admin.')->group(function () {
         Route::inertia('/', 'Admin/Overview')->name('dashboard');
+
+        Route::resource('events', AdminEventController::class)->except('show');
+        Route::post('events/{event}/submit', [AdminEventController::class, 'submit'])->name('events.submit');
+        Route::post('events/{event}/publish', [AdminEventController::class, 'publish'])->name('events.publish');
+        Route::post('events/{event}/unpublish', [AdminEventController::class, 'unpublish'])->name('events.unpublish');
 
         Route::resource('regions', RegionController::class)->except('show');
         Route::resource('series', SeriesController::class)->except('show');

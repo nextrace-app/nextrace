@@ -54,12 +54,8 @@ class RoleAccessTest extends TestCase
             ->assertOk();
     }
 
-    public function test_organizers_and_regular_users_are_denied_the_admin_page(): void
+    public function test_regular_users_are_denied_the_admin_page(): void
     {
-        $this->actingAs(User::factory()->organizer()->create())
-            ->get(route('admin.dashboard'))
-            ->assertNotFound();
-
         $this->actingAs(User::factory()->create())
             ->get(route('admin.dashboard'))
             ->assertNotFound();
