@@ -55,6 +55,7 @@ use Illuminate\Support\Carbon;
  * @property bool $medical_certificate_required
  * @property string|null $source_url
  * @property CarbonImmutable|null $source_verified_at
+ * @property CarbonImmutable|null $submitted_at
  * @property CarbonImmutable|null $published_at
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
@@ -93,6 +94,7 @@ use Illuminate\Support\Carbon;
     'medical_certificate_required',
     'source_url',
     'source_verified_at',
+    'submitted_at',
     'published_at',
 ])]
 class Event extends Model
@@ -254,6 +256,18 @@ class Event extends Model
     }
 
     /**
+     * Where the event stands in moderation: draft, in_review or published.
+     */
+    public function moderationState(): string
+    {
+        return match (true) {
+            $this->published_at !== null => 'published',
+            $this->submitted_at !== null => 'in_review',
+            default => 'draft',
+        };
+    }
+
+    /**
      * Whether the event is out of draft and shown on the events pages.
      */
     public function isPublished(): bool
@@ -285,6 +299,7 @@ class Event extends Model
             'cancellation_policy' => 'array',
             'medical_certificate_required' => 'boolean',
             'source_verified_at' => 'datetime',
+            'submitted_at' => 'datetime',
             'published_at' => 'datetime',
         ];
     }

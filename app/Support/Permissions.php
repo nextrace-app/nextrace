@@ -26,6 +26,16 @@ class Permissions
     public const EVENTS_PUBLISH = 'events.publish';
 
     /**
+     * What an organizer may do: manage their own events, but not publish them.
+     *
+     * @return list<string>
+     */
+    public static function forOrganizer(): array
+    {
+        return [self::ADMIN_ACCESS, ...array_map(fn (string $ability) => self::for('events', $ability), self::ABILITIES)];
+    }
+
+    /**
      * The permission name for an ability on a resource, e.g. `events.update`.
      */
     public static function for(string $resource, string $ability): string
