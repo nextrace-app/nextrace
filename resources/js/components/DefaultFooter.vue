@@ -1,21 +1,14 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { useLocale } from '@/composables/useLocale';
 import { index as events } from '@/routes/events';
-import { index as favorites } from '@/routes/favorites';
 
 const { t } = useI18n();
 const { localeRoute } = useLocale();
-const page = usePage();
-const user = computed(() => page.props.auth.user);
 const year = new Date().getFullYear();
 
-const links = computed(() => [
-    { key: 'events', route: events() },
-    ...(user.value ? [{ key: 'favorites', route: favorites() }] : []),
-]);
+const links = [{ key: 'events', route: events() }];
 
 const linkClass =
     'rounded-lg py-2 font-bold text-foreground underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50';
