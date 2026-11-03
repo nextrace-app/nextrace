@@ -47,6 +47,26 @@ class AdminEventTest extends TestCase
             'registration_status' => 'open',
             'date_confirmed' => true,
             'medical_certificate_required' => false,
+            'races' => [$this->racePayload()],
+            'links' => [],
+        ], $overrides);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function racePayload(array $overrides = []): array
+    {
+        return array_merge([
+            'slug' => 'ten-k',
+            'name' => ['el' => '10 χλμ', 'en' => '10K'],
+            'is_main' => true,
+            'discipline' => 'run',
+            'terrain' => 'road',
+            'distance_meters' => 10000,
+            'starts_at' => '2027-05-01T09:00',
+            'status' => 'scheduled',
+            'prices' => [['label' => ['en' => 'Early', 'el' => ''], 'amount_cents' => 2500, 'valid_until' => '2027-03-01']],
         ], $overrides);
     }
 
@@ -219,5 +239,73 @@ class AdminEventTest extends TestCase
     public function test_regular_users_get_a_404(): void
     {
         $this->actingAs(User::factory()->create())->get(route('admin.events.index'))->assertNotFound();
+    }
+
+    public function test_races_prices_and_links_are_saved_with_the_event(): void
+    {
+        $this->actingAs($this->admin())->post(route('admin.events.store'), $this->payload([
+            'races' => [
+                $this->racePayload(),
+                $this->racePayload(['slug' => 'five-k', 'name' => ['el' => '5 χλμ', 'en' => '5K'], 'is_main' => false, 'distance_meters' => 5000, 'prices' => []]),
+            ],
+            'links' => [['type' => 'website', 'url' => 'https://example.com', 'label' => ['en' => 'Site', 'el' => '']]],
+        ]))->assertRedirect(route('admin.events.edit', 'night-run'));
+
+        $event = Event::query()->where('slug', 'night-run')->firstOrFail();
+
+        $this->assertSame(['ten-k', 'five-k'], $event->races->pluck('slug')->all());
+        $this->assertSame(2500, $event->races[0]->prices->first()->amount_cents);
+        $this->assertSame(['en' => 'Early'], $event->races[0]->prices->first()->label);
+        $this->assertSame('5k', $event->races[1]->distance_class->value);
+        $this->assertSame('https://example.com', $event->links->first()->url);
+    }
+
+    public function test_updating_removes_races_missing_from_the_form_and_replaces_prices_and_links(): void
+    {
+        $admin = $this->admin();
+        $this->actingAs($admin)->post(route('admin.events.store'), $this->payload([
+            'races' => [$this->racePayload(), $this->racePayload(['slug' => 'five-k', 'is_main' => false, 'distance_meters' => 5000])],
+            'links' => [['type' => 'website', 'url' => 'https://example.com']],
+        ]));
+        $event = Event::query()->where('slug', 'night-run')->firstOrFail();
+
+        $this->actingAs($admin)->put(route('admin.events.update', $event), $this->payload([
+            'races' => [$this->racePayload(['prices' => []])],
+            'links' => [],
+        ]))->assertRedirect();
+
+        $this->assertSame(['ten-k'], $event->races()->pluck('slug')->all());
+        $this->assertSame(0, $event->races()->first()->prices()->count());
+        $this->assertSame(0, $event->links()->count());
+    }
+
+    public function test_race_errors_point_at_the_race_and_nothing_is_saved(): void
+    {
+        $this->actingAs($this->admin())->post(route('admin.events.store'), $this->payload([
+            'races' => [$this->racePayload(), $this->racePayload(['slug' => 'five-k', 'is_main' => false, 'distance_meters' => 0, 'prices' => [['amount_cents' => -1]]])],
+            'links' => [['type' => 'website', 'url' => 'not a url']],
+        ]))->assertSessionHasErrors(['races.1.distance_meters', 'races.1.prices.0.amount_cents', 'links.0.url']);
+
+        $this->assertDatabaseMissing('events', ['slug' => 'night-run']);
+    }
+
+    public function test_exactly_one_race_has_to_be_the_main_race(): void
+    {
+        $this->actingAs($this->admin())
+            ->post(route('admin.events.store'), $this->payload(['races' => [$this->racePayload(['is_main' => false])]]))
+            ->assertSessionHasErrors('races');
+
+        $this->actingAs($this->admin())
+            ->post(route('admin.events.store'), $this->payload(['races' => []]))
+            ->assertSessionHasErrors('races');
+    }
+
+    public function test_the_edit_page_carries_races_and_links(): void
+    {
+        $event = $this->draft();
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.events.edit', $event))
+            ->assertInertia(fn (Assert $page) => $page->has('record.races', 1)->where('record.races.0.is_main', true)->has('record.links', 0)->has('raceOptions.disciplines'));
     }
 }

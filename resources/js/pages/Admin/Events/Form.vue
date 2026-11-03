@@ -2,6 +2,8 @@
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import AdminEventRaces from '@/components/AdminEventRaces.vue';
+import type { EventLink, Race } from '@/components/AdminEventRaces.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,6 +20,22 @@ import { stateClass } from './state';
 
 type Translated = { el?: string; en?: string };
 type Option = { id: number; name: string };
+type RaceRecord = Omit<
+    Race,
+    'name' | 'prices' | 'terrain' | 'elevation_gain_m' | 'registration_url'
+> & {
+    name: Translated;
+    terrain: string | null;
+    elevation_gain_m: number | null;
+    registration_url: string | null;
+    prices: {
+        label: Translated | null;
+        amount_cents: number;
+        valid_from: string | null;
+        valid_until: string | null;
+    }[];
+};
+type LinkRecord = { type: string; url: string; label: Translated | null };
 
 const props = defineProps<{
     record: {
@@ -47,6 +65,8 @@ const props = defineProps<{
         image_url: string | null;
         medical_certificate_required: boolean;
         state: 'draft' | 'in_review' | 'published';
+        races: RaceRecord[];
+        links: LinkRecord[];
         urls: {
             submit: string;
             publish: string;
@@ -60,6 +80,12 @@ const props = defineProps<{
     series: Option[];
     statuses: string[];
     registrationStatuses: string[];
+    raceOptions: {
+        disciplines: string[];
+        terrains: string[];
+        statuses: string[];
+        linkTypes: string[];
+    };
     canPublish: boolean;
     canDelete: boolean;
 }>();
@@ -103,6 +129,24 @@ const form = useForm({
     source_url: r?.source_url ?? '',
     image_url: r?.image_url ?? '',
     medical_certificate_required: r?.medical_certificate_required ?? false,
+    races: (r?.races ?? []).map(
+        (race): Race => ({
+            ...race,
+            name: pair(race.name),
+            terrain: race.terrain ?? '',
+            elevation_gain_m: race.elevation_gain_m ?? '',
+            registration_url: race.registration_url ?? '',
+            prices: race.prices.map((price) => ({
+                label: pair(price.label),
+                amount_cents: price.amount_cents,
+                valid_from: price.valid_from ?? '',
+                valid_until: price.valid_until ?? '',
+            })),
+        }),
+    ) as Race[],
+    links: (r?.links ?? []).map(
+        (link): EventLink => ({ ...link, label: pair(link.label) }),
+    ),
 });
 
 const title = computed(() =>
@@ -111,6 +155,10 @@ const title = computed(() =>
 
 const errorFor = (key: string) =>
     (form.errors as Record<string, string | undefined>)[key];
+
+const allErrors = computed(
+    () => form.errors as Record<string, string | undefined>,
+);
 
 const hasErrorIn = (locale: string) =>
     [
@@ -148,6 +196,18 @@ const submit = () => {
         ends_on: data.ends_on || null,
         registration_opens_at: data.registration_opens_at || null,
         registration_closes_at: data.registration_closes_at || null,
+        races: data.races.map((race) => ({
+            ...race,
+            terrain: race.terrain || null,
+            elevation_gain_m:
+                race.elevation_gain_m === '' ? null : race.elevation_gain_m,
+            registration_url: race.registration_url || null,
+            prices: race.prices.map((price) => ({
+                ...price,
+                valid_from: price.valid_from || null,
+                valid_until: price.valid_until || null,
+            })),
+        })),
     }));
 
     if (props.record) {
@@ -516,6 +576,13 @@ const field = 'min-h-11 rounded-md border bg-transparent px-3 text-sm';
                         <InputError :message="form.errors.image_url" />
                     </div>
                 </div>
+
+                <AdminEventRaces
+                    v-model:races="form.races"
+                    v-model:links="form.links"
+                    :errors="allErrors"
+                    :options="raceOptions"
+                />
 
                 <label class="flex items-center gap-2 text-sm">
                     <input v-model="form.date_confirmed" type="checkbox" />

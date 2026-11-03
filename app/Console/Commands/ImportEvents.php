@@ -397,7 +397,7 @@ class ImportEvents extends Command
             $attributes['sort_order'] = $data['sort_order'] ?? $position;
             $attributes['starts_at'] = $startsAt;
             $attributes['start_time_known'] = $data['start_time_known'] ?? $startsAt->format('H:i:s') !== '00:00:00';
-            $attributes['distance_class'] = $data['distance_class'] ?? $this->distanceClass($data['distance_meters'])->value;
+            $attributes['distance_class'] = $data['distance_class'] ?? DistanceClass::forMeters($data['distance_meters'])->value;
 
             $race = $event->races()->firstOrNew(['slug' => $data['slug']]);
             $race->fill($attributes)->save();
@@ -422,20 +422,5 @@ class ImportEvents extends Command
     private function withoutNulls(array $attributes, array $keys): array
     {
         return array_filter($attributes, fn (mixed $value, string $key) => $value !== null || ! in_array($key, $keys, true), ARRAY_FILTER_USE_BOTH);
-    }
-
-    /**
-     * The class a distance falls in, when the file does not say.
-     */
-    private function distanceClass(int $metres): DistanceClass
-    {
-        return match (true) {
-            $metres === 5000 => DistanceClass::FiveK,
-            $metres === 10000 => DistanceClass::TenK,
-            in_array($metres, [21097, 21098, 21100], true) => DistanceClass::HalfMarathon,
-            in_array($metres, [42195, 42200], true) => DistanceClass::Marathon,
-            $metres > 42200 => DistanceClass::Ultra,
-            default => DistanceClass::Other,
-        };
     }
 }
