@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\EventStatus;
+use App\Enums\LinkType;
+use App\Enums\RaceDiscipline;
+use App\Enums\RaceStatus;
+use App\Enums\RaceTerrain;
 use App\Enums\RegistrationStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\EventRequest;
@@ -11,11 +15,14 @@ use App\Models\EventSeries;
 use App\Models\Organizer;
 use App\Models\Region;
 use App\Models\User;
+use App\Support\EventContent;
 use App\Support\Locale;
 use App\Support\Permissions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -98,7 +105,12 @@ class EventController extends Controller
 
         abort_if(! $this->canModerate($user) && $user->organizer_id === null, 403);
 
-        $event = Event::create($attributes);
+        $event = DB::transaction(function () use ($attributes) {
+            $event = Event::create(Arr::except($attributes, ['races', 'links']));
+            EventContent::sync($event, $attributes['races'], $attributes['links']);
+
+            return $event;
+        });
 
         return to_route(Locale::routeName('admin.events.edit'), $event)->with('status', 'created');
     }
@@ -114,7 +126,12 @@ class EventController extends Controller
     {
         Gate::authorize('update', $event);
 
-        $event->update($this->withOwnOrganizer($request->attributesForModel(), $this->user($request)));
+        $attributes = $this->withOwnOrganizer($request->attributesForModel(), $this->user($request));
+
+        DB::transaction(function () use ($event, $attributes) {
+            $event->update(Arr::except($attributes, ['races', 'links']));
+            EventContent::sync($event, $attributes['races'], $attributes['links']);
+        });
 
         return to_route(Locale::routeName('admin.events.edit'), $event)->with('status', 'updated');
     }
@@ -195,6 +212,8 @@ class EventController extends Controller
                 'image_url' => $event->image_url,
                 'medical_certificate_required' => $event->medical_certificate_required,
                 'state' => $event->moderationState(),
+                'races' => $this->races($event),
+                'links' => $this->links($event),
                 'urls' => [
                     'submit' => $this->url('submit', $event),
                     'publish' => $this->url('publish', $event),
@@ -208,9 +227,66 @@ class EventController extends Controller
             'series' => EventSeries::query()->orderBy('slug')->get()->map(fn (EventSeries $series) => ['id' => $series->id, 'name' => $series->translated('name')])->all(),
             'statuses' => array_column(EventStatus::cases(), 'value'),
             'registrationStatuses' => array_column(RegistrationStatus::cases(), 'value'),
+            'raceOptions' => [
+                'disciplines' => array_column(RaceDiscipline::cases(), 'value'),
+                'terrains' => array_column(RaceTerrain::cases(), 'value'),
+                'statuses' => array_column(RaceStatus::cases(), 'value'),
+                'linkTypes' => array_column(LinkType::cases(), 'value'),
+            ],
             'canPublish' => $user->can('publish', Event::class),
             'canDelete' => $event !== null && $user->can('delete', $event),
         ]);
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function races(Event $event): array
+    {
+        $races = [];
+
+        foreach ($event->races()->with('prices')->get() as $race) {
+            $prices = [];
+
+            foreach ($race->prices as $price) {
+                $prices[] = [
+                    'label' => $price->label,
+                    'amount_cents' => $price->amount_cents,
+                    'valid_from' => $price->valid_from?->toDateString(),
+                    'valid_until' => $price->valid_until?->toDateString(),
+                ];
+            }
+
+            $races[] = [
+                'slug' => $race->slug,
+                'name' => $race->name,
+                'is_main' => $race->is_main,
+                'discipline' => $race->discipline->value,
+                'terrain' => $race->terrain?->value,
+                'distance_meters' => $race->distance_meters,
+                'elevation_gain_m' => $race->elevation_gain_m,
+                'starts_at' => $race->starts_at->format('Y-m-d\TH:i'),
+                'status' => $race->status->value,
+                'registration_url' => $race->registration_url,
+                'prices' => $prices,
+            ];
+        }
+
+        return $races;
+    }
+
+    /**
+     * @return list<array{type: string, url: string, label: array<string, string>|null}>
+     */
+    private function links(Event $event): array
+    {
+        $links = [];
+
+        foreach ($event->links as $link) {
+            $links[] = ['type' => $link->type->value, 'url' => $link->url, 'label' => $link->label];
+        }
+
+        return $links;
     }
 
     /**
