@@ -16,6 +16,11 @@ return [
         'description' => 'Upcoming races across Greece, from Crete to Macedonia: 5K, 10K, half marathons, marathons, trail and ultra, with dates and registration.',
     ],
 
+    'breadcrumbs' => [
+        'home' => 'Home',
+        'events' => 'Races',
+    ],
+
     'event' => [
         'title' => ':name: :distance race in :city',
         'description' => ':name is a :distance running race in :city, :country, on :date.',

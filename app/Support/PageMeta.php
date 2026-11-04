@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Enums\EventStatus;
 use App\Enums\RaceStatus;
+use App\Enums\RegistrationStatus;
 use App\Models\Event;
 use App\Models\Race;
 use Carbon\CarbonInterface;
@@ -50,8 +51,8 @@ class PageMeta
 
     private ?string $image = null;
 
-    /** @var array<string, mixed>|null */
-    private ?array $jsonLd = null;
+    /** @var list<array<string, mixed>> */
+    private array $jsonLd = [];
 
     /**
      * Describe the page of a single event from its translated attributes.
@@ -77,7 +78,14 @@ class PageMeta
 
         $this->type = 'article';
         $this->image = $event->image_url;
-        $this->jsonLd = $this->eventJsonLd($event, $name, $country, $start);
+        $this->jsonLd = [
+            $this->eventJsonLd($event, $name, $country, $start),
+            $this->breadcrumbs([
+                [__('seo.breadcrumbs.home'), route(Locale::routeName('home'))],
+                [__('seo.breadcrumbs.events'), route(Locale::routeName('events.index'))],
+                [$name, Locale::alternates(request())[$locale]],
+            ]),
+        ];
 
         return $this;
     }
@@ -85,7 +93,7 @@ class PageMeta
     /**
      * Everything the root template needs, with defaults for pages that set nothing.
      *
-     * @return array{title: string|null, description: string, type: string, image: string|null, robots: string, locale: string, localeAlternates: list<string>, siteName: string, twitterCard: string, jsonLd: string|null}
+     * @return array{title: string|null, description: string, type: string, image: string|null, robots: string, locale: string, localeAlternates: list<string>, siteName: string, twitterCard: string, jsonLd: list<string>}
      */
     public function toArray(): array
     {
@@ -105,7 +113,7 @@ class PageMeta
             )),
             'siteName' => config()->string('app.name'),
             'twitterCard' => $this->image ? 'summary_large_image' : 'summary',
-            'jsonLd' => $this->jsonLd === null ? null : self::encode($this->jsonLd),
+            'jsonLd' => array_map(self::encode(...), $this->jsonLd ?: $this->pageJsonLd()),
         ];
     }
 
@@ -225,15 +233,116 @@ class PageMeta
             'image' => $event->image_url,
             'url' => $url,
             'inLanguage' => $locale,
-            'offers' => ($event->registration_url ?? $event->mainRace?->registration_url) ? [
-                '@type' => 'Offer',
-                'url' => $event->registration_url ?? $event->mainRace?->registration_url,
-            ] : null,
+            'offers' => $this->eventOffers($event),
             'organizer' => $this->organizerJsonLd($event),
             'subEvent' => $event->races->isEmpty() ? null : $event->races->map(fn (Race $race) => $this->raceJsonLd($event, $race, $name, $location, $url))->values()->all(),
         ];
 
         return array_filter($data, fn (mixed $value) => $value !== null);
+    }
+
+    /**
+     * The structured data of a page with fixed copy: the site itself on the
+     * home page and the trail of crumbs on the events list.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function pageJsonLd(): array
+    {
+        $home = route(Locale::routeName('home'));
+
+        return match ($this->pageKey()) {
+            'home' => [
+                [
+                    '@context' => 'https://schema.org',
+                    '@type' => 'WebSite',
+                    'name' => config()->string('app.name'),
+                    'url' => $home,
+                    'inLanguage' => app()->getLocale(),
+                    'publisher' => ['@id' => url('/').'#organization'],
+                ],
+                [
+                    '@context' => 'https://schema.org',
+                    '@type' => 'Organization',
+                    '@id' => url('/').'#organization',
+                    'name' => config()->string('app.name'),
+                    'url' => $home,
+                    'logo' => url('/apple-touch-icon.png'),
+                ],
+            ],
+            'events' => [
+                $this->breadcrumbs([
+                    [__('seo.breadcrumbs.home'), $home],
+                    [__('seo.breadcrumbs.events'), route(Locale::routeName('events.index'))],
+                ]),
+            ],
+            default => [],
+        };
+    }
+
+    /**
+     * A schema.org trail of crumbs, the last of which is the page itself.
+     *
+     * @param  list<array{0: string, 1: string}>  $crumbs  Name and absolute URL of each step
+     * @return array<string, mixed>
+     */
+    private function breadcrumbs(array $crumbs): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => array_map(fn (array $crumb, int $index) => [
+                '@type' => 'ListItem',
+                'position' => $index + 1,
+                'name' => $crumb[0],
+                'item' => $crumb[1],
+            ], $crumbs, array_keys($crumbs)),
+        ];
+    }
+
+    /**
+     * What it costs to take part in the event and whether registration is open.
+     *
+     * The prices of the races are summed up into a range; each race lists its own
+     * prices in its sub event. Without prices only the registration link and the
+     * state of registration are known.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function eventOffers(Event $event): ?array
+    {
+        $url = $event->registration_url ?? $event->mainRace?->registration_url;
+        $prices = $event->races->flatMap(fn (Race $race) => $race->prices);
+        $currency = $prices->first()?->currency;
+        $prices = $prices->where('currency', $currency)->pluck('amount_cents');
+
+        $availability = match ($event->registration_status) {
+            RegistrationStatus::Open => 'https://schema.org/InStock',
+            RegistrationStatus::NotOpen => 'https://schema.org/PreOrder',
+            RegistrationStatus::SoldOut => 'https://schema.org/SoldOut',
+            default => null,
+        };
+
+        $offer = [
+            '@type' => $prices->isEmpty() ? 'Offer' : 'AggregateOffer',
+            'url' => $url,
+            'availability' => $availability,
+            'validFrom' => $event->registration_opens_at?->toIso8601String(),
+            'validThrough' => $event->registration_closes_at?->toIso8601String(),
+        ];
+
+        if ($prices->isNotEmpty()) {
+            $offer += [
+                'priceCurrency' => $currency,
+                'lowPrice' => $prices->min() / 100,
+                'highPrice' => $prices->max() / 100,
+                'offerCount' => $prices->count(),
+            ];
+        }
+
+        $offer = array_filter($offer, fn (mixed $value) => $value !== null && $value !== '');
+
+        return count($offer) > 1 ? $offer : null;
     }
 
     /**
