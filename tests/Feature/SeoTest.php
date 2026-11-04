@@ -94,6 +94,16 @@ class SeoTest extends TestCase
         $this->withHeader('Accept-Language', 'el-GR,el;q=0.9')->get('/sitemap.xml')->assertOk();
     }
 
+    public function test_search_results_of_the_events_list_stay_out_of_the_index_but_pages_and_distance_filters_do_not(): void
+    {
+        $this->get(route('events.index', ['q' => 'marathon']))->assertSee('<meta name="robots" content="noindex, follow">', false);
+        $this->get(route('en.events.index', ['q' => 'marathon']))->assertSee('<meta name="robots" content="noindex, follow">', false);
+
+        $this->get(route('events.index'))->assertSee('<meta name="robots" content="index, follow">', false);
+        $this->get(route('events.index', ['distance' => 'marathon']))->assertSee('<meta name="robots" content="index, follow">', false);
+        $this->get(route('events.index', ['q' => '']))->assertSee('<meta name="robots" content="index, follow">', false);
+    }
+
     public function test_the_event_page_carries_localized_meta_tags_in_english(): void
     {
         $event = $this->event();

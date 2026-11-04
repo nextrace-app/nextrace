@@ -1,17 +1,26 @@
 <script setup lang="ts">
-import { Head, router, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { CalendarX, ChevronLeft, ChevronRight } from '@lucide/vue';
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Button } from '@/components/ui/button';
 import { useLocale } from '@/composables/useLocale';
 import { index as eventsIndex } from '@/routes/events';
-import type { DistanceClass, Event } from '@/types';
+import type { Event } from '@/types';
 
 const props = defineProps<{
     events: Event[];
     favorites: number[];
-    perPage: number;
+    pagination: {
+        current: number;
+        last: number;
+        total: number;
+        perPage: number;
+    };
+    filters: {
+        distance: string | null;
+        q: string;
+    };
 }>();
 
 const { t } = useI18n();
@@ -20,74 +29,33 @@ const seo = computed(() => page.props.seo);
 const { localeRoute } = useLocale();
 
 const eventsList = ref<HTMLElement | null>(null);
-const distance = ref('');
-const query = ref('');
 
-const distanceFilters = ['5k', '10k', 'half_marathon', 'marathon', 'ultra'];
-
-function distanceFilterOf(distanceClass: DistanceClass | null): string {
-    return distanceClass !== null && distanceFilters.includes(distanceClass)
-        ? distanceClass
-        : 'kids_other';
-}
-
-// The header search and the category links send their choice in the URL.
-function syncFromUrl() {
-    const params = new URLSearchParams(page.url.split('?')[1] ?? '');
-    const wanted = params.get('distance') ?? '';
-
-    distance.value = [...distanceFilters, 'kids_other'].includes(wanted)
-        ? wanted
-        : '';
-    query.value = params.get('q') ?? '';
-}
-
-syncFromUrl();
-watch(() => page.url, syncFromUrl);
-
-const visibleEvents = computed(() =>
-    props.events.filter(
-        (event) =>
-            (distance.value === '' ||
-                event.races.some(
-                    (race) =>
-                        distanceFilterOf(race.distance_class) ===
-                        distance.value,
-                )) &&
-            (query.value === '' ||
-                `${event.name} ${event.city}`
-                    .toLowerCase()
-                    .includes(query.value.toLowerCase())),
-    ),
+const isFiltered = computed(
+    () => props.filters.distance !== null || props.filters.q !== '',
 );
-const isFiltered = computed(() => distance.value !== '' || query.value !== '');
 
 function resetFilters() {
     router.visit(localeRoute(eventsIndex()));
 }
 
-// Visible events in date order.
-const sortedEvents = computed(() =>
-    [...visibleEvents.value].sort((a, b) => a.date.localeCompare(b.date)),
-);
+// Every page of the list has an address of its own, so that it can be opened
+// directly and followed by crawlers; the first page is the bare address.
+function pageHref(number: number): string {
+    const [path, query = ''] = page.url.split('?');
+    const params = new URLSearchParams(query);
 
-const currentPage = ref(1);
-const pageCount = computed(() =>
-    Math.max(1, Math.ceil(sortedEvents.value.length / props.perPage)),
-);
-const pagedEvents = computed(() =>
-    sortedEvents.value.slice(
-        (currentPage.value - 1) * props.perPage,
-        currentPage.value * props.perPage,
-    ),
-);
+    if (number === 1) {
+        params.delete('page');
+    } else {
+        params.set('page', String(number));
+    }
 
-watch(visibleEvents, () => {
-    currentPage.value = 1;
-});
+    const search = params.toString();
 
-function goToPage(value: number) {
-    currentPage.value = Math.min(Math.max(1, value), pageCount.value);
+    return search === '' ? path : `${path}?${search}`;
+}
+
+function scrollToList() {
     eventsList.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
@@ -106,13 +74,13 @@ function goToPage(value: number) {
 
             <div class="py-4 sm:py-6">
                 <div
-                    v-if="visibleEvents.length > 0"
+                    v-if="events.length > 0"
                     ref="eventsList"
                     data-testid="events-page__list"
                     class="grid scroll-mt-24 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3"
                 >
                     <EventCard
-                        v-for="event in pagedEvents"
+                        v-for="event in events"
                         :key="event.id"
                         :event="event"
                         :favorited="favorites.includes(event.id)"
@@ -120,54 +88,99 @@ function goToPage(value: number) {
                 </div>
 
                 <nav
-                    v-if="pageCount > 1"
+                    v-if="pagination.last > 1"
                     class="mt-4 flex items-center justify-center gap-1.5 sm:mt-6"
                     :aria-label="t('events.pagination.label')"
                     data-testid="events-page__pagination"
                 >
                     <Button
+                        v-if="pagination.current === 1"
                         type="button"
                         variant="outline"
                         size="icon"
-                        :disabled="currentPage === 1"
+                        disabled
                         data-testid="events-page__pagination-previous"
                         :aria-label="t('events.pagination.previous')"
-                        @click="goToPage(currentPage - 1)"
                     >
                         <ChevronLeft class="size-4" aria-hidden="true" />
                     </Button>
                     <Button
-                        v-for="number in pageCount"
-                        :key="number"
-                        type="button"
-                        :variant="
-                            number === currentPage ? 'default' : 'outline'
-                        "
+                        v-else
+                        as-child
+                        variant="outline"
                         size="icon"
-                        :aria-current="
-                            number === currentPage ? 'page' : undefined
-                        "
-                        :aria-label="t('events.pagination.page', { number })"
-                        data-testid="events-page__pagination-page"
-                        @click="goToPage(number)"
+                        data-testid="events-page__pagination-previous"
                     >
-                        {{ number }}
+                        <Link
+                            :href="pageHref(pagination.current - 1)"
+                            rel="prev"
+                            preserve-scroll
+                            :aria-label="t('events.pagination.previous')"
+                            @success="scrollToList"
+                        >
+                            <ChevronLeft class="size-4" aria-hidden="true" />
+                        </Link>
                     </Button>
                     <Button
+                        v-for="number in pagination.last"
+                        :key="number"
+                        as-child
+                        :variant="
+                            number === pagination.current
+                                ? 'default'
+                                : 'outline'
+                        "
+                        size="icon"
+                        data-testid="events-page__pagination-page"
+                    >
+                        <Link
+                            :href="pageHref(number)"
+                            preserve-scroll
+                            :aria-current="
+                                number === pagination.current
+                                    ? 'page'
+                                    : undefined
+                            "
+                            :aria-label="
+                                t('events.pagination.page', { number })
+                            "
+                            @success="scrollToList"
+                        >
+                            {{ number }}
+                        </Link>
+                    </Button>
+                    <Button
+                        v-if="pagination.current === pagination.last"
                         type="button"
                         variant="outline"
                         size="icon"
-                        :disabled="currentPage === pageCount"
+                        disabled
                         data-testid="events-page__pagination-next"
                         :aria-label="t('events.pagination.next')"
-                        @click="goToPage(currentPage + 1)"
                     >
                         <ChevronRight class="size-4" aria-hidden="true" />
+                    </Button>
+                    <Button
+                        v-else
+                        as-child
+                        variant="outline"
+                        size="icon"
+                        data-testid="events-page__pagination-next"
+                    >
+                        <Link
+                            :href="pageHref(pagination.current + 1)"
+                            rel="next"
+                            preserve-scroll
+                            :aria-label="t('events.pagination.next')"
+                            @success="scrollToList"
+                        >
+                            <ChevronRight class="size-4" aria-hidden="true" />
+                        </Link>
                     </Button>
                 </nav>
 
                 <div
-                    v-if="visibleEvents.length === 0"
+                    v-if="events.length === 0"
                     class="flex flex-col items-center gap-4 rounded-lg border border-dashed bg-card py-16 text-center"
                     data-testid="events-page__empty"
                 >

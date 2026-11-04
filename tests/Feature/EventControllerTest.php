@@ -34,7 +34,168 @@ class EventControllerTest extends TestCase
     {
         config(['events.per_page' => 5]);
 
-        $this->get(route('events.index'))->assertInertia(fn (Assert $page) => $page->where('perPage', 5));
+        $this->get(route('events.index'))->assertInertia(fn (Assert $page) => $page->where('pagination.perPage', 5));
+    }
+
+    public function test_the_events_list_is_split_into_pages_with_addresses_of_their_own(): void
+    {
+        config(['events.per_page' => 2]);
+        $this->travelTo('2026-10-24');
+
+        $events = collect(range(1, 5))->map(
+            fn (int $day) => Event::factory()->startingAt("2026-11-0{$day} 09:00:00")->create()
+        );
+
+        $this->get(route('events.index'))->assertInertia(
+            fn (Assert $page) => $page
+                ->count('events', 2)
+                ->where('events.0.id', $events[0]->id)
+                ->where('pagination', ['current' => 1, 'last' => 3, 'total' => 5, 'perPage' => 2])
+        );
+
+        $this->get(route('events.index', ['page' => 2]))->assertInertia(
+            fn (Assert $page) => $page
+                ->count('events', 2)
+                ->where('events.0.id', $events[2]->id)
+                ->where('pagination.current', 2)
+        );
+
+        $this->get(route('en.events.index', ['page' => 3]))->assertInertia(
+            fn (Assert $page) => $page
+                ->count('events', 1)
+                ->where('events.0.id', $events[4]->id)
+                ->where('pagination.current', 3)
+        );
+    }
+
+    public function test_the_page_a_visitor_opens_is_rendered_on_the_server_with_its_own_canonical(): void
+    {
+        config(['events.per_page' => 1]);
+
+        Event::factory()->count(2)->create();
+
+        $this->get(route('events.index', ['page' => 2]))
+            ->assertOk()
+            ->assertSee('<link rel="canonical" href="'.route('events.index', ['page' => 2]).'">', false)
+            ->assertSee('hreflang="en" href="'.route('en.events.index', ['page' => 2]).'"', false);
+    }
+
+    public function test_the_first_page_lives_at_the_bare_address(): void
+    {
+        $this->get(route('events.index', ['page' => 1]))->assertRedirect(route('events.index'))->assertStatus(301);
+        $this->get(route('en.events.index', ['page' => 1, 'distance' => 'marathon']))
+            ->assertRedirect(route('en.events.index', ['distance' => 'marathon']))
+            ->assertStatus(301);
+    }
+
+    public function test_a_page_that_does_not_exist_is_a_404(): void
+    {
+        config(['events.per_page' => 2]);
+        Event::factory()->count(3)->create();
+
+        $this->get(route('events.index', ['page' => 2]))->assertOk();
+        $this->get(route('events.index', ['page' => 3]))->assertNotFound();
+        $this->get(route('events.index', ['page' => 99]))->assertNotFound();
+    }
+
+    public function test_a_page_that_is_not_a_positive_number_is_a_404(): void
+    {
+        foreach (['0', '-1', 'abc', '1.5'] as $page) {
+            $this->get(route('events.index', ['page' => $page]))->assertNotFound();
+        }
+
+        $this->get('/events?page[]=2')->assertNotFound();
+    }
+
+    public function test_an_empty_list_has_a_first_page_only(): void
+    {
+        $this->get(route('events.index'))->assertInertia(
+            fn (Assert $page) => $page->count('events', 0)->where('pagination', ['current' => 1, 'last' => 1, 'total' => 0, 'perPage' => config('events.per_page')])
+        );
+
+        $this->get(route('events.index', ['page' => 2]))->assertNotFound();
+    }
+
+    public function test_the_list_can_be_filtered_by_distance_across_pages(): void
+    {
+        config(['events.per_page' => 1]);
+        $this->travelTo('2026-10-24');
+
+        $marathon = Event::factory()->withMainRace(['distance_class' => 'marathon', 'starts_at' => '2026-11-01 09:00:00'])->create(['starts_on' => '2026-11-01']);
+        $otherMarathon = Event::factory()->withMainRace(['distance_class' => 'marathon', 'starts_at' => '2026-11-02 09:00:00'])->create(['starts_on' => '2026-11-02']);
+        Event::factory()->withMainRace(['distance_class' => '5k', 'starts_at' => '2026-11-03 09:00:00'])->create(['starts_on' => '2026-11-03']);
+
+        $this->get(route('events.index', ['distance' => 'marathon']))->assertInertia(
+            fn (Assert $page) => $page
+                ->where('events.0.id', $marathon->id)
+                ->where('filters.distance', 'marathon')
+                ->where('pagination.last', 2)
+        );
+
+        $this->get(route('events.index', ['distance' => 'marathon', 'page' => 2]))->assertInertia(
+            fn (Assert $page) => $page->where('events.0.id', $otherMarathon->id)
+        );
+    }
+
+    public function test_the_other_distance_filter_matches_races_outside_the_named_classes(): void
+    {
+        $this->travelTo('2026-10-24');
+
+        $kids = Event::factory()->withMainRace(['distance_class' => 'kids', 'starts_at' => '2026-11-01 09:00:00'])->create(['starts_on' => '2026-11-01']);
+        $unclassified = Event::factory()->withMainRace(['distance_class' => null, 'starts_at' => '2026-11-02 09:00:00'])->create(['starts_on' => '2026-11-02']);
+        Event::factory()->withMainRace(['distance_class' => 'ultra', 'starts_at' => '2026-11-03 09:00:00'])->create(['starts_on' => '2026-11-03']);
+
+        $this->get(route('events.index', ['distance' => 'kids_other']))->assertInertia(
+            fn (Assert $page) => $page->count('events', 2)->where('events.0.id', $kids->id)->where('events.1.id', $unclassified->id)
+        );
+    }
+
+    public function test_an_unknown_distance_filter_is_ignored(): void
+    {
+        Event::factory()->count(2)->create();
+
+        $this->get(route('events.index', ['distance' => 'bogus']))->assertInertia(
+            fn (Assert $page) => $page->count('events', 2)->where('filters.distance', null)
+        );
+    }
+
+    public function test_the_list_can_be_searched_by_name_in_the_visitors_language_and_by_city(): void
+    {
+        $athens = Event::factory()->create([
+            'name' => ['el' => 'Μαραθώνιος Αθήνας', 'en' => 'Athens Marathon'],
+            'city' => 'Marousi',
+        ]);
+        $crete = Event::factory()->create([
+            'name' => ['el' => 'Δρόμος Κρήτης', 'en' => 'Crete Run'],
+            'city' => 'Heraklion',
+        ]);
+
+        $this->get(route('en.events.index', ['q' => 'athens']))->assertInertia(
+            fn (Assert $page) => $page->count('events', 1)->where('events.0.id', $athens->id)->where('filters.q', 'athens')
+        );
+        $this->get(route('events.index', ['q' => 'Μαραθώνιος']))->assertInertia(
+            fn (Assert $page) => $page->count('events', 1)->where('events.0.id', $athens->id)
+        );
+        $this->get(route('events.index', ['q' => 'heraklion']))->assertInertia(
+            fn (Assert $page) => $page->count('events', 1)->where('events.0.id', $crete->id)
+        );
+    }
+
+    public function test_search_wildcards_are_matched_literally(): void
+    {
+        Event::factory()->count(2)->create();
+
+        $this->get(route('events.index', ['q' => '%']))->assertInertia(fn (Assert $page) => $page->count('events', 0));
+        $this->get(route('events.index', ['q' => '_']))->assertInertia(fn (Assert $page) => $page->count('events', 0));
+    }
+
+    public function test_a_search_with_no_match_is_an_empty_first_page(): void
+    {
+        Event::factory()->create();
+
+        $this->get(route('events.index', ['q' => 'no-such-race-anywhere']))->assertOk()->assertInertia(
+            fn (Assert $page) => $page->count('events', 0)->where('pagination.total', 0)
+        );
     }
 
     public function test_guests_can_visit_an_event_page(): void
