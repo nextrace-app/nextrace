@@ -16,6 +16,11 @@ return [
         'description' => 'Επερχόμενοι αγώνες δρόμου σε όλη την Ελλάδα, από την Κρήτη ως τη Μακεδονία: 5K, 10K, ημιμαραθώνιοι, μαραθώνιοι, trail και ultra, με ημερομηνίες και εγγραφές.',
     ],
 
+    'breadcrumbs' => [
+        'home' => 'Αρχική',
+        'events' => 'Αγώνες',
+    ],
+
     'event' => [
         'title' => ':name: αγώνας :distance, :city',
         'description' => 'Ο αγώνας :name, :distance στην περιοχή :city (:country), στις :date.',

@@ -19,6 +19,6 @@
 @if ($seo['image'])
     <meta name="twitter:image" content="{{ $seo['image'] }}">
 @endif
-@if ($seo['jsonLd'])
-    <script type="application/ld+json">{!! $seo['jsonLd'] !!}</script>
-@endif
+@foreach ($seo['jsonLd'] as $jsonLd)
+    <script type="application/ld+json">{!! $jsonLd !!}</script>
+@endforeach

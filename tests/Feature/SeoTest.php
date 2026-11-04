@@ -34,11 +34,26 @@ class SeoTest extends TestCase
     /**
      * @return array<string, mixed>
      */
-    private function jsonLd(string $html): array
+    private function jsonLd(string $html, string $type = 'SportsEvent'): array
     {
-        $this->assertSame(1, preg_match('#<script type="application/ld\+json">(.*?)</script>#s', $html, $matches));
+        $blocks = array_filter(array_map(
+            fn (string $block): array => json_decode($block, true, flags: JSON_THROW_ON_ERROR),
+            $this->jsonLdBlocks($html),
+        ), fn (array $block): bool => $block['@type'] === $type);
 
-        return json_decode($matches[1], true, flags: JSON_THROW_ON_ERROR);
+        $this->assertCount(1, $blocks, "Expected exactly one {$type} block.");
+
+        return array_values($blocks)[0];
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function jsonLdBlocks(string $html): array
+    {
+        preg_match_all('#<script type="application/ld\+json">(.*?)</script>#s', $html, $matches);
+
+        return $matches[1];
     }
 
     public function test_the_sitemap_lists_published_pages_in_both_locales_with_alternates(): void
@@ -200,8 +215,7 @@ class SeoTest extends TestCase
     {
         $this->get(route('en.home'))->assertOk()
             ->assertSee('<title>Running races in Greece - ', false)
-            ->assertSee('<meta property="og:type" content="website">', false)
-            ->assertDontSee('application/ld+json', false);
+            ->assertSee('<meta property="og:type" content="website">', false);
 
         $this->get(route('events.index'))->assertOk()
             ->assertSee('<title>Αγώνες δρόμου Ελλάδα: ημερολόγιο αγώνων - ', false)
@@ -316,5 +330,113 @@ class SeoTest extends TestCase
 
         $this->assertSame(1, substr_count($xml, '<loc>'.route('events.show', $event).'</loc>'));
         $this->assertSame(1, substr_count($xml, '<loc>'.route('en.events.show', $event).'</loc>'));
+    }
+
+    public function test_the_event_offers_sum_up_the_prices_of_its_races_and_say_whether_registration_is_open(): void
+    {
+        $event = $this->event(['registration_status' => 'open', 'registration_opens_at' => '2027-01-01 00:00:00', 'registration_closes_at' => '2027-04-10 23:59:00']);
+        $tenK = Race::factory()->for($event)->create(['distance_meters' => 10000, 'starts_at' => '2027-04-18 10:30:00']);
+        RacePrice::factory()->for($tenK)->create(['amount_cents' => 1550, 'currency' => 'EUR']);
+        RacePrice::factory()->for($tenK)->create(['amount_cents' => 2500, 'currency' => 'EUR']);
+        RacePrice::factory()->for($event->mainRace)->create(['amount_cents' => 3000, 'currency' => 'EUR']);
+
+        $offers = $this->jsonLd($this->get(route('en.events.show', $event))->assertOk()->getContent())['offers'];
+
+        $this->assertSame('AggregateOffer', $offers['@type']);
+        $this->assertSame(15.5, $offers['lowPrice']);
+        $this->assertSame(30, $offers['highPrice']);
+        $this->assertSame('EUR', $offers['priceCurrency']);
+        $this->assertSame(3, $offers['offerCount']);
+        $this->assertSame('https://example.com/register', $offers['url']);
+        $this->assertSame('https://schema.org/InStock', $offers['availability']);
+        $this->assertStringStartsWith('2027-01-01T00:00:00', $offers['validFrom']);
+        $this->assertStringStartsWith('2027-04-10T23:59:00', $offers['validThrough']);
+    }
+
+    public function test_the_availability_follows_the_state_of_registration(): void
+    {
+        $cases = [
+            'open' => 'https://schema.org/InStock',
+            'not_open' => 'https://schema.org/PreOrder',
+            'sold_out' => 'https://schema.org/SoldOut',
+        ];
+
+        foreach ($cases as $status => $expected) {
+            $event = $this->event(['registration_status' => $status, 'slug' => "race-{$status}"]);
+
+            $offers = $this->jsonLd($this->get(route('en.events.show', $event))->assertOk()->getContent())['offers'];
+
+            $this->assertSame('Offer', $offers['@type']);
+            $this->assertSame($expected, $offers['availability']);
+            $this->assertArrayNotHasKey('lowPrice', $offers);
+        }
+
+        foreach (['closed', 'unknown'] as $status) {
+            $event = $this->event(['registration_status' => $status, 'slug' => "race-{$status}"]);
+
+            $offers = $this->jsonLd($this->get(route('en.events.show', $event))->assertOk()->getContent())['offers'];
+
+            $this->assertArrayNotHasKey('availability', $offers);
+        }
+    }
+
+    public function test_an_event_with_nothing_to_offer_has_no_offers(): void
+    {
+        $event = $this->event(['registration_url' => null, 'registration_status' => 'unknown']);
+
+        $this->assertArrayNotHasKey('offers', $this->jsonLd($this->get(route('en.events.show', $event))->assertOk()->getContent()));
+    }
+
+    public function test_prices_in_another_currency_are_left_out_of_the_range(): void
+    {
+        $event = $this->event();
+        RacePrice::factory()->for($event->mainRace)->create(['amount_cents' => 2000, 'currency' => 'EUR']);
+        RacePrice::factory()->for($event->mainRace)->create(['amount_cents' => 9900, 'currency' => 'USD']);
+
+        $offers = $this->jsonLd($this->get(route('en.events.show', $event))->assertOk()->getContent())['offers'];
+
+        $this->assertSame(20, $offers['highPrice']);
+        $this->assertSame(1, $offers['offerCount']);
+    }
+
+    public function test_the_home_page_describes_the_site_and_the_organization_behind_it(): void
+    {
+        $html = $this->get(route('en.home'))->assertOk()->getContent();
+
+        $site = $this->jsonLd($html, 'WebSite');
+        $organization = $this->jsonLd($html, 'Organization');
+
+        $this->assertSame(route('en.home'), $site['url']);
+        $this->assertSame('en', $site['inLanguage']);
+        $this->assertSame(config('app.name'), $site['name']);
+        $this->assertSame($organization['@id'], $site['publisher']['@id']);
+        $this->assertSame(url('/apple-touch-icon.png'), $organization['logo']);
+        $this->assertSame(route('en.home'), $organization['url']);
+
+        $this->assertSame('el', $this->jsonLd($this->get(route('home'))->getContent(), 'WebSite')['inLanguage']);
+    }
+
+    public function test_the_events_list_and_an_event_carry_a_trail_of_crumbs_in_their_language(): void
+    {
+        $list = $this->jsonLd($this->get(route('en.events.index'))->assertOk()->getContent(), 'BreadcrumbList');
+
+        $this->assertSame(
+            [['Home', route('en.home')], ['Races', route('en.events.index')]],
+            array_map(fn (array $crumb) => [$crumb['name'], $crumb['item']], $list['itemListElement']),
+        );
+
+        $event = $this->event();
+        $trail = $this->jsonLd($this->get(route('events.show', $event))->assertOk()->getContent(), 'BreadcrumbList');
+
+        $this->assertSame(
+            [['Αρχική', route('home')], ['Αγώνες', route('events.index')], ['Ημιμαραθώνιος Ηρακλείου', route('events.show', $event)]],
+            array_map(fn (array $crumb) => [$crumb['name'], $crumb['item']], $trail['itemListElement']),
+        );
+        $this->assertSame([1, 2, 3], array_column($trail['itemListElement'], 'position'));
+    }
+
+    public function test_pages_without_fixed_copy_carry_no_structured_data(): void
+    {
+        $this->assertSame([], $this->jsonLdBlocks($this->get(route('login'))->getContent()));
     }
 }
