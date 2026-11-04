@@ -15,6 +15,17 @@ class SeoTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The length of a title depends on the site name appended to it, which
+     * differs between environments.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config(['app.name' => 'NextRace']);
+    }
+
     private function event(array $attributes = [], array $race = []): Event
     {
         return Event::factory()->withMainRace(['distance_meters' => 21100, 'starts_at' => '2027-04-18 09:30:00', ...$race])->create([
