@@ -519,4 +519,23 @@ class SeoTest extends TestCase
 
         $this->assertSame('Heraklion Half Marathon, 21.1 km in Heraklion on April 18, 2027. A fast course by the sea. 2 distances to choose from.', $description);
     }
+
+    public function test_a_not_found_page_names_no_canonical_and_no_alternates(): void
+    {
+        foreach (['/no-such-page', '/en/no-such-page', '/events/no-such-race?utm=1'] as $path) {
+            $html = $this->get($path)->assertNotFound()->getContent();
+
+            $this->assertStringNotContainsString('rel="canonical"', $html, $path);
+            $this->assertStringNotContainsString('hreflang=', $html, $path);
+        }
+    }
+
+    public function test_the_pages_that_exist_keep_their_canonical_and_alternates(): void
+    {
+        $html = $this->get(route('en.events.index'))->assertOk()->getContent();
+
+        $this->assertStringContainsString('<link rel="canonical" href="'.route('en.events.index').'">', $html);
+        $this->assertStringContainsString('hreflang="el" href="'.route('events.index').'"', $html);
+        $this->assertStringContainsString('hreflang="x-default"', $html);
+    }
 }
