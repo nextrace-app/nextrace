@@ -23,6 +23,7 @@ return [
 
     'event' => [
         'title' => ':name: αγώνας :distance, :city',
+        'title_short' => ':name: :distance',
         'description' => 'Ο αγώνας :name, :distance στην περιοχή :city (:country), στις :date.',
         'distances' => '{1} Μία απόσταση.|[2,*] :count αποστάσεις να διαλέξεις.',
         'description_with_details' => ':name, :distance, :city, :date. :details',

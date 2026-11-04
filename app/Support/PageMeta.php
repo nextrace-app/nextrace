@@ -65,16 +65,11 @@ class PageMeta
         $distance = $event->mainRace?->formattedDistance() ?? '';
         $date = $start->copy()->settings(['locale' => $locale])->isoFormat('LL');
         $country = Intl::getDisplayRegion("-{$event->country}", $locale) ?: $event->country;
-        $details = Str::of($event->translated('description', $locale))->squish()->limit(110, '…', true)->toString();
+        $details = Str::of($event->translated('description', $locale))->squish()->toString();
+        $replace = ['name' => $name, 'distance' => $distance, 'city' => $event->city, 'country' => $country, 'date' => $date];
 
-        $this->title = __('seo.event.title', ['name' => $name, 'distance' => $distance, 'city' => $event->city]);
-        $this->description = $details === ''
-            ? __('seo.event.description', ['name' => $name, 'distance' => $distance, 'city' => $event->city, 'country' => $country, 'date' => $date])
-            : __('seo.event.description_with_details', ['name' => $name, 'distance' => $distance, 'city' => $event->city, 'date' => $date, 'details' => $details]);
-
-        if ($event->races->count() > 1) {
-            $this->description .= ' '.trans_choice('seo.event.distances', $event->races->count(), ['count' => $event->races->count()]);
-        }
+        $this->title = $this->fitTitle($replace);
+        $this->description = $this->fitDescription($replace, $details, $event->races->count());
 
         $this->type = 'article';
         $this->image = $event->image_url;
@@ -88,6 +83,63 @@ class PageMeta
         ];
 
         return $this;
+    }
+
+    /**
+     * The longest title and description a search result shows before cutting them.
+     * The title is measured with the site name that the page appends to it.
+     */
+    public const TITLE_LIMIT = 60;
+
+    public const DESCRIPTION_LIMIT = 155;
+
+    /**
+     * The page title of an event, in the richest form that still fits.
+     *
+     * @param  array<string, string>  $replace
+     */
+    private function fitTitle(array $replace): string
+    {
+        $room = self::TITLE_LIMIT - mb_strlen(' - '.config()->string('app.name'));
+
+        foreach (['seo.event.title', 'seo.event.title_short'] as $key) {
+            $title = __($key, $replace);
+
+            if (mb_strlen($title) <= $room) {
+                return $title;
+            }
+        }
+
+        return Str::limit($replace['name'], $room, '…', true);
+    }
+
+    /**
+     * The description of an event: what the event is, then as much of its own
+     * text and of the count of its distances as fits.
+     *
+     * @param  array<string, string>  $replace
+     */
+    private function fitDescription(array $replace, string $details, int $races): string
+    {
+        $plain = __('seo.event.description', $replace);
+        $suffix = $races > 1 ? ' '.trans_choice('seo.event.distances', $races, ['count' => $races]) : '';
+
+        if ($details !== '') {
+            $lead = rtrim(__('seo.event.description_with_details', [...$replace, 'details' => '']));
+            $room = self::DESCRIPTION_LIMIT - mb_strlen($lead) - 1 - mb_strlen($suffix) - 1;
+
+            if ($room >= 20) {
+                return $lead.' '.Str::limit($details, $room, '…', true).$suffix;
+            }
+        }
+
+        foreach ([$plain.$suffix, $plain] as $description) {
+            if (mb_strlen($description) <= self::DESCRIPTION_LIMIT) {
+                return $description;
+            }
+        }
+
+        return Str::limit($plain, self::DESCRIPTION_LIMIT, '…', true);
     }
 
     /**

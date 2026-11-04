@@ -126,7 +126,7 @@ class SeoTest extends TestCase
         $html = $this->get(route('en.events.show', $event))->assertOk()->getContent();
         $url = route('en.events.show', $event);
 
-        $this->assertStringContainsString('<title>Heraklion Half Marathon: 21.1 km race in Heraklion - ', $html);
+        $this->assertStringContainsString('<title>Heraklion Half Marathon: 21.1 km - ', $html);
         $this->assertStringContainsString('<meta name="description" content="Heraklion Half Marathon, 21.1 km in Heraklion on April 18, 2027. A fast course by the sea.">', $html);
         $this->assertStringContainsString('<meta name="robots" content="index, follow">', $html);
         $this->assertStringContainsString("<link rel=\"canonical\" href=\"{$url}\">", $html);
@@ -163,7 +163,7 @@ class SeoTest extends TestCase
 
         $html = $this->get(route('events.show', $event))->assertOk()->getContent();
 
-        $this->assertStringContainsString('<title>Ημιμαραθώνιος Ηρακλείου: αγώνας 21.1 km, Heraklion - ', $html);
+        $this->assertStringContainsString('<title>Ημιμαραθώνιος Ηρακλείου: 21.1 km - ', $html);
         $this->assertStringContainsString('<meta property="og:locale" content="el_GR">', $html);
         $this->assertStringContainsString('<meta property="og:locale:alternate" content="en_US">', $html);
         $this->assertStringContainsString('<link rel="canonical" href="'.route('events.show', $event).'">', $html);
@@ -438,5 +438,74 @@ class SeoTest extends TestCase
     public function test_pages_without_fixed_copy_carry_no_structured_data(): void
     {
         $this->assertSame([], $this->jsonLdBlocks($this->get(route('login'))->getContent()));
+    }
+
+    /**
+     * @return array{title: string, description: string}
+     */
+    private function metaOf(Event $event, string $routeName = 'en.events.show'): array
+    {
+        $html = $this->get(route($routeName, $event))->assertOk()->getContent();
+
+        preg_match('#<title>(.*?)</title>#s', $html, $title);
+        preg_match('#<meta name="description" content="(.*?)">#s', $html, $description);
+
+        return ['title' => html_entity_decode($title[1]), 'description' => html_entity_decode($description[1])];
+    }
+
+    public function test_a_long_event_title_falls_back_to_the_short_form_and_then_to_the_name(): void
+    {
+        $short = $this->metaOf($this->event(['name' => ['en' => 'Heraklion Coastal Half Marathon', 'el' => 'Παράκτιος Ημιμαραθώνιος Ηρακλείου'], 'slug' => 'coastal']));
+
+        $this->assertStringStartsWith('Heraklion Coastal Half Marathon: 21.1 km - ', $short['title']);
+        $this->assertLessThanOrEqual(PageMeta::TITLE_LIMIT, mb_strlen($short['title']));
+
+        $name = $this->metaOf($this->event(['name' => ['en' => 'The Very Long Name of a Charity Mountain Trail Run in Crete', 'el' => 'Μακρύ'], 'slug' => 'long']));
+
+        $this->assertStringStartsWith('The Very Long Name of a Charity Mountain Trail…', $name['title']);
+        $this->assertLessThanOrEqual(PageMeta::TITLE_LIMIT, mb_strlen($name['title']));
+    }
+
+    public function test_a_title_that_fits_is_left_alone_in_both_languages(): void
+    {
+        $event = $this->event(['name' => ['en' => 'Crete Run', 'el' => 'Δρόμος Κρήτης']]);
+
+        $this->assertStringStartsWith('Crete Run: 21.1 km race in Heraklion - ', $this->metaOf($event)['title']);
+        $this->assertStringStartsWith('Δρόμος Κρήτης: αγώνας 21.1 km, Heraklion - ', $this->metaOf($event, 'events.show')['title']);
+    }
+
+    public function test_a_long_description_is_cut_so_the_distances_still_fit(): void
+    {
+        $event = $this->event(['description' => ['en' => str_repeat('A scenic course along the north coast. ', 10), 'el' => 'x']]);
+        Race::factory()->for($event)->create(['distance_meters' => 10000, 'starts_at' => '2027-04-18 10:30:00']);
+
+        $description = $this->metaOf($event)['description'];
+
+        $this->assertLessThanOrEqual(PageMeta::DESCRIPTION_LIMIT, mb_strlen($description));
+        $this->assertStringContainsString('…', $description);
+        $this->assertStringEndsWith('2 distances to choose from.', $description);
+    }
+
+    public function test_the_description_drops_the_details_and_the_distances_when_the_name_leaves_no_room(): void
+    {
+        $name = str_repeat('Extraordinarily Long Race Name ', 4);
+        $event = $this->event(['name' => ['en' => $name, 'el' => 'x'], 'slug' => 'tight']);
+        Race::factory()->for($event)->create(['distance_meters' => 10000, 'starts_at' => '2027-04-18 10:30:00']);
+
+        $description = $this->metaOf($event)['description'];
+
+        $this->assertLessThanOrEqual(PageMeta::DESCRIPTION_LIMIT, mb_strlen($description));
+        $this->assertStringNotContainsString('scenic', $description);
+        $this->assertStringNotContainsString('distances to choose from', $description);
+    }
+
+    public function test_a_short_description_keeps_everything(): void
+    {
+        $event = $this->event();
+        Race::factory()->for($event)->create(['distance_meters' => 10000, 'starts_at' => '2027-04-18 10:30:00']);
+
+        $description = $this->metaOf($event)['description'];
+
+        $this->assertSame('Heraklion Half Marathon, 21.1 km in Heraklion on April 18, 2027. A fast course by the sea. 2 distances to choose from.', $description);
     }
 }
