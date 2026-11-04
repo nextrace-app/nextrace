@@ -12,6 +12,8 @@ import type { Event } from '@/types';
 const props = defineProps<{
     event: Event;
     favorited: boolean;
+    /** The heading level of the title, one below the heading of its section. */
+    headingLevel?: 2 | 3;
 }>();
 
 const { t } = useI18n();
@@ -98,7 +100,8 @@ const statusLabel = computed(() =>
             data-testid="event-card__body"
         >
             <div class="min-w-0">
-                <h3
+                <component
+                    :is="`h${headingLevel ?? 3}`"
                     class="text-lg leading-snug font-bold"
                     data-testid="event-card__title"
                 >
@@ -109,7 +112,7 @@ const statusLabel = computed(() =>
                     >
                         {{ event.name }}
                     </Link>
-                </h3>
+                </component>
                 <ul
                     class="mt-1.5 space-y-0.5 text-sm text-muted-foreground"
                     data-testid="event-card__details"

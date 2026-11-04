@@ -654,173 +654,165 @@ const hasContact = computed(
                         <dl class="grid gap-x-6 gap-y-4 text-sm sm:grid-cols-2">
                             <div
                                 v-if="event.organizer"
-                                class="flex gap-2"
                                 data-testid="event-page__organizer"
                             >
-                                <Building2
-                                    class="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                                    aria-hidden="true"
-                                />
-                                <div>
-                                    <dt class="text-muted-foreground">
-                                        {{ t('events.facts.organizer') }}
-                                    </dt>
-                                    <dd>
-                                        <a
-                                            v-if="event.organizer.website"
-                                            :href="event.organizer.website"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            class="underline-offset-4 hover:underline"
-                                            >{{ event.organizer.name }}</a
-                                        >
-                                        <template v-else>{{
-                                            event.organizer.name
-                                        }}</template>
-                                    </dd>
-                                </div>
+                                <dt
+                                    class="flex items-center gap-2 text-muted-foreground"
+                                >
+                                    <Building2
+                                        class="size-4 shrink-0"
+                                        aria-hidden="true"
+                                    />
+                                    {{ t('events.facts.organizer') }}
+                                </dt>
+                                <dd class="pl-6">
+                                    <a
+                                        v-if="event.organizer.website"
+                                        :href="event.organizer.website"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="underline-offset-4 hover:underline"
+                                        >{{ event.organizer.name }}</a
+                                    >
+                                    <template v-else>{{
+                                        event.organizer.name
+                                    }}</template>
+                                </dd>
                             </div>
                             <div
                                 v-if="event.venue"
-                                class="flex gap-2"
                                 data-testid="event-page__venue"
                             >
-                                <MapPin
-                                    class="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                                    aria-hidden="true"
-                                />
-                                <div>
-                                    <dt class="text-muted-foreground">
-                                        {{ t('events.facts.venue') }}
-                                    </dt>
-                                    <dd>{{ event.venue }}</dd>
-                                </div>
+                                <dt
+                                    class="flex items-center gap-2 text-muted-foreground"
+                                >
+                                    <MapPin
+                                        class="size-4 shrink-0"
+                                        aria-hidden="true"
+                                    />
+                                    {{ t('events.facts.venue') }}
+                                </dt>
+                                <dd class="pl-6">{{ event.venue }}</dd>
                             </div>
                             <div
                                 v-if="event.region"
-                                class="flex gap-2"
                                 data-testid="event-page__region"
                             >
-                                <Flag
-                                    class="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                                    aria-hidden="true"
-                                />
-                                <div>
-                                    <dt class="text-muted-foreground">
-                                        {{ t('events.facts.region') }}
-                                    </dt>
-                                    <dd>{{ event.region.name }}</dd>
-                                </div>
+                                <dt
+                                    class="flex items-center gap-2 text-muted-foreground"
+                                >
+                                    <Flag
+                                        class="size-4 shrink-0"
+                                        aria-hidden="true"
+                                    />
+                                    {{ t('events.facts.region') }}
+                                </dt>
+                                <dd class="pl-6">{{ event.region.name }}</dd>
                             </div>
                             <div
                                 v-if="event.series"
-                                class="flex gap-2"
                                 data-testid="event-page__series"
                             >
-                                <Trophy
-                                    class="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                                    aria-hidden="true"
-                                />
-                                <div>
-                                    <dt class="text-muted-foreground">
-                                        {{ t('events.facts.series') }}
-                                    </dt>
-                                    <dd>
-                                        {{ event.series.name }}
-                                        <template v-if="event.edition_number">
-                                            &middot;
-                                            {{
-                                                t('events.facts.edition', {
-                                                    number: event.edition_number,
-                                                })
-                                            }}
-                                        </template>
-                                    </dd>
-                                </div>
-                            </div>
-                            <div
-                                class="flex gap-2"
-                                data-testid="event-page__registration"
-                            >
-                                <Ticket
-                                    class="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                                    aria-hidden="true"
-                                />
-                                <div>
-                                    <dt class="text-muted-foreground">
-                                        {{ t('events.facts.registration') }}
-                                    </dt>
-                                    <dd>
+                                <dt
+                                    class="flex items-center gap-2 text-muted-foreground"
+                                >
+                                    <Trophy
+                                        class="size-4 shrink-0"
+                                        aria-hidden="true"
+                                    />
+                                    {{ t('events.facts.series') }}
+                                </dt>
+                                <dd class="pl-6">
+                                    {{ event.series.name }}
+                                    <template v-if="event.edition_number">
+                                        &middot;
                                         {{
-                                            t(
-                                                `events.registration_status.${event.registration.status}`,
-                                            )
+                                            t('events.facts.edition', {
+                                                number: event.edition_number,
+                                            })
                                         }}
-                                        <span
-                                            v-if="event.registration.opens_at"
-                                            class="block text-muted-foreground"
-                                            >{{
-                                                t(
-                                                    'events.facts.registration_opens',
-                                                    {
-                                                        date: registrationDate(
-                                                            event.registration
-                                                                .opens_at,
-                                                        ),
-                                                    },
-                                                )
-                                            }}</span
-                                        >
-                                        <span
-                                            v-if="event.registration.closes_at"
-                                            class="block text-muted-foreground"
-                                            >{{
-                                                t(
-                                                    'events.facts.registration_closes',
-                                                    {
-                                                        date: registrationDate(
-                                                            event.registration
-                                                                .closes_at,
-                                                        ),
-                                                    },
-                                                )
-                                            }}</span
-                                        >
-                                    </dd>
-                                </div>
+                                    </template>
+                                </dd>
+                            </div>
+                            <div data-testid="event-page__registration">
+                                <dt
+                                    class="flex items-center gap-2 text-muted-foreground"
+                                >
+                                    <Ticket
+                                        class="size-4 shrink-0"
+                                        aria-hidden="true"
+                                    />
+                                    {{ t('events.facts.registration') }}
+                                </dt>
+                                <dd class="pl-6">
+                                    {{
+                                        t(
+                                            `events.registration_status.${event.registration.status}`,
+                                        )
+                                    }}
+                                    <span
+                                        v-if="event.registration.opens_at"
+                                        class="block text-muted-foreground"
+                                        >{{
+                                            t(
+                                                'events.facts.registration_opens',
+                                                {
+                                                    date: registrationDate(
+                                                        event.registration
+                                                            .opens_at,
+                                                    ),
+                                                },
+                                            )
+                                        }}</span
+                                    >
+                                    <span
+                                        v-if="event.registration.closes_at"
+                                        class="block text-muted-foreground"
+                                        >{{
+                                            t(
+                                                'events.facts.registration_closes',
+                                                {
+                                                    date: registrationDate(
+                                                        event.registration
+                                                            .closes_at,
+                                                    ),
+                                                },
+                                            )
+                                        }}</span
+                                    >
+                                </dd>
                             </div>
                             <div
                                 v-if="hasContact"
-                                class="flex gap-2"
                                 data-testid="event-page__contact"
                             >
-                                <Mail
-                                    class="mt-0.5 size-4 shrink-0 text-muted-foreground"
-                                    aria-hidden="true"
-                                />
-                                <div class="min-w-0">
-                                    <dt class="text-muted-foreground">
-                                        {{ t('events.facts.contact') }}
-                                    </dt>
-                                    <dd class="break-words">
-                                        <a
-                                            v-if="event.contact.email"
-                                            :href="`mailto:${event.contact.email}`"
-                                            class="block underline-offset-4 hover:underline"
-                                            >{{ event.contact.email }}</a
-                                        >
-                                        <a
-                                            v-if="event.contact.phone"
-                                            :href="`tel:${event.contact.phone.replace(/\s+/g, '')}`"
-                                            class="flex items-center gap-1 underline-offset-4 hover:underline"
-                                        >
-                                            <Phone
-                                                class="size-3"
-                                                aria-hidden="true"
-                                            />{{ event.contact.phone }}</a
-                                        >
-                                    </dd>
-                                </div>
+                                <dt
+                                    class="flex items-center gap-2 text-muted-foreground"
+                                >
+                                    <Mail
+                                        class="size-4 shrink-0"
+                                        aria-hidden="true"
+                                    />
+                                    {{ t('events.facts.contact') }}
+                                </dt>
+                                <dd class="pl-6 break-words">
+                                    <a
+                                        v-if="event.contact.email"
+                                        :href="`mailto:${event.contact.email}`"
+                                        class="block underline-offset-4 hover:underline"
+                                        >{{ event.contact.email }}</a
+                                    >
+                                    <a
+                                        v-if="event.contact.phone"
+                                        :href="`tel:${event.contact.phone.replace(/\s+/g, '')}`"
+                                        class="flex items-center gap-1 underline-offset-4 hover:underline"
+                                    >
+                                        <Phone
+                                            class="size-3"
+                                            aria-hidden="true"
+                                        />{{ event.contact.phone }}</a
+                                    >
+                                </dd>
                             </div>
                         </dl>
 
