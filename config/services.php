@@ -34,6 +34,15 @@ return [
         'redirect' => '/auth/google/callback',
     ],
 
+    /*
+    | Umami web analytics (cookieless). The tracking script is only added to
+    | the page when a website id is set, so local and test runs send nothing.
+    */
+    'umami' => [
+        'script_url' => env('UMAMI_SCRIPT_URL', 'https://cloud.umami.is/script.js'),
+        'website_id' => env('UMAMI_WEBSITE_ID'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
