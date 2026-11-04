@@ -97,7 +97,7 @@ class PageMeta
             'description' => $this->description ?? ($key ? Lang::string("seo.{$key}.description") : Lang::string('seo.default_description')),
             'type' => $this->type,
             'image' => $this->image,
-            'robots' => ! config()->boolean('site.indexable') || $this->isPrivate() ? 'noindex, nofollow' : 'index, follow',
+            'robots' => $this->robots(),
             'locale' => $this->openGraphLocale($locale),
             'localeAlternates' => array_values(array_map(
                 fn (string $other) => $this->openGraphLocale($other),
@@ -158,6 +158,25 @@ class PageMeta
             'events.index' => 'events',
             default => null,
         };
+    }
+
+    /**
+     * The robots directive: closed and account pages stay out of search results
+     * entirely, and so do search results of the events list, whose number is
+     * unbounded, though the events they link to may still be followed.
+     */
+    private function robots(): string
+    {
+        if (! config()->boolean('site.indexable') || $this->isPrivate()) {
+            return 'noindex, nofollow';
+        }
+
+        return $this->isEventSearch() ? 'noindex, follow' : 'index, follow';
+    }
+
+    private function isEventSearch(): bool
+    {
+        return Locale::unprefixedPath(request()) === '/events' && trim((string) request()->query('q')) !== '';
     }
 
     private function isPrivate(): bool

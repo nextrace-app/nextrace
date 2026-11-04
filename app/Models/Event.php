@@ -227,6 +227,51 @@ class Event extends Model
     }
 
     /**
+     * Restrict the query to the events with a race in the given distance class
+     * of the events list filter, where 'kids_other' stands for every race that
+     * is not one of the named classes.
+     *
+     * @param  Builder<Event>  $query
+     */
+    #[Scope]
+    protected function withDistanceFilter(Builder $query, string $filter): void
+    {
+        $named = ['5k', '10k', 'half_marathon', 'marathon', 'ultra'];
+
+        $query->whereHas('races', function (Builder $races) use ($filter, $named): void {
+            if ($filter === 'kids_other') {
+                $races->where(fn (Builder $other) => $other->whereNull('distance_class')->orWhereNotIn('distance_class', $named));
+
+                return;
+            }
+
+            $races->where('distance_class', $filter);
+        });
+    }
+
+    /**
+     * Restrict the query to the events whose name, in the current language, or
+     * city contains the given text.
+     *
+     * @param  Builder<Event>  $query
+     */
+    #[Scope]
+    protected function matching(Builder $query, string $text): void
+    {
+        $like = '%'.addcslashes(mb_strtolower($text), '\\%_').'%';
+        $locale = app()->getLocale();
+        $fallback = config('app.fallback_locale');
+
+        // JSON_UNQUOTE hands back a binary-collated string, which a plain LIKE
+        // would match case-sensitively, so both sides are lowercased.
+        $query->where(function (Builder $match) use ($like, $locale, $fallback): void {
+            $match->whereRaw('lower(json_unquote(json_extract(events.name, ?))) like ?', ["$.\"{$locale}\"", $like])
+                ->orWhereRaw('lower(json_unquote(json_extract(events.name, ?))) like ?', ["$.\"{$fallback}\"", $like])
+                ->orWhere('events.city', 'like', $like);
+        });
+    }
+
+    /**
      * Order by the day of the event, then by the start of its main race.
      *
      * @param  Builder<Event>  $query
