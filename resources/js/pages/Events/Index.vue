@@ -83,6 +83,7 @@ function scrollToList() {
                         v-for="event in events"
                         :key="event.id"
                         :event="event"
+                        :heading-level="2"
                         :favorited="favorites.includes(event.id)"
                     />
                 </div>
