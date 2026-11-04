@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Event;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -112,7 +113,11 @@ class LocaleRoutingTest extends TestCase
 
     public function test_alternate_links_keep_the_query_string(): void
     {
+        config(['events.per_page' => 1]);
+        Event::factory()->count(2)->create();
+
         $this->get('/en/events?page=2')
+            ->assertOk()
             ->assertSee('hreflang="el" href="'.url('/events?page=2').'"', false)
             ->assertSee('<link rel="canonical" href="'.url('/en/events?page=2').'">', false);
     }

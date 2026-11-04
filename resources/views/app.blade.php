@@ -12,12 +12,16 @@
         </style>
 
         {{-- Every language this page exists in, so search engines serve the
-             right one and do not read them as duplicate content. --}}
-        <link rel="canonical" href="{{ $localeAlternates[app()->getLocale()] }}">
-        @foreach ($localeAlternates as $alternateLocale => $alternateUrl)
-            <link rel="alternate" hreflang="{{ $alternateLocale }}" href="{{ $alternateUrl }}">
-        @endforeach
-        <link rel="alternate" hreflang="x-default" href="{{ $localeAlternates[$defaultLocale] }}">
+             right one and do not read them as duplicate content. An error page
+             is not a page of the site: its address names no content, so it
+             carries neither a canonical nor alternates. --}}
+        @unless ($page['component'] === 'Error')
+            <link rel="canonical" href="{{ $localeAlternates[app()->getLocale()] }}">
+            @foreach ($localeAlternates as $alternateLocale => $alternateUrl)
+                <link rel="alternate" hreflang="{{ $alternateLocale }}" href="{{ $alternateUrl }}">
+            @endforeach
+            <link rel="alternate" hreflang="x-default" href="{{ $localeAlternates[$defaultLocale] }}">
+        @endunless
 
         @include('partials.seo')
 
