@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             RegionSeeder::class,
             EventSeeder::class,
+            PostSeeder::class,
         ]);
     }
 }
