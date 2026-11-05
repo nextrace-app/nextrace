@@ -10,14 +10,17 @@
 @foreach ($seo['localeAlternates'] as $alternateOgLocale)
     <meta property="og:locale:alternate" content="{{ $alternateOgLocale }}">
 @endforeach
-@if ($seo['image'])
-    <meta property="og:image" content="{{ $seo['image'] }}">
+{{-- An error page is not a page of the site, so it has no picture to share. --}}
+@php($shareImage = $page['component'] === 'Error' ? null : $seo['image'])
+@if ($shareImage)
+    <meta property="og:image" content="{{ $shareImage }}">
 @endif
-<meta name="twitter:card" content="{{ $seo['twitterCard'] }}">
+<meta name="theme-color" content="{{ $seo['themeColor'] }}">
+<meta name="twitter:card" content="{{ $shareImage ? $seo['twitterCard'] : 'summary' }}">
 <meta name="twitter:title" content="{{ $seo['title'] ?? $seo['siteName'] }}">
 <meta name="twitter:description" content="{{ $seo['description'] }}">
-@if ($seo['image'])
-    <meta name="twitter:image" content="{{ $seo['image'] }}">
+@if ($shareImage)
+    <meta name="twitter:image" content="{{ $shareImage }}">
 @endif
 @foreach ($seo['jsonLd'] as $jsonLd)
     <script type="application/ld+json">{!! $jsonLd !!}</script>

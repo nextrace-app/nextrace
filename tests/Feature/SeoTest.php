@@ -206,8 +206,8 @@ class SeoTest extends TestCase
         $this->assertArrayNotHasKey('image', $data);
         $this->assertArrayNotHasKey('offers', $data);
         $this->assertStringContainsString('<meta name="description" content="Heraklion Half Marathon is a 21.1 km running race in Heraklion, Greece, on April 18, 2027.">', $html);
-        $this->assertStringContainsString('<meta name="twitter:card" content="summary">', $html);
-        $this->assertStringNotContainsString('og:image', $html);
+        $this->assertStringContainsString('<meta name="twitter:card" content="summary_large_image">', $html);
+        $this->assertStringContainsString('<meta property="og:image" content="'.asset(PageMeta::DEFAULT_IMAGE).'">', $html);
     }
 
     public function test_summer_start_times_use_the_daylight_saving_offset_and_json_is_escaped(): void
@@ -537,5 +537,48 @@ class SeoTest extends TestCase
         $this->assertStringContainsString('<link rel="canonical" href="'.route('en.events.index').'">', $html);
         $this->assertStringContainsString('hreflang="el" href="'.route('events.index').'"', $html);
         $this->assertStringContainsString('hreflang="x-default"', $html);
+    }
+
+    public function test_every_page_carries_the_theme_color_and_a_share_image(): void
+    {
+        $image = asset(PageMeta::DEFAULT_IMAGE);
+
+        foreach ([route('home'), route('en.home'), route('events.index'), route('en.events.index')] as $url) {
+            $this->get($url)->assertOk()
+                ->assertSee('<meta name="theme-color" content="#f6f4ee">', false)
+                ->assertSee('<meta property="og:image" content="'.$image.'">', false)
+                ->assertSee('<meta name="twitter:image" content="'.$image.'">', false)
+                ->assertSee('<meta name="twitter:card" content="summary_large_image">', false);
+        }
+    }
+
+    public function test_the_default_share_image_is_a_real_1200_by_630_picture(): void
+    {
+        $path = public_path(PageMeta::DEFAULT_IMAGE);
+
+        $this->assertFileExists($path);
+        $this->assertSame([1200, 630], array_slice(getimagesize($path), 0, 2));
+        $this->assertStringStartsWith('http', asset(PageMeta::DEFAULT_IMAGE));
+    }
+
+    public function test_an_event_with_its_own_picture_shares_that_one(): void
+    {
+        $event = $this->event(['image_url' => 'https://example.com/own.jpg']);
+
+        $this->get(route('en.events.show', $event))->assertOk()
+            ->assertSee('<meta property="og:image" content="https://example.com/own.jpg">', false)
+            ->assertDontSee(PageMeta::DEFAULT_IMAGE, false);
+    }
+
+    public function test_an_error_page_has_the_theme_color_but_nothing_to_share(): void
+    {
+        foreach (['/no-such-page', '/en/no-such-page'] as $path) {
+            $html = $this->get($path)->assertNotFound()->getContent();
+
+            $this->assertStringContainsString('<meta name="theme-color" content="#f6f4ee">', $html, $path);
+            $this->assertStringNotContainsString('og:image', $html, $path);
+            $this->assertStringNotContainsString('twitter:image', $html, $path);
+            $this->assertStringContainsString('<meta name="twitter:card" content="summary">', $html, $path);
+        }
     }
 }
