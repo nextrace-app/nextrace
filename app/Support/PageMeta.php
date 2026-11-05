@@ -49,6 +49,14 @@ class PageMeta
 
     private string $type = 'website';
 
+    /**
+     * The picture every page shares when it has none of its own, relative to
+     * the public directory; see the "Share image" page of the Figma file.
+     */
+    public const THEME_COLOR = '#f6f4ee';
+
+    public const DEFAULT_IMAGE = 'images/share-default.png';
+
     private ?string $image = null;
 
     /** @var list<array<string, mixed>> */
@@ -145,7 +153,7 @@ class PageMeta
     /**
      * Everything the root template needs, with defaults for pages that set nothing.
      *
-     * @return array{title: string|null, description: string, type: string, image: string|null, robots: string, locale: string, localeAlternates: list<string>, siteName: string, twitterCard: string, jsonLd: list<string>}
+     * @return array{title: string|null, description: string, type: string, image: string, themeColor: string, robots: string, locale: string, localeAlternates: list<string>, siteName: string, twitterCard: string, jsonLd: list<string>}
      */
     public function toArray(): array
     {
@@ -156,7 +164,8 @@ class PageMeta
             'title' => $this->title ?? ($key ? Lang::string("seo.{$key}.title") : null),
             'description' => $this->description ?? ($key ? Lang::string("seo.{$key}.description") : Lang::string('seo.default_description')),
             'type' => $this->type,
-            'image' => $this->image,
+            'image' => $this->image ?? asset(self::DEFAULT_IMAGE),
+            'themeColor' => self::THEME_COLOR,
             'robots' => $this->robots(),
             'locale' => $this->openGraphLocale($locale),
             'localeAlternates' => array_values(array_map(
@@ -164,7 +173,7 @@ class PageMeta
                 array_diff(config()->array('app.supported_locales'), [$locale]),
             )),
             'siteName' => config()->string('app.name'),
-            'twitterCard' => $this->image ? 'summary_large_image' : 'summary',
+            'twitterCard' => 'summary_large_image',
             'jsonLd' => array_map(self::encode(...), $this->jsonLd ?: $this->pageJsonLd()),
         ];
     }
