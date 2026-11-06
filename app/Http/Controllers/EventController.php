@@ -19,9 +19,9 @@ class EventController extends Controller
      *
      * @var list<string>
      */
-    private const DISTANCE_FILTERS = ['5k', '10k', 'half_marathon', 'marathon', 'ultra', 'kids_other'];
+    public const DISTANCE_FILTERS = ['5k', '10k', 'half_marathon', 'marathon', 'ultra', 'kids_other'];
 
-    private const MAX_SEARCH_LENGTH = 100;
+    public const MAX_SEARCH_LENGTH = 100;
 
     /**
      * One page of the published events that are not over yet, the one coming up first.
