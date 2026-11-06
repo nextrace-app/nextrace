@@ -5,8 +5,11 @@ namespace App\Providers;
 use App\Support\Locale;
 use App\Support\PageMeta;
 use Carbon\CarbonImmutable;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -29,6 +32,15 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         $this->configureLocaleAlternates();
+        $this->configureRateLimiting();
+    }
+
+    /**
+     * Limit the API per token, and per address for requests that carry none.
+     */
+    protected function configureRateLimiting(): void
+    {
+        RateLimiter::for('api', fn (Request $request) => Limit::perMinute(60)->by($request->bearerToken() !== null ? hash('sha256', $request->bearerToken()) : $request->ip()));
     }
 
     /**
