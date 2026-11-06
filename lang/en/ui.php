@@ -108,12 +108,6 @@ return [
             'all' => 'All',
             'reset' => 'Clear filters',
         ],
-        'pagination' => [
-            'label' => 'Pagination',
-            'previous' => 'Previous page',
-            'next' => 'Next page',
-            'page' => 'Page {number}',
-        ],
         'index' => [
             'title' => 'Upcoming races',
             'subtitle' => 'Running events across all of Greece.',
@@ -229,6 +223,13 @@ return [
         ],
     ],
 
+    'pagination' => [
+        'label' => 'Pagination',
+        'previous' => 'Previous page',
+        'next' => 'Next page',
+        'page' => 'Page {number}',
+    ],
+
     'posts' => [
         'title' => 'Posts',
         'empty' => 'There are no posts yet. Check back soon.',
@@ -240,12 +241,6 @@ return [
             'guide' => 'Guide',
             'results' => 'Results',
             'interview' => 'Interview',
-        ],
-        'pagination' => [
-            'label' => 'Pagination',
-            'previous' => 'Previous',
-            'next' => 'Next',
-            'status' => 'Page {current} of {last}',
         ],
     ],
 
