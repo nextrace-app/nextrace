@@ -25,6 +25,7 @@ import { useLocale } from '@/composables/useLocale';
 import { home, login, logout } from '@/routes';
 import { index as events } from '@/routes/events';
 import { index as favorites } from '@/routes/favorites';
+import { index as posts } from '@/routes/posts';
 import { show as profile } from '@/routes/profile';
 
 const { t } = useI18n();
@@ -373,6 +374,18 @@ const menuRow =
                                 />
                             </Link>
                         </nav>
+
+                        <Link
+                            :href="localeRoute(posts())"
+                            data-testid="site-header__menu-posts"
+                            :class="[menuRow, 'border-t']"
+                        >
+                            {{ t('nav.posts') }}
+                            <ChevronRight
+                                class="size-4 text-muted-foreground"
+                                aria-hidden="true"
+                            />
+                        </Link>
 
                         <div
                             class="mt-auto flex justify-end border-t px-6 py-4"

@@ -18,6 +18,7 @@ return [
         'login' => 'Log in',
         'register' => 'Register',
         'events' => 'Events',
+        'posts' => 'Posts',
         'races' => 'Races',
         'all_races' => 'All races',
         'search' => 'Search',
@@ -225,6 +226,26 @@ return [
             'remove' => 'Remove from favorites',
             'add_named' => 'Add {name} to favorites',
             'remove_named' => 'Remove {name} from favorites',
+        ],
+    ],
+
+    'posts' => [
+        'title' => 'Posts',
+        'empty' => 'There are no posts yet. Check back soon.',
+        'browse_events' => 'Browse events',
+        'back' => 'Back to posts',
+        'source' => 'Source:',
+        'categories' => [
+            'news' => 'News',
+            'guide' => 'Guide',
+            'results' => 'Results',
+            'interview' => 'Interview',
+        ],
+        'pagination' => [
+            'label' => 'Pagination',
+            'previous' => 'Previous',
+            'next' => 'Next',
+            'status' => 'Page {current} of {last}',
         ],
     ],
 
