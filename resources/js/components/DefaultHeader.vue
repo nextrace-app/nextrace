@@ -121,6 +121,19 @@ const menuRow =
             >
                 {{ t('nav.races') }}
             </Link>
+            <Link
+                :href="localeRoute(posts())"
+                :class="[
+                    pill,
+                    'max-lg:hidden',
+                    isCurrentOrParentUrl(localeRoute(posts()))
+                        ? 'bg-secondary text-foreground'
+                        : 'text-foreground',
+                ]"
+                data-testid="site-header__posts"
+            >
+                {{ t('nav.posts') }}
+            </Link>
 
             <div
                 class="ml-auto flex items-center gap-1.5 lg:gap-2"

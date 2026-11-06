@@ -44,7 +44,7 @@ function scrollToList() {
 </script>
 
 <template>
-    <Head :title="seo.title ?? t('nav.events')" />
+    <Head :title="seo.title ?? t('nav.races')" />
 
     <DefaultShell flush>
         <main
