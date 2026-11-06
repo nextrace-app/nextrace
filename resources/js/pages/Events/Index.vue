@@ -99,6 +99,7 @@ function scrollToList() {
                         type="button"
                         variant="outline"
                         size="icon"
+                        class="size-11 lg:size-9"
                         disabled
                         data-testid="events-page__pagination-previous"
                         :aria-label="t('events.pagination.previous')"
@@ -110,6 +111,7 @@ function scrollToList() {
                         as-child
                         variant="outline"
                         size="icon"
+                        class="size-11 lg:size-9"
                         data-testid="events-page__pagination-previous"
                     >
                         <Link
@@ -132,6 +134,7 @@ function scrollToList() {
                                 : 'outline'
                         "
                         size="icon"
+                        class="size-11 lg:size-9"
                         data-testid="events-page__pagination-page"
                     >
                         <Link
@@ -155,6 +158,7 @@ function scrollToList() {
                         type="button"
                         variant="outline"
                         size="icon"
+                        class="size-11 lg:size-9"
                         disabled
                         data-testid="events-page__pagination-next"
                         :aria-label="t('events.pagination.next')"
@@ -166,6 +170,7 @@ function scrollToList() {
                         as-child
                         variant="outline"
                         size="icon"
+                        class="size-11 lg:size-9"
                         data-testid="events-page__pagination-next"
                     >
                         <Link
