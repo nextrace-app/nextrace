@@ -3,12 +3,16 @@ import { Link } from '@inertiajs/vue3';
 import { useI18n } from 'vue-i18n';
 import { useLocale } from '@/composables/useLocale';
 import { index as events } from '@/routes/events';
+import { index as posts } from '@/routes/posts';
 
 const { t } = useI18n();
 const { localeRoute } = useLocale();
 const year = new Date().getFullYear();
 
-const links = [{ key: 'events', route: events() }];
+const links = [
+    { key: 'events', route: events() },
+    { key: 'posts', route: posts() },
+];
 
 const linkClass =
     'rounded-lg py-2 font-bold text-foreground underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50';
