@@ -38,11 +38,11 @@ class TranslationTest extends TestCase
     public function test_interface_translations_are_shared_with_the_frontend(): void
     {
         $this->get(route('home'))->assertInertia(
-            fn ($page) => $page->where('translations.nav.events', 'Εκδηλώσεις')
+            fn ($page) => $page->where('translations.nav.races', 'Αγώνες')
         );
 
         $this->get(route('en.home'))->assertInertia(
-            fn ($page) => $page->where('translations.nav.events', 'Events')
+            fn ($page) => $page->where('translations.nav.races', 'Races')
         );
     }
 

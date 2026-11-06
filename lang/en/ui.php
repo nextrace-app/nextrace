@@ -17,7 +17,6 @@ return [
         'dashboard' => 'Dashboard',
         'login' => 'Log in',
         'register' => 'Register',
-        'events' => 'Events',
         'posts' => 'Posts',
         'races' => 'Races',
         'all_races' => 'All races',
@@ -73,7 +72,6 @@ return [
         'tagline' => 'Running races across all of Greece.',
         'disclaimer' => 'Dates are collected from organisers. Always confirm on the official site before you travel.',
         'copyright' => '© {year} Nextrace',
-        'browse' => 'Browse',
     ],
 
     'events' => [
