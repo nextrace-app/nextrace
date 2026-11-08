@@ -308,4 +308,69 @@ class AdminEventTest extends TestCase
             ->get(route('admin.events.edit', $event))
             ->assertInertia(fn (Assert $page) => $page->has('record.races', 1)->where('record.races.0.is_main', true)->has('record.links', 0)->has('raceOptions.disciplines'));
     }
+
+    public function test_the_details_of_a_race_are_saved_and_come_back_to_the_form(): void
+    {
+        $admin = $this->admin();
+
+        $this->actingAs($admin)->post(route('admin.events.store'), $this->payload([
+            'races' => [$this->racePayload([
+                'start_location' => ['el' => 'Μαραθώνας', 'en' => 'Marathon'],
+                'finish_location' => ['el' => '', 'en' => 'Panathenaic Stadium'],
+                'time_limit_minutes' => 480,
+                'min_age' => 20,
+                'participant_limit' => 20000,
+                'aid_stations' => 15,
+                'medical_certificate_required' => true,
+                'route_url' => 'https://example.com/route',
+            ])],
+        ]))->assertRedirect();
+
+        $race = Event::query()->where('slug', 'night-run')->firstOrFail()->races->first();
+
+        $this->assertSame(['el' => 'Μαραθώνας', 'en' => 'Marathon'], $race->start_location);
+        $this->assertSame(['en' => 'Panathenaic Stadium'], $race->finish_location);
+        $this->assertSame(480, $race->time_limit_minutes);
+        $this->assertSame(20, $race->min_age);
+        $this->assertSame(20000, $race->participant_limit);
+        $this->assertSame(15, $race->aid_stations);
+        $this->assertTrue($race->medical_certificate_required);
+        $this->assertSame('https://example.com/route', $race->route_url);
+
+        $this->actingAs($admin)
+            ->get(route('admin.events.edit', $race->event))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('record.races.0.aid_stations', 15)
+                ->where('record.races.0.medical_certificate_required', true)
+                ->where('record.races.0.start_location', ['el' => 'Μαραθώνας', 'en' => 'Marathon']));
+    }
+
+    public function test_empty_race_details_are_stored_as_null(): void
+    {
+        $this->actingAs($this->admin())->post(route('admin.events.store'), $this->payload([
+            'races' => [$this->racePayload([
+                'start_location' => ['el' => '', 'en' => ''],
+                'aid_stations' => null,
+                'medical_certificate_required' => null,
+            ])],
+        ]))->assertRedirect();
+
+        $race = Event::query()->where('slug', 'night-run')->firstOrFail()->races->first();
+
+        $this->assertNull($race->start_location);
+        $this->assertNull($race->aid_stations);
+        $this->assertNull($race->medical_certificate_required);
+    }
+
+    public function test_race_details_are_validated(): void
+    {
+        $this->actingAs($this->admin())->post(route('admin.events.store'), $this->payload([
+            'races' => [$this->racePayload([
+                'time_limit_minutes' => 0,
+                'min_age' => 200,
+                'aid_stations' => -1,
+                'route_url' => 'javascript:alert(1)',
+            ])],
+        ]))->assertSessionHasErrors(['races.0.time_limit_minutes', 'races.0.min_age', 'races.0.aid_stations', 'races.0.route_url']);
+    }
 }

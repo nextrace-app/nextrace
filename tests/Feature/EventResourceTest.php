@@ -181,4 +181,17 @@ class EventResourceTest extends TestCase
 
         $this->assertSame(['from' => '2027-05-01', 'to' => '2027-05-03'], $this->resolve($event)['dates']);
     }
+
+    public function test_a_race_follows_the_event_on_the_medical_certificate_unless_it_says_otherwise(): void
+    {
+        $event = Event::factory()->create(['medical_certificate_required' => true]);
+        Race::factory()->for($event)->create(['medical_certificate_required' => false, 'aid_stations' => 3, 'sort_order' => 1]);
+
+        $races = $this->resolve($event)['races'];
+
+        $this->assertTrue($races[0]['medical_certificate_required']);
+        $this->assertNull($races[0]['aid_stations']);
+        $this->assertFalse($races[1]['medical_certificate_required']);
+        $this->assertSame(3, $races[1]['aid_stations']);
+    }
 }

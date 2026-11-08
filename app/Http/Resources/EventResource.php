@@ -109,6 +109,9 @@ class EventResource extends JsonResource
             'finish_location' => $race->translatedOrNull('finish_location'),
             'time_limit_minutes' => $race->time_limit_minutes,
             'min_age' => $race->min_age,
+            'aid_stations' => $race->aid_stations,
+            // A race without its own answer follows the event.
+            'medical_certificate_required' => $race->medical_certificate_required ?? $this->medical_certificate_required,
             'participant_limit' => $race->participant_limit,
             'is_competitive' => $race->is_competitive,
             'certification' => $race->certification?->value,

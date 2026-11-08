@@ -95,8 +95,7 @@ function raceStart(race: Event['races'][number]): string {
     const date = formatDate(race.date, {
         weekday: 'short',
         day: 'numeric',
-        month: 'long',
-        year: 'numeric',
+        month: 'short',
     });
 
     return race.time ? `${date}, ${formatTime(race.date, race.time)}` : date;
@@ -218,12 +217,87 @@ const selectedRace = computed(
         props.event.races[0],
 );
 
-// The course follows the race chosen in the schedule.
-const courseRaces = computed(() =>
-    (selectedRace.value ? [selectedRace.value] : []).filter(
-        (race) => race.start_location || race.finish_location || race.route_url,
-    ),
-);
+type RaceFact = {
+    key: string;
+    label: string;
+    value: string;
+    datetime?: string;
+};
+
+/** The facts of a race the card lists; the ones without a value are left out. */
+function raceFacts(race: EventRace): RaceFact[] {
+    const facts: RaceFact[] = [
+        {
+            key: 'start',
+            label: t('events.races.start'),
+            value: [raceStart(race), race.start_location]
+                .filter(Boolean)
+                .join(' · '),
+            datetime: race.date,
+        },
+    ];
+
+    if (race.finish_location) {
+        facts.push({
+            key: 'finish',
+            label: t('events.races.finish'),
+            value: race.finish_location,
+        });
+    }
+
+    if (race.time_limit_minutes) {
+        facts.push({
+            key: 'time-limit',
+            label: t('events.races.time_limit'),
+            value: formatDuration(race.time_limit_minutes),
+        });
+    }
+
+    if (race.min_age) {
+        facts.push({
+            key: 'min-age',
+            label: t('events.races.min_age'),
+            value: t('events.races.min_age_born', {
+                age: race.min_age,
+                year: Number(race.date.slice(0, 4)) - race.min_age,
+            }),
+        });
+    }
+
+    facts.push({
+        key: 'medical',
+        label: t('events.races.medical_certificate'),
+        value: race.medical_certificate_required
+            ? t('events.races.medical_required')
+            : t('events.races.medical_not_required'),
+    });
+
+    if (race.aid_stations !== null) {
+        facts.push({
+            key: 'aid-stations',
+            label: t('events.races.aid_stations'),
+            value: formatNumber(race.aid_stations),
+        });
+    }
+
+    if (race.elevation_gain_m) {
+        facts.push({
+            key: 'elevation',
+            label: t('events.races.elevation'),
+            value: `+${formatNumber(race.elevation_gain_m)} m`,
+        });
+    }
+
+    if (race.participant_limit) {
+        facts.push({
+            key: 'participant-limit',
+            label: t('events.races.participant_limit'),
+            value: formatNumber(race.participant_limit),
+        });
+    }
+
+    return facts;
+}
 
 const hasContact = computed(
     () => props.event.contact.email || props.event.contact.phone,
@@ -507,6 +581,7 @@ const hasContact = computed(
                                             }}</Badge
                                         >
                                         <Badge
+                                            v-if="race.discipline !== 'run'"
                                             variant="outline"
                                             data-testid="event-page__race-discipline"
                                             >{{
@@ -550,85 +625,29 @@ const hasContact = computed(
                                 </div>
 
                                 <dl
-                                    class="mt-4 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2"
+                                    class="mt-4 grid gap-x-6 gap-y-4 text-sm sm:grid-cols-2"
                                     data-testid="event-page__race-details"
                                 >
-                                    <div class="flex flex-col">
-                                        <dt class="text-muted-foreground">
-                                            {{ t('events.races.start') }}
-                                        </dt>
-                                        <dd>
-                                            <time :datetime="race.date">{{
-                                                raceStart(race)
-                                            }}</time>
-                                        </dd>
-                                    </div>
                                     <div
-                                        v-if="race.time_limit_minutes"
-                                        class="flex flex-col"
+                                        v-for="fact in raceFacts(race)"
+                                        :key="fact.key"
+                                        class="flex flex-col gap-0.5"
+                                        :data-testid="`event-page__race-${fact.key}`"
                                     >
-                                        <dt class="text-muted-foreground">
-                                            {{ t('events.races.time_limit') }}
+                                        <dt
+                                            class="text-[13px] text-muted-foreground"
+                                        >
+                                            {{ fact.label }}
                                         </dt>
-                                        <dd>
-                                            {{
-                                                formatDuration(
-                                                    race.time_limit_minutes,
-                                                )
-                                            }}
-                                        </dd>
-                                    </div>
-                                    <div
-                                        v-if="race.min_age"
-                                        class="flex flex-col"
-                                    >
-                                        <dt class="text-muted-foreground">
-                                            {{ t('events.races.min_age') }}
-                                        </dt>
-                                        <dd>
-                                            {{
-                                                t(
-                                                    'events.races.min_age_value',
-                                                    {
-                                                        age: race.min_age,
-                                                    },
-                                                )
-                                            }}
-                                        </dd>
-                                    </div>
-                                    <div
-                                        v-if="race.participant_limit"
-                                        class="flex flex-col"
-                                    >
-                                        <dt class="text-muted-foreground">
-                                            {{
-                                                t(
-                                                    'events.races.participant_limit',
-                                                )
-                                            }}
-                                        </dt>
-                                        <dd>
-                                            {{
-                                                formatNumber(
-                                                    race.participant_limit,
-                                                )
-                                            }}
-                                        </dd>
-                                    </div>
-                                    <div
-                                        v-if="race.elevation_gain_m"
-                                        class="flex flex-col"
-                                    >
-                                        <dt class="text-muted-foreground">
-                                            {{ t('events.races.elevation') }}
-                                        </dt>
-                                        <dd>
-                                            {{
-                                                formatNumber(
-                                                    race.elevation_gain_m,
-                                                )
-                                            }}
-                                            m
+                                        <dd class="font-medium">
+                                            <time
+                                                v-if="fact.datetime"
+                                                :datetime="fact.datetime"
+                                                >{{ fact.value }}</time
+                                            >
+                                            <template v-else>{{
+                                                fact.value
+                                            }}</template>
                                         </dd>
                                     </div>
                                     <div
@@ -686,74 +705,45 @@ const hasContact = computed(
                                     </div>
                                 </dl>
 
-                                <Button
-                                    v-if="race.registration_url"
-                                    as-child
-                                    variant="outline"
-                                    size="sm"
-                                    class="mt-4 w-full sm:w-auto"
+                                <div
+                                    v-if="
+                                        race.registration_url || race.route_url
+                                    "
+                                    class="mt-6 flex flex-wrap gap-2"
                                 >
-                                    <a
-                                        data-testid="event-page__race-register"
-                                        :href="race.registration_url"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
+                                    <Button
+                                        v-if="race.registration_url"
+                                        as-child
+                                        variant="outline"
+                                        class="max-sm:w-full"
                                     >
-                                        <Ticket aria-hidden="true" />
-                                        {{ t('events.races.register') }}
-                                    </a>
-                                </Button>
-                            </li>
-                        </ul>
-                    </section>
-                    <section
-                        v-if="courseRaces.length > 0"
-                        data-testid="event-page__course"
-                    >
-                        <h2 class="mb-4 text-xl font-extrabold tracking-tight">
-                            {{ t('events.course.title') }}
-                        </h2>
-                        <ul class="flex flex-col gap-4">
-                            <li
-                                v-for="race in courseRaces"
-                                :key="race.id"
-                                class="rounded-lg border bg-card p-6"
-                                data-testid="event-page__course-race"
-                            >
-                                <h3 class="font-bold">{{ race.name }}</h3>
-                                <dl
-                                    class="mt-2 grid gap-2 text-sm sm:grid-cols-2"
-                                >
-                                    <div
-                                        v-if="race.start_location"
-                                        class="flex flex-col"
+                                        <a
+                                            data-testid="event-page__race-register"
+                                            :href="race.registration_url"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <Ticket aria-hidden="true" />
+                                            {{ t('events.races.register') }}
+                                        </a>
+                                    </Button>
+                                    <Button
+                                        v-if="race.route_url"
+                                        as-child
+                                        variant="outline"
+                                        class="max-sm:w-full"
                                     >
-                                        <dt class="text-muted-foreground">
-                                            {{ t('events.course.start') }}
-                                        </dt>
-                                        <dd>{{ race.start_location }}</dd>
-                                    </div>
-                                    <div
-                                        v-if="race.finish_location"
-                                        class="flex flex-col"
-                                    >
-                                        <dt class="text-muted-foreground">
-                                            {{ t('events.course.finish') }}
-                                        </dt>
-                                        <dd>{{ race.finish_location }}</dd>
-                                    </div>
-                                </dl>
-                                <a
-                                    v-if="race.route_url"
-                                    :href="race.route_url"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="mt-4 inline-flex items-center gap-1 text-sm font-bold text-primary underline-offset-4 hover:underline"
-                                    data-testid="event-page__course-route"
-                                >
-                                    <Route class="size-4" aria-hidden="true" />
-                                    {{ t('events.course.route') }}
-                                </a>
+                                        <a
+                                            data-testid="event-page__race-route"
+                                            :href="race.route_url"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <Route aria-hidden="true" />
+                                            {{ t('events.course.route') }}
+                                        </a>
+                                    </Button>
+                                </div>
                             </li>
                         </ul>
                     </section>

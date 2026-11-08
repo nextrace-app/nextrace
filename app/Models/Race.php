@@ -43,6 +43,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $start_longitude
  * @property int|null $time_limit_minutes
  * @property int|null $min_age
+ * @property int|null $aid_stations
+ * @property bool|null $medical_certificate_required
  * @property int|null $participant_limit
  * @property bool $is_competitive
  * @property Certification|null $certification
@@ -74,6 +76,8 @@ use Illuminate\Support\Carbon;
     'start_longitude',
     'time_limit_minutes',
     'min_age',
+    'aid_stations',
+    'medical_certificate_required',
     'participant_limit',
     'is_competitive',
     'certification',
@@ -214,6 +218,8 @@ class Race extends Model
             'finish_location' => 'array',
             'time_limit_minutes' => 'integer',
             'min_age' => 'integer',
+            'aid_stations' => 'integer',
+            'medical_certificate_required' => 'boolean',
             'participant_limit' => 'integer',
             'is_competitive' => 'boolean',
             'certification' => Certification::class,

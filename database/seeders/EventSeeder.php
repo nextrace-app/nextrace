@@ -118,6 +118,14 @@ class EventSeeder extends Seeder
             'special-olympics' => [['el' => 'Special Olympics 1,2 χλμ.', 'en' => 'Special Olympics 1.2 km'], DistanceClass::Other, 1200, '2026-11-07 16:45', $sofias, false, null],
         ];
 
+        // Time limit (minutes) and aid stations per race, from the race pages.
+        $details = [
+            'marathon' => [480, 15],
+            '10k' => [90, 2],
+            '5k' => [60, 1],
+            'night-run-5k' => [60, 1],
+        ];
+
         $order = 0;
 
         foreach ($races as $slug => [$name, $class, $metres, $startsAt, $start, $competitive, $minAge]) {
@@ -134,6 +142,9 @@ class EventSeeder extends Seeder
                 'finish_location' => $stadium,
                 'is_competitive' => $competitive,
                 'min_age' => $minAge,
+                'time_limit_minutes' => $details[$slug][0] ?? null,
+                'aid_stations' => $details[$slug][1] ?? null,
+                'medical_certificate_required' => false,
             ]);
         }
     }
