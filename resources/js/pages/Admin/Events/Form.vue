@@ -22,12 +22,32 @@ type Translated = { el?: string; en?: string };
 type Option = { id: number; name: string };
 type RaceRecord = Omit<
     Race,
-    'name' | 'prices' | 'terrain' | 'elevation_gain_m' | 'registration_url'
+    | 'name'
+    | 'prices'
+    | 'terrain'
+    | 'elevation_gain_m'
+    | 'registration_url'
+    | 'start_location'
+    | 'finish_location'
+    | 'time_limit_minutes'
+    | 'min_age'
+    | 'participant_limit'
+    | 'aid_stations'
+    | 'medical_certificate_required'
+    | 'route_url'
 > & {
     name: Translated;
     terrain: string | null;
     elevation_gain_m: number | null;
     registration_url: string | null;
+    start_location: Translated | null;
+    finish_location: Translated | null;
+    time_limit_minutes: number | null;
+    min_age: number | null;
+    participant_limit: number | null;
+    aid_stations: number | null;
+    medical_certificate_required: boolean | null;
+    route_url: string | null;
     prices: {
         label: Translated | null;
         amount_cents: number;
@@ -136,6 +156,19 @@ const form = useForm({
             terrain: race.terrain ?? '',
             elevation_gain_m: race.elevation_gain_m ?? '',
             registration_url: race.registration_url ?? '',
+            start_location: pair(race.start_location),
+            finish_location: pair(race.finish_location),
+            time_limit_minutes: race.time_limit_minutes ?? '',
+            min_age: race.min_age ?? '',
+            participant_limit: race.participant_limit ?? '',
+            aid_stations: race.aid_stations ?? '',
+            medical_certificate_required:
+                race.medical_certificate_required === null
+                    ? ''
+                    : race.medical_certificate_required
+                      ? 'yes'
+                      : 'no',
+            route_url: race.route_url ?? '',
             prices: race.prices.map((price) => ({
                 label: pair(price.label),
                 amount_cents: price.amount_cents,
@@ -202,6 +235,17 @@ const submit = () => {
             elevation_gain_m:
                 race.elevation_gain_m === '' ? null : race.elevation_gain_m,
             registration_url: race.registration_url || null,
+            time_limit_minutes:
+                race.time_limit_minutes === '' ? null : race.time_limit_minutes,
+            min_age: race.min_age === '' ? null : race.min_age,
+            participant_limit:
+                race.participant_limit === '' ? null : race.participant_limit,
+            aid_stations: race.aid_stations === '' ? null : race.aid_stations,
+            medical_certificate_required:
+                race.medical_certificate_required === ''
+                    ? null
+                    : race.medical_certificate_required === 'yes',
+            route_url: race.route_url || null,
             prices: race.prices.map((price) => ({
                 ...price,
                 valid_from: price.valid_from || null,

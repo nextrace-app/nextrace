@@ -65,6 +65,9 @@ class EventSeederTest extends TestCase
         $this->assertSame('2026-11-08 08:30', $athens->mainRace->starts_at->format('Y-m-d H:i'));
         $this->assertTrue($athens->mainRace->start_time_known);
         $this->assertSame(20, $athens->mainRace->min_age);
+        $this->assertSame(480, $athens->mainRace->time_limit_minutes);
+        $this->assertSame(15, $athens->mainRace->aid_stations);
+        $this->assertFalse($athens->mainRace->medical_certificate_required);
         $this->assertSame(4, $athens->races->filter(fn (Race $race) => $race->starts_at->toDateString() === '2026-11-07')->count());
     }
 

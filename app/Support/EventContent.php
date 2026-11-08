@@ -25,6 +25,8 @@ class EventContent
 
             $attributes = Arr::only($data, [
                 'name', 'discipline', 'terrain', 'distance_meters', 'elevation_gain_m', 'status', 'registration_url',
+                'start_location', 'finish_location', 'time_limit_minutes', 'min_age', 'participant_limit',
+                'aid_stations', 'medical_certificate_required', 'route_url',
             ]);
             $attributes['is_main'] = (bool) ($data['is_main'] ?? false);
             $attributes['sort_order'] = $position;

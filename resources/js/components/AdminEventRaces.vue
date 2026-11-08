@@ -20,6 +20,15 @@ export type Race = {
     terrain: string;
     distance_meters: number | string;
     elevation_gain_m: number | string;
+    start_location: Translated;
+    finish_location: Translated;
+    time_limit_minutes: number | string;
+    min_age: number | string;
+    participant_limit: number | string;
+    aid_stations: number | string;
+    /** '' follows the event, 'yes' and 'no' answer for this race. */
+    medical_certificate_required: '' | 'yes' | 'no';
+    route_url: string;
     starts_at: string;
     status: string;
     registration_url: string;
@@ -52,6 +61,14 @@ const blankRace = (): Race => ({
     terrain: 'road',
     distance_meters: '',
     elevation_gain_m: '',
+    start_location: { el: '', en: '' },
+    finish_location: { el: '', en: '' },
+    time_limit_minutes: '',
+    min_age: '',
+    participant_limit: '',
+    aid_stations: '',
+    medical_certificate_required: '',
+    route_url: '',
     starts_at: '',
     status: 'scheduled',
     registration_url: '',
@@ -274,6 +291,145 @@ const removeLink = (index: number) => {
                             {{ t(`admin.events.races.statuses.${value}`) }}
                         </option>
                     </select>
+                </div>
+                <div class="grid gap-2">
+                    <Label
+                        >{{
+                            t('admin.events.races.start_location')
+                        }}
+                        (EL)</Label
+                    >
+                    <Input
+                        v-model="race.start_location.el"
+                        data-testid="admin-races__start-location-el"
+                    />
+                    <InputError
+                        :message="errors[`races.${index}.start_location.el`]"
+                    />
+                </div>
+                <div class="grid gap-2">
+                    <Label
+                        >{{
+                            t('admin.events.races.start_location')
+                        }}
+                        (EN)</Label
+                    >
+                    <Input
+                        v-model="race.start_location.en"
+                        data-testid="admin-races__start-location-en"
+                    />
+                    <InputError
+                        :message="errors[`races.${index}.start_location.en`]"
+                    />
+                </div>
+                <div class="grid gap-2">
+                    <Label
+                        >{{
+                            t('admin.events.races.finish_location')
+                        }}
+                        (EL)</Label
+                    >
+                    <Input
+                        v-model="race.finish_location.el"
+                        data-testid="admin-races__finish-location-el"
+                    />
+                    <InputError
+                        :message="errors[`races.${index}.finish_location.el`]"
+                    />
+                </div>
+                <div class="grid gap-2">
+                    <Label
+                        >{{
+                            t('admin.events.races.finish_location')
+                        }}
+                        (EN)</Label
+                    >
+                    <Input
+                        v-model="race.finish_location.en"
+                        data-testid="admin-races__finish-location-en"
+                    />
+                    <InputError
+                        :message="errors[`races.${index}.finish_location.en`]"
+                    />
+                </div>
+                <div class="grid gap-2">
+                    <Label>{{
+                        t('admin.events.races.time_limit_minutes')
+                    }}</Label>
+                    <Input
+                        v-model="race.time_limit_minutes"
+                        type="number"
+                        min="1"
+                        data-testid="admin-races__time-limit-minutes"
+                    />
+                    <InputError
+                        :message="errors[`races.${index}.time_limit_minutes`]"
+                    />
+                </div>
+                <div class="grid gap-2">
+                    <Label>{{ t('admin.events.races.min_age') }}</Label>
+                    <Input
+                        v-model="race.min_age"
+                        type="number"
+                        min="1"
+                        data-testid="admin-races__min-age"
+                    />
+                    <InputError :message="errors[`races.${index}.min_age`]" />
+                </div>
+                <div class="grid gap-2">
+                    <Label>{{
+                        t('admin.events.races.participant_limit')
+                    }}</Label>
+                    <Input
+                        v-model="race.participant_limit"
+                        type="number"
+                        min="1"
+                        data-testid="admin-races__participant-limit"
+                    />
+                    <InputError
+                        :message="errors[`races.${index}.participant_limit`]"
+                    />
+                </div>
+                <div class="grid gap-2">
+                    <Label>{{ t('admin.events.races.aid_stations') }}</Label>
+                    <Input
+                        v-model="race.aid_stations"
+                        type="number"
+                        min="0"
+                        data-testid="admin-races__aid-stations"
+                    />
+                    <InputError
+                        :message="errors[`races.${index}.aid_stations`]"
+                    />
+                </div>
+                <div class="grid gap-2">
+                    <Label>{{
+                        t('admin.events.races.medical_certificate_required')
+                    }}</Label>
+                    <select
+                        v-model="race.medical_certificate_required"
+                        :class="select"
+                        data-testid="admin-races__medical-certificate"
+                    >
+                        <option value="">
+                            {{ t('admin.events.races.medical_as_event') }}
+                        </option>
+                        <option value="yes">
+                            {{ t('admin.events.races.medical_yes') }}
+                        </option>
+                        <option value="no">
+                            {{ t('admin.events.races.medical_no') }}
+                        </option>
+                    </select>
+                </div>
+                <div class="grid gap-2">
+                    <Label>{{ t('admin.events.races.route_url') }}</Label>
+                    <Input
+                        v-model="race.route_url"
+                        type="url"
+                        data-testid="admin-races__route-url"
+                    />
+                    <InputError :message="errors[`races.${index}.route_url`]" />
                 </div>
                 <div class="grid gap-2">
                     <Label>{{

@@ -73,6 +73,18 @@ class EventRequest extends FormRequest
             'races.*.terrain' => ['nullable', Rule::enum(RaceTerrain::class)],
             'races.*.distance_meters' => ['required', 'integer', 'min:1', 'max:1000000'],
             'races.*.elevation_gain_m' => ['nullable', 'integer', 'min:0', 'max:20000'],
+            'races.*.start_location' => ['nullable', 'array'],
+            'races.*.start_location.el' => ['nullable', 'string', 'max:255'],
+            'races.*.start_location.en' => ['nullable', 'string', 'max:255'],
+            'races.*.finish_location' => ['nullable', 'array'],
+            'races.*.finish_location.el' => ['nullable', 'string', 'max:255'],
+            'races.*.finish_location.en' => ['nullable', 'string', 'max:255'],
+            'races.*.time_limit_minutes' => ['nullable', 'integer', 'min:1', 'max:20000'],
+            'races.*.min_age' => ['nullable', 'integer', 'min:1', 'max:120'],
+            'races.*.participant_limit' => ['nullable', 'integer', 'min:1', 'max:1000000'],
+            'races.*.aid_stations' => ['nullable', 'integer', 'min:0', 'max:500'],
+            'races.*.medical_certificate_required' => ['nullable', 'boolean'],
+            'races.*.route_url' => ['nullable', 'url:http,https', 'max:2048'],
             'races.*.starts_at' => ['required', 'date'],
             'races.*.status' => ['required', Rule::enum(RaceStatus::class)],
             'races.*.registration_url' => ['nullable', 'url:http,https', 'max:2048'],
@@ -131,6 +143,8 @@ class EventRequest extends FormRequest
         $label = fn (mixed $value) => array_filter(is_array($value) ? $value : [], fn ($text) => $text !== null && $text !== '') ?: null;
 
         $data['races'] = array_map(function (array $race) use ($label): array {
+            $race['start_location'] = $label($race['start_location'] ?? null);
+            $race['finish_location'] = $label($race['finish_location'] ?? null);
             $race['prices'] = array_map(fn (array $price) => [...$price, 'label' => $label($price['label'] ?? null)], $race['prices'] ?? []);
 
             return $race;

@@ -52,6 +52,8 @@ export type Race = {
     finish_location: string | null;
     time_limit_minutes: number | null;
     min_age: number | null;
+    aid_stations: number | null;
+    medical_certificate_required: boolean;
     participant_limit: number | null;
     is_competitive: boolean;
     certification: string | null;
