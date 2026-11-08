@@ -46,6 +46,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $aid_stations
  * @property bool|null $medical_certificate_required
  * @property int|null $participant_limit
+ * @property bool $sold_out
  * @property bool $is_competitive
  * @property Certification|null $certification
  * @property string|null $timing_provider
@@ -79,6 +80,7 @@ use Illuminate\Support\Carbon;
     'aid_stations',
     'medical_certificate_required',
     'participant_limit',
+    'sold_out',
     'is_competitive',
     'certification',
     'timing_provider',
@@ -221,6 +223,7 @@ class Race extends Model
             'aid_stations' => 'integer',
             'medical_certificate_required' => 'boolean',
             'participant_limit' => 'integer',
+            'sold_out' => 'boolean',
             'is_competitive' => 'boolean',
             'certification' => Certification::class,
             'awards' => 'array',

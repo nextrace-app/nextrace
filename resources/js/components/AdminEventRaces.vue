@@ -28,6 +28,7 @@ export type Race = {
     aid_stations: number | string;
     /** '' follows the event, 'yes' and 'no' answer for this race. */
     medical_certificate_required: '' | 'yes' | 'no';
+    sold_out: boolean;
     route_url: string;
     starts_at: string;
     status: string;
@@ -68,6 +69,7 @@ const blankRace = (): Race => ({
     participant_limit: '',
     aid_stations: '',
     medical_certificate_required: '',
+    sold_out: false,
     route_url: '',
     starts_at: '',
     status: 'scheduled',
@@ -422,6 +424,17 @@ const removeLink = (index: number) => {
                         </option>
                     </select>
                 </div>
+                <label
+                    class="flex min-h-11 items-center gap-2 self-end text-sm"
+                >
+                    <input
+                        v-model="race.sold_out"
+                        type="checkbox"
+                        class="size-5 accent-primary"
+                        data-testid="admin-races__sold-out"
+                    />
+                    {{ t('admin.events.races.sold_out') }}
+                </label>
                 <div class="grid gap-2">
                     <Label>{{ t('admin.events.races.route_url') }}</Label>
                     <Input

@@ -33,7 +33,18 @@ export type RacePrice = {
     currency: string;
     valid_from: string | null;
     valid_until: string | null;
+    /** 'past' when over, 'current' for the tier valid today, null otherwise. */
+    state: 'past' | 'current' | null;
 };
+
+/** Where a registration stands today, worked out on the server. */
+export type RegistrationState =
+    | 'open'
+    | 'free'
+    | 'sold_out'
+    | 'closed'
+    | 'not_open'
+    | 'unknown';
 
 export type Race = {
     id: number;
@@ -62,6 +73,10 @@ export type Race = {
     registration_url: string | null;
     status: string;
     is_main: boolean;
+    sold_out: boolean;
+    registration_state: RegistrationState;
+    /** The last day of the current price when a dearer tier follows within a week. */
+    price_rises_after: string | null;
     prices: RacePrice[];
 };
 
@@ -114,5 +129,9 @@ export type Event = {
     } | null;
     region: { slug: string; name: string } | null;
     races: Race[];
+    registration_state: {
+        state: RegistrationState;
+        price_rises_soon: boolean;
+    };
     links: EventLink[];
 };

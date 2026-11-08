@@ -323,6 +323,7 @@ class AdminEventTest extends TestCase
                 'aid_stations' => 15,
                 'medical_certificate_required' => true,
                 'route_url' => 'https://example.com/route',
+                'sold_out' => true,
             ])],
         ]))->assertRedirect();
 
@@ -336,12 +337,14 @@ class AdminEventTest extends TestCase
         $this->assertSame(15, $race->aid_stations);
         $this->assertTrue($race->medical_certificate_required);
         $this->assertSame('https://example.com/route', $race->route_url);
+        $this->assertTrue($race->sold_out);
 
         $this->actingAs($admin)
             ->get(route('admin.events.edit', $race->event))
             ->assertInertia(fn (Assert $page) => $page
                 ->where('record.races.0.aid_stations', 15)
                 ->where('record.races.0.medical_certificate_required', true)
+                ->where('record.races.0.sold_out', true)
                 ->where('record.races.0.start_location', ['el' => 'Μαραθώνας', 'en' => 'Marathon']));
     }
 

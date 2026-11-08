@@ -103,7 +103,12 @@ class EventSeeder extends Seeder
             return;
         }
 
-        $event->update(['starts_on' => '2026-11-07', 'ends_on' => '2026-11-08']);
+        $event->update([
+            'starts_on' => '2026-11-07',
+            'ends_on' => '2026-11-08',
+            'registration_status' => 'closed',
+            'registration_closes_at' => '2026-09-25 23:59:00',
+        ]);
 
         $stadium = ['el' => 'Παναθηναϊκό Στάδιο', 'en' => 'Panathenaic Stadium'];
         $amalias = ['el' => 'Λεωφ. Βασ. Αμαλίας', 'en' => 'Vasilissis Amalias Avenue'];
@@ -126,10 +131,18 @@ class EventSeeder extends Seeder
             'night-run-5k' => [60, 1],
         ];
 
+        // Early and standard entry in euros; the kids and Special Olympics races are free.
+        $prices = [
+            'marathon' => [75, 165],
+            '10k' => [45, 90],
+            '5k' => [40, 85],
+            'night-run-5k' => [25, 45],
+        ];
+
         $order = 0;
 
         foreach ($races as $slug => [$name, $class, $metres, $startsAt, $start, $competitive, $minAge]) {
-            $event->races()->updateOrCreate(['slug' => $slug], [
+            $race = $event->races()->updateOrCreate(['slug' => $slug], [
                 'name' => $name,
                 'sort_order' => $order++,
                 'is_main' => $slug === 'marathon',
@@ -145,7 +158,17 @@ class EventSeeder extends Seeder
                 'time_limit_minutes' => $details[$slug][0] ?? null,
                 'aid_stations' => $details[$slug][1] ?? null,
                 'medical_certificate_required' => false,
+                'sold_out' => isset($prices[$slug]),
             ]);
+
+            $race->prices()->delete();
+
+            if (isset($prices[$slug])) {
+                $race->prices()->create(['label' => ['el' => 'Πρώιμη συμμετοχή', 'en' => 'Early entry'], 'amount_cents' => $prices[$slug][0] * 100, 'valid_until' => '2026-05-31']);
+                $race->prices()->create(['label' => ['el' => 'Κανονική συμμετοχή', 'en' => 'Standard entry'], 'amount_cents' => $prices[$slug][1] * 100, 'valid_from' => '2026-06-01', 'valid_until' => '2026-09-25']);
+            } else {
+                $race->prices()->create(['amount_cents' => 0]);
+            }
         }
     }
 

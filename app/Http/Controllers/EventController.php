@@ -48,6 +48,8 @@ class EventController extends Controller
         $search = $request->query('q');
         $search = is_string($search) ? mb_substr(trim($search), 0, self::MAX_SEARCH_LENGTH) : '';
 
+        $openOnly = $request->query('open') === '1';
+
         $perPage = (int) config('events.per_page');
 
         $events = Event::query()
@@ -55,6 +57,7 @@ class EventController extends Controller
             ->upcoming()
             ->when($distance !== null, fn (Builder $query) => $query->withDistanceFilter($distance))
             ->when($search !== '', fn (Builder $query) => $query->matching($search))
+            ->when($openOnly, fn (Builder $query) => $query->registrationOpen())
             ->chronological()
             ->withDetails()
             ->paginate($perPage, page: (int) ($page ?? 1));
@@ -73,6 +76,7 @@ class EventController extends Controller
             'filters' => [
                 'distance' => $distance,
                 'q' => $search,
+                'open' => $openOnly,
             ],
         ]);
     }

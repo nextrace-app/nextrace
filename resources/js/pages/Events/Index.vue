@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, router, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { CalendarX } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -20,6 +20,7 @@ const props = defineProps<{
     filters: {
         distance: string | null;
         q: string;
+        open: boolean;
     };
 }>();
 
@@ -31,8 +32,29 @@ const { localeRoute } = useLocale();
 const eventsList = ref<HTMLElement | null>(null);
 
 const isFiltered = computed(
-    () => props.filters.distance !== null || props.filters.q !== '',
+    () =>
+        props.filters.distance !== null ||
+        props.filters.q !== '' ||
+        props.filters.open,
 );
+
+/** The current address with the "open" filter switched; the page starts again from 1. */
+const openFilterHref = computed(() => {
+    const [path, query = ''] = page.url.split('?');
+    const params = new URLSearchParams(query);
+
+    params.delete('page');
+
+    if (props.filters.open) {
+        params.delete('open');
+    } else {
+        params.set('open', '1');
+    }
+
+    const search = params.toString();
+
+    return search === '' ? path : `${path}?${search}`;
+});
 
 function resetFilters() {
     router.visit(localeRoute(eventsIndex()));
@@ -56,6 +78,32 @@ function scrollToList() {
             </h1>
 
             <div class="py-4 sm:py-6">
+                <div class="mb-4 flex flex-wrap gap-2 sm:mb-6">
+                    <Link
+                        :href="openFilterHref"
+                        preserve-scroll
+                        class="inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-bold outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 lg:min-h-10"
+                        :class="
+                            filters.open
+                                ? 'border-primary bg-secondary text-secondary-foreground'
+                                : 'bg-card hover:border-primary'
+                        "
+                        :aria-pressed="filters.open"
+                        role="button"
+                        data-testid="events-page__filter-open"
+                    >
+                        <span
+                            class="size-2 rounded-full"
+                            :class="
+                                filters.open
+                                    ? 'bg-primary'
+                                    : 'bg-muted-foreground'
+                            "
+                            aria-hidden="true"
+                        />
+                        {{ t('events.filters.registration_open') }}
+                    </Link>
+                </div>
                 <div
                     v-if="events.length > 0"
                     ref="eventsList"
