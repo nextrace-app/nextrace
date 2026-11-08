@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use App\Models\Event;
 use App\Models\Race;
+use App\Models\RacePrice;
+use App\Support\RaceRegistration;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Locale as Intl;
@@ -76,7 +78,8 @@ class EventResource extends JsonResource
                 'slug' => $this->region->slug,
                 'name' => $this->region->translated('name'),
             ],
-            'races' => $this->races->map(fn (Race $race) => $this->race($race))->all(),
+            'races' => $races = $this->races->map(fn (Race $race) => $this->race($race))->all(),
+            'registration_state' => $this->registrationState($races),
             'links' => $this->links->map(fn ($link) => [
                 'type' => $link->type->value,
                 'url' => $link->url,
@@ -92,6 +95,13 @@ class EventResource extends JsonResource
      */
     private function race(Race $race): array
     {
+        $today = RaceRegistration::today();
+        $state = RaceRegistration::status($race, $this->resource, $today);
+        // A tier is only "current" while the race can actually be entered.
+        $current = in_array($state, [RaceRegistration::OPEN, RaceRegistration::FREE], true)
+            ? RaceRegistration::currentPrice($race, $today)
+            : null;
+
         return [
             'id' => $race->id,
             'slug' => $race->slug,
@@ -120,13 +130,35 @@ class EventResource extends JsonResource
             'registration_url' => $race->registration_url,
             'status' => $race->status->value,
             'is_main' => $race->is_main,
-            'prices' => $race->prices->map(fn ($price) => [
+            'sold_out' => $race->sold_out,
+            'registration_state' => $state,
+            'price_rises_after' => $state === RaceRegistration::OPEN ? RaceRegistration::priceRisesAfter($race, $today) : null,
+            'prices' => $race->prices->map(fn (RacePrice $price) => [
                 'label' => $price->translatedOrNull('label'),
                 'amount' => $price->amount_cents / 100,
                 'currency' => $price->currency,
                 'valid_from' => $price->valid_from?->toDateString(),
                 'valid_until' => $price->valid_until?->toDateString(),
+                'state' => RaceRegistration::priceState($price, $current, $today),
             ])->all(),
+        ];
+    }
+
+    /**
+     * Where the registration of the event stands: the most useful state any of
+     * its races is in, and whether one of the open ones gets dearer soon.
+     *
+     * @param  array<int, array<string, mixed>>  $races
+     * @return array{state: string, price_rises_soon: bool}
+     */
+    private function registrationState(array $races): array
+    {
+        $states = array_column($races, 'registration_state');
+        $state = collect(RaceRegistration::PRIORITY)->first(fn (string $state) => in_array($state, $states, true)) ?? RaceRegistration::UNKNOWN;
+
+        return [
+            'state' => $state,
+            'price_rises_soon' => collect($races)->contains(fn (array $race) => $race['registration_state'] === RaceRegistration::OPEN && $race['price_rises_after'] !== null),
         ];
     }
 

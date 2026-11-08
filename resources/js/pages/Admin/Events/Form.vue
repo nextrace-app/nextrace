@@ -35,6 +35,7 @@ type RaceRecord = Omit<
     | 'aid_stations'
     | 'medical_certificate_required'
     | 'route_url'
+    | 'sold_out'
 > & {
     name: Translated;
     terrain: string | null;
@@ -48,6 +49,7 @@ type RaceRecord = Omit<
     aid_stations: number | null;
     medical_certificate_required: boolean | null;
     route_url: string | null;
+    sold_out: boolean;
     prices: {
         label: Translated | null;
         amount_cents: number;

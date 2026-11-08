@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Enums\EventStatus;
+use App\Enums\RaceStatus;
 use App\Enums\RegistrationStatus;
 use App\Models\Concerns\HasTranslations;
+use App\Support\RaceRegistration;
 use Carbon\CarbonImmutable;
 use Database\Factories\EventFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -298,6 +300,40 @@ class Event extends Model
                     ->limit(1)
             )
             ->orderBy('events.id');
+    }
+
+    /**
+     * Restrict the query to the events a runner can sign up for today: the
+     * same rule as RaceRegistration, with at least one race that is not sold
+     * out and either has a price tier valid today or, without tiers, belongs
+     * to an event marked open.
+     *
+     * @param  Builder<Event>  $query
+     */
+    #[Scope]
+    protected function registrationOpen(Builder $query): void
+    {
+        $today = RaceRegistration::today();
+        $now = Carbon::now();
+
+        $query->whereNotIn('events.registration_status', [
+            RegistrationStatus::Closed->value,
+            RegistrationStatus::SoldOut->value,
+            RegistrationStatus::NotOpen->value,
+        ])
+            ->where(fn (Builder $closes) => $closes->whereNull('events.registration_closes_at')->orWhere('events.registration_closes_at', '>=', $now))
+            ->where(fn (Builder $opens) => $opens->whereNull('events.registration_opens_at')->orWhere('events.registration_opens_at', '<=', $now))
+            ->whereHas('races', function (Builder $races) use ($today): void {
+                $races->where('sold_out', false)
+                    ->whereNotIn('status', [RaceStatus::Cancelled->value, RaceStatus::Completed->value])
+                    ->where(function (Builder $open) use ($today): void {
+                        $open->whereHas('prices', fn (Builder $prices) => $prices
+                            ->where(fn (Builder $from) => $from->whereNull('valid_from')->orWhereDate('valid_from', '<=', $today))
+                            ->where(fn (Builder $until) => $until->whereNull('valid_until')->orWhereDate('valid_until', '>=', $today)))
+                            ->orWhere(fn (Builder $untiered) => $untiered->whereDoesntHave('prices')
+                                ->whereRaw('events.registration_status = ?', [RegistrationStatus::Open->value]));
+                    });
+            });
     }
 
     /**

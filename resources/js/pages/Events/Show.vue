@@ -102,12 +102,18 @@ function raceStart(race: Event['races'][number]): string {
 }
 
 function priceRange(price: Event['races'][number]['prices'][number]): string {
+    if (price.valid_from && price.valid_until) {
+        return formatDateRange(price.valid_from, price.valid_until);
+    }
+
     if (price.valid_until) {
-        return t('events.races.until', { date: formatDate(price.valid_until) });
+        return t('events.races.price_until', {
+            date: formatDate(price.valid_until),
+        });
     }
 
     return price.valid_from
-        ? t('events.races.from', { date: formatDate(price.valid_from) })
+        ? t('events.races.price_from', { date: formatDate(price.valid_from) })
         : '';
 }
 
@@ -172,18 +178,39 @@ const facts = computed(() => {
     return items;
 });
 
-function lowestPrice(race: Event['races'][number]): string | null {
-    if (race.prices.length === 0) {
+/**
+ * What the sidebar says next to a race: its state when it cannot be entered,
+ * otherwise the price valid today, or the cheapest one when none is.
+ */
+function sidebarPrice(
+    race: Event['races'][number],
+): { text: string; muted: boolean } | null {
+    if (['sold_out', 'closed', 'not_open'].includes(race.registration_state)) {
+        return {
+            text: t(`events.registration_status.${race.registration_state}`),
+            muted: true,
+        };
+    }
+
+    const price =
+        race.prices.find((tier) => tier.state === 'current') ??
+        (race.prices.length > 0
+            ? race.prices.reduce((least, tier) =>
+                  tier.amount < least.amount ? tier : least,
+              )
+            : null);
+
+    if (!price) {
         return null;
     }
 
-    const cheapest = race.prices.reduce((least, price) =>
-        price.amount < least.amount ? price : least,
-    );
-
-    return cheapest.amount === 0
-        ? t('events.races.free')
-        : formatPrice(cheapest.amount, cheapest.currency);
+    return {
+        text:
+            price.amount === 0
+                ? t('events.races.free')
+                : formatPrice(price.amount, price.currency),
+        muted: false,
+    };
 }
 
 type EventRace = Event['races'][number];
@@ -621,6 +648,14 @@ const hasContact = computed(
                                                 t('events.races.cancelled')
                                             }}</Badge
                                         >
+                                        <RegistrationBadge
+                                            v-if="race.status !== 'cancelled'"
+                                            :state="race.registration_state"
+                                            :price-rises-after="
+                                                race.price_rises_after
+                                            "
+                                            data-testid="event-page__race-registration"
+                                        />
                                     </div>
                                 </div>
 
@@ -650,60 +685,77 @@ const hasContact = computed(
                                             }}</template>
                                         </dd>
                                     </div>
-                                    <div
-                                        v-if="race.prices.length > 0"
-                                        data-testid="event-page__race-prices"
-                                        class="flex flex-col sm:col-span-2"
-                                    >
-                                        <dt class="text-muted-foreground">
-                                            {{ t('events.races.prices') }}
-                                        </dt>
-                                        <dd>
-                                            <ul
-                                                class="mt-1 flex flex-wrap gap-2"
-                                            >
-                                                <li
-                                                    v-for="(
-                                                        price, index
-                                                    ) in race.prices"
-                                                    :key="index"
-                                                    class="rounded-lg bg-muted px-2 py-1"
-                                                    data-testid="event-page__race-price"
-                                                >
-                                                    <span class="font-medium">{{
-                                                        price.amount === 0
-                                                            ? t(
-                                                                  'events.races.free',
-                                                              )
-                                                            : formatPrice(
-                                                                  price.amount,
-                                                                  price.currency,
-                                                              )
-                                                    }}</span>
-                                                    <span
-                                                        v-if="
-                                                            price.label ||
-                                                            priceRange(price)
-                                                        "
-                                                        class="text-muted-foreground"
-                                                    >
-                                                        &middot;
-                                                        {{
-                                                            [
-                                                                price.label,
-                                                                priceRange(
-                                                                    price,
-                                                                ),
-                                                            ]
-                                                                .filter(Boolean)
-                                                                .join(', ')
-                                                        }}
-                                                    </span>
-                                                </li>
-                                            </ul>
-                                        </dd>
-                                    </div>
                                 </dl>
+
+                                <section
+                                    v-if="race.prices.length > 0"
+                                    class="mt-6 flex flex-col gap-2"
+                                    data-testid="event-page__race-prices"
+                                >
+                                    <h4 class="text-sm font-bold">
+                                        {{ t('events.races.prices') }}
+                                    </h4>
+                                    <ul class="flex flex-col gap-1">
+                                        <li
+                                            v-for="(
+                                                price, index
+                                            ) in race.prices"
+                                            :key="index"
+                                            class="flex items-center gap-3 rounded-lg px-3 py-2"
+                                            :class="
+                                                price.state === 'current'
+                                                    ? 'bg-secondary'
+                                                    : ''
+                                            "
+                                            :data-state="price.state"
+                                            data-testid="event-page__race-price"
+                                        >
+                                            <span
+                                                class="flex min-w-0 flex-1 flex-col text-sm"
+                                                :class="
+                                                    price.state === 'past'
+                                                        ? 'text-muted-foreground'
+                                                        : ''
+                                                "
+                                            >
+                                                <span class="font-medium">{{
+                                                    price.label ||
+                                                    t('events.races.entry')
+                                                }}</span>
+                                                <span
+                                                    v-if="priceRange(price)"
+                                                    class="text-[13px] text-muted-foreground"
+                                                    >{{
+                                                        priceRange(price)
+                                                    }}</span
+                                                >
+                                            </span>
+                                            <Badge
+                                                v-if="price.state === 'current'"
+                                                class="shrink-0 font-bold"
+                                                >{{
+                                                    t('events.races.current')
+                                                }}</Badge
+                                            >
+                                            <span
+                                                class="shrink-0 text-sm font-bold"
+                                                :class="
+                                                    price.state === 'past'
+                                                        ? 'text-muted-foreground line-through'
+                                                        : ''
+                                                "
+                                                >{{
+                                                    price.amount === 0
+                                                        ? t('events.races.free')
+                                                        : formatPrice(
+                                                              price.amount,
+                                                              price.currency,
+                                                          )
+                                                }}</span
+                                            >
+                                        </li>
+                                    </ul>
+                                </section>
 
                                 <div
                                     v-if="
@@ -978,10 +1030,15 @@ const hasContact = computed(
                                     }}</span>
                                 </span>
                                 <span
-                                    v-if="lowestPrice(race)"
+                                    v-if="sidebarPrice(race)"
                                     class="shrink-0 font-bold"
+                                    :class="
+                                        sidebarPrice(race)?.muted
+                                            ? 'text-muted-foreground'
+                                            : ''
+                                    "
                                     data-testid="event-page__sidebar-price"
-                                    >{{ lowestPrice(race) }}</span
+                                    >{{ sidebarPrice(race)?.text }}</span
                                 >
                             </li>
                         </ul>

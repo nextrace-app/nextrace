@@ -191,13 +191,13 @@ const statusLabel = computed(() =>
                     :aria-label="t('events.more_races', { count: hiddenRaces })"
                     >{{ t('events.more_races', { count: hiddenRaces }) }}</Badge
                 >
-                <Badge
-                    v-if="event.registration.status === 'open'"
-                    variant="outline"
-                    class="border-transparent bg-secondary font-bold text-secondary-foreground"
-                    data-testid="event-card__registration-open"
-                    >{{ t('events.registration_status.open') }}</Badge
-                >
+                <RegistrationBadge
+                    :state="event.registration_state.state"
+                    :price-rises-soon="
+                        event.registration_state.price_rises_soon
+                    "
+                    data-testid="event-card__registration"
+                />
                 <Badge
                     v-if="!event.date_confirmed"
                     variant="outline"

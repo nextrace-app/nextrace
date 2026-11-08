@@ -83,6 +83,7 @@ class EventRequest extends FormRequest
             'races.*.min_age' => ['nullable', 'integer', 'min:1', 'max:120'],
             'races.*.participant_limit' => ['nullable', 'integer', 'min:1', 'max:1000000'],
             'races.*.aid_stations' => ['nullable', 'integer', 'min:0', 'max:500'],
+            'races.*.sold_out' => ['boolean'],
             'races.*.medical_certificate_required' => ['nullable', 'boolean'],
             'races.*.route_url' => ['nullable', 'url:http,https', 'max:2048'],
             'races.*.starts_at' => ['required', 'date'],

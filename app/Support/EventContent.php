@@ -28,6 +28,7 @@ class EventContent
                 'start_location', 'finish_location', 'time_limit_minutes', 'min_age', 'participant_limit',
                 'aid_stations', 'medical_certificate_required', 'route_url',
             ]);
+            $attributes['sold_out'] = (bool) ($data['sold_out'] ?? false);
             $attributes['is_main'] = (bool) ($data['is_main'] ?? false);
             $attributes['sort_order'] = $position;
             $attributes['starts_at'] = $startsAt;

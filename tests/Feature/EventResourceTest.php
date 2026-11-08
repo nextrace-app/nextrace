@@ -60,6 +60,7 @@ class EventResourceTest extends TestCase
     public function test_it_adds_races_prices_links_and_the_related_records(): void
     {
         $this->app->setLocale('en');
+        $this->travelTo('2026-11-08');
 
         $organizer = Organizer::factory()->create(['name' => ['en' => 'Club', 'el' => 'Σύλλογος'], 'email' => 'a@example.com']);
         $series = EventSeries::factory()->create(['slug' => 'crete-marathon', 'name' => ['en' => 'Crete Marathon', 'el' => 'Μαραθώνιος Κρήτης']]);
@@ -118,6 +119,7 @@ class EventResourceTest extends TestCase
             'currency' => 'EUR',
             'valid_from' => null,
             'valid_until' => '2027-01-01',
+            'state' => 'current',
         ]], $ten['prices']);
     }
 

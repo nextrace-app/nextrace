@@ -271,6 +271,7 @@ class EventController extends Controller
                 'min_age' => $race->min_age,
                 'participant_limit' => $race->participant_limit,
                 'aid_stations' => $race->aid_stations,
+                'sold_out' => $race->sold_out,
                 'medical_certificate_required' => $race->medical_certificate_required,
                 'route_url' => $race->route_url,
                 'starts_at' => $race->starts_at->format('Y-m-d\TH:i'),
