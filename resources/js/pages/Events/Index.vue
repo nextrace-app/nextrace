@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { CalendarX, ChevronLeft, ChevronRight } from '@lucide/vue';
+import { Head, router, usePage } from '@inertiajs/vue3';
+import { CalendarX } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Button } from '@/components/ui/button';
@@ -38,30 +38,13 @@ function resetFilters() {
     router.visit(localeRoute(eventsIndex()));
 }
 
-// Every page of the list has an address of its own, so that it can be opened
-// directly and followed by crawlers; the first page is the bare address.
-function pageHref(number: number): string {
-    const [path, query = ''] = page.url.split('?');
-    const params = new URLSearchParams(query);
-
-    if (number === 1) {
-        params.delete('page');
-    } else {
-        params.set('page', String(number));
-    }
-
-    const search = params.toString();
-
-    return search === '' ? path : `${path}?${search}`;
-}
-
 function scrollToList() {
     eventsList.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
 
 <template>
-    <Head :title="seo.title ?? t('nav.events')" />
+    <Head :title="seo.title ?? t('nav.races')" />
 
     <DefaultShell flush>
         <main
@@ -88,97 +71,11 @@ function scrollToList() {
                     />
                 </div>
 
-                <nav
-                    v-if="pagination.last > 1"
-                    class="mt-4 flex items-center justify-center gap-1.5 sm:mt-6"
-                    :aria-label="t('events.pagination.label')"
-                    data-testid="events-page__pagination"
-                >
-                    <Button
-                        v-if="pagination.current === 1"
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        disabled
-                        data-testid="events-page__pagination-previous"
-                        :aria-label="t('events.pagination.previous')"
-                    >
-                        <ChevronLeft class="size-4" aria-hidden="true" />
-                    </Button>
-                    <Button
-                        v-else
-                        as-child
-                        variant="outline"
-                        size="icon"
-                        data-testid="events-page__pagination-previous"
-                    >
-                        <Link
-                            :href="pageHref(pagination.current - 1)"
-                            rel="prev"
-                            preserve-scroll
-                            :aria-label="t('events.pagination.previous')"
-                            @success="scrollToList"
-                        >
-                            <ChevronLeft class="size-4" aria-hidden="true" />
-                        </Link>
-                    </Button>
-                    <Button
-                        v-for="number in pagination.last"
-                        :key="number"
-                        as-child
-                        :variant="
-                            number === pagination.current
-                                ? 'default'
-                                : 'outline'
-                        "
-                        size="icon"
-                        data-testid="events-page__pagination-page"
-                    >
-                        <Link
-                            :href="pageHref(number)"
-                            preserve-scroll
-                            :aria-current="
-                                number === pagination.current
-                                    ? 'page'
-                                    : undefined
-                            "
-                            :aria-label="
-                                t('events.pagination.page', { number })
-                            "
-                            @success="scrollToList"
-                        >
-                            {{ number }}
-                        </Link>
-                    </Button>
-                    <Button
-                        v-if="pagination.current === pagination.last"
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        disabled
-                        data-testid="events-page__pagination-next"
-                        :aria-label="t('events.pagination.next')"
-                    >
-                        <ChevronRight class="size-4" aria-hidden="true" />
-                    </Button>
-                    <Button
-                        v-else
-                        as-child
-                        variant="outline"
-                        size="icon"
-                        data-testid="events-page__pagination-next"
-                    >
-                        <Link
-                            :href="pageHref(pagination.current + 1)"
-                            rel="next"
-                            preserve-scroll
-                            :aria-label="t('events.pagination.next')"
-                            @success="scrollToList"
-                        >
-                            <ChevronRight class="size-4" aria-hidden="true" />
-                        </Link>
-                    </Button>
-                </nav>
+                <ListPagination
+                    :pagination="pagination"
+                    testid="events-page__pagination"
+                    @navigated="scrollToList"
+                />
 
                 <div
                     v-if="events.length === 0"

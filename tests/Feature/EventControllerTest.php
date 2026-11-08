@@ -150,6 +150,41 @@ class EventControllerTest extends TestCase
         );
     }
 
+    public function test_the_distance_filter_finds_an_event_by_any_of_its_races(): void
+    {
+        $this->travelTo('2026-10-24');
+
+        $weekend = Event::factory()->withMainRace(['distance_class' => 'marathon', 'starts_at' => '2026-11-08 08:30:00'])->create(['starts_on' => '2026-11-07', 'ends_on' => '2026-11-08']);
+        Race::factory()->for($weekend)->create(['distance_class' => '5k', 'distance_meters' => 5000, 'starts_at' => '2026-11-07 17:00:00']);
+        Event::factory()->withMainRace(['distance_class' => '10k', 'starts_at' => '2026-11-09 09:00:00'])->create(['starts_on' => '2026-11-09']);
+
+        $this->get(route('events.index', ['distance' => '5k']))->assertInertia(
+            fn (Assert $page) => $page
+                ->count('events', 1)
+                ->where('events.0.id', $weekend->id)
+                ->count('events.0.races', 2)
+                ->where('events.0.dates', ['from' => '2026-11-07', 'to' => '2026-11-08'])
+        );
+    }
+
+    public function test_the_event_page_carries_every_race_with_its_day_and_time(): void
+    {
+        $event = Event::factory()->withMainRace(['starts_at' => '2026-11-08 08:30:00'])->create(['starts_on' => '2026-11-07', 'ends_on' => '2026-11-08']);
+        Race::factory()->for($event)->create(['starts_at' => '2026-11-07 17:00:00', 'sort_order' => 1]);
+        Race::factory()->for($event)->create(['starts_at' => '2026-11-07 00:00:00', 'start_time_known' => false, 'sort_order' => 2]);
+
+        $this->get(route('events.show', $event))->assertInertia(
+            fn (Assert $page) => $page
+                ->component('Events/Show')
+                ->count('event.races', 3)
+                ->where('event.races.0.is_main', true)
+                ->where('event.races.1.date', '2026-11-07')
+                ->where('event.races.1.time', '17:00')
+                ->where('event.races.2.time', null)
+                ->where('event.dates', ['from' => '2026-11-07', 'to' => '2026-11-08'])
+        );
+    }
+
     public function test_an_unknown_distance_filter_is_ignored(): void
     {
         Event::factory()->count(2)->create();

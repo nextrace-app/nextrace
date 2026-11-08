@@ -154,4 +154,31 @@ class EventResourceTest extends TestCase
         $this->assertNull($data['distance_meters']);
         $this->assertSame([], $data['races']);
     }
+
+    public function test_a_one_day_event_spans_a_single_date(): void
+    {
+        $event = Event::factory()->startingAt('2027-04-11 07:00:00')->create();
+
+        $this->assertSame(['from' => '2027-04-11', 'to' => null], $this->resolve($event)['dates']);
+    }
+
+    public function test_an_event_spans_from_its_first_race_to_its_last(): void
+    {
+        $event = Event::factory()->startingAt('2026-11-08 08:30:00')->create();
+        Race::factory()->for($event)->create(['starts_at' => '2026-11-07 17:00:00', 'is_main' => false]);
+
+        $data = $this->resolve($event);
+
+        $this->assertSame(['from' => '2026-11-07', 'to' => '2026-11-08'], $data['dates']);
+        // The main race still sets the date and time the cards print next to the span.
+        $this->assertSame('2026-11-08', $data['date']);
+        $this->assertSame('08:30', $data['time']);
+    }
+
+    public function test_the_end_date_of_the_event_widens_the_span(): void
+    {
+        $event = Event::factory()->startingAt('2027-05-01 09:00:00')->create(['ends_on' => '2027-05-03']);
+
+        $this->assertSame(['from' => '2027-05-01', 'to' => '2027-05-03'], $this->resolve($event)['dates']);
+    }
 }

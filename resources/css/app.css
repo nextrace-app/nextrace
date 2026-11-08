@@ -54,7 +54,6 @@
     --color-input: var(--input);
     --color-ring: var(--ring);
 
-
     --color-sidebar: var(--sidebar-background);
     --color-sidebar-foreground: var(--sidebar-foreground);
     --color-sidebar-primary: var(--sidebar-primary);
@@ -87,9 +86,8 @@
     body,
     html {
         --font-sans:
-            'Inter', ui-sans-serif, system-ui, sans-serif,
-            'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-            'Noto Color Emoji';
+            'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+            'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     }
 }
 
@@ -160,5 +158,42 @@
     button:disabled,
     [aria-disabled='true'] {
         cursor: not-allowed;
+    }
+}
+
+/* The body of a post, rendered from Markdown on the server. */
+@layer components {
+    .post-body {
+        @apply text-lg leading-7 text-foreground;
+    }
+    .post-body > * + * {
+        @apply mt-4;
+    }
+    .post-body h2 {
+        @apply pt-2 text-xl leading-[26px] font-extrabold;
+    }
+    .post-body h3 {
+        @apply pt-1 text-lg font-extrabold;
+    }
+    .post-body ul {
+        @apply list-disc space-y-2 pl-6;
+    }
+    .post-body ol {
+        @apply list-decimal space-y-2 pl-6;
+    }
+    .post-body a {
+        @apply font-bold text-primary underline underline-offset-4;
+    }
+    .post-body blockquote {
+        @apply border-l-4 pl-4 text-muted-foreground;
+    }
+    .post-body img {
+        @apply h-auto max-w-full rounded-lg;
+    }
+    .post-body hr {
+        @apply border-t;
+    }
+    .post-body code {
+        @apply rounded bg-muted px-1 py-0.5 text-base;
     }
 }
