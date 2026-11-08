@@ -22,16 +22,35 @@ const { formatDate, formatDateRange, formatDistance } = useEventFormat();
 
 const maxChips = 3;
 
-const day = computed(() => formatDate(props.event.date, { day: 'numeric' }));
+const day = computed(() => {
+    const { from, to } = props.event.dates;
+    const first = formatDate(from, { day: 'numeric' });
+
+    // Two days of one month fit the badge as "7–8"; a span over months shows its first day.
+    return to && to.slice(0, 7) === from.slice(0, 7)
+        ? `${first}–${formatDate(to, { day: 'numeric' })}`
+        : first;
+});
 const month = computed(() =>
-    formatDate(props.event.date, { month: 'short' }).replace('.', ''),
+    formatDate(props.event.dates.from, { month: 'short' }).replace('.', ''),
 );
 const fullDate = computed(() =>
-    formatDateRange(props.event.date, props.event.ends_on),
+    formatDateRange(props.event.dates.from, props.event.dates.to),
 );
-const otherRaces = computed(() =>
-    props.event.races.filter((race) => !race.is_main),
-);
+// One chip per distance: a weekend with two 5 km races shows "5 km" once.
+const otherRaces = computed(() => {
+    const seen = new Set([props.event.distance_meters]);
+
+    return props.event.races.filter((race) => {
+        if (race.is_main || seen.has(race.distance_meters)) {
+            return false;
+        }
+
+        seen.add(race.distance_meters);
+
+        return true;
+    });
+});
 const chips = computed(() => otherRaces.value.slice(0, maxChips));
 const hiddenRaces = computed(
     () => otherRaces.value.length - chips.value.length,
@@ -135,7 +154,7 @@ const statusLabel = computed(() =>
                             class="size-4 shrink-0"
                             aria-hidden="true"
                         />
-                        <time :datetime="event.date">{{ fullDate }}</time>
+                        <time :datetime="event.dates.from">{{ fullDate }}</time>
                         <span aria-hidden="true">·</span>
                         <span class="sr-only"
                             >{{ t('events.fields.time') }}:</span

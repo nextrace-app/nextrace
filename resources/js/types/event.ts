@@ -88,6 +88,8 @@ export type Event = {
     registration_url: string | null;
     edition_number: number | null;
     ends_on: string | null;
+    /** The days the event takes; "to" is null for a one-day event. */
+    dates: { from: string; to: string | null };
     status: EventStatus;
     date_confirmed: boolean;
     venue: string | null;

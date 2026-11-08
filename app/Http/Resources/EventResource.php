@@ -48,6 +48,7 @@ class EventResource extends JsonResource
 
             'edition_number' => $this->edition_number,
             'ends_on' => $this->ends_on?->toDateString(),
+            'dates' => $this->dateSpan(),
             'status' => $this->status->value,
             'date_confirmed' => $this->date_confirmed,
             'venue' => $this->translatedOrNull('venue'),
@@ -124,6 +125,26 @@ class EventResource extends JsonResource
                 'valid_until' => $price->valid_until?->toDateString(),
             ])->all(),
         ];
+    }
+
+    /**
+     * The days the event takes: from its first race to its last race or end
+     * date. "to" is null when everything happens on one day.
+     *
+     * @return array{from: string, to: string|null}
+     */
+    private function dateSpan(): array
+    {
+        $days = $this->races->map(fn (Race $race) => $race->starts_at->toDateString())
+            ->push($this->starts_on->toDateString())
+            ->when($this->ends_on !== null, fn ($days) => $days->push($this->ends_on->toDateString()))
+            ->sort()
+            ->values();
+
+        $from = $days->first();
+        $to = $days->last();
+
+        return ['from' => $from, 'to' => $to === $from ? null : $to];
     }
 
     /**
