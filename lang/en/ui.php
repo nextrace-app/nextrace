@@ -17,7 +17,7 @@ return [
         'dashboard' => 'Dashboard',
         'login' => 'Log in',
         'register' => 'Register',
-        'events' => 'Events',
+        'posts' => 'Posts',
         'races' => 'Races',
         'all_races' => 'All races',
         'search' => 'Search',
@@ -72,7 +72,6 @@ return [
         'tagline' => 'Running races across all of Greece.',
         'disclaimer' => 'Dates are collected from organisers. Always confirm on the official site before you travel.',
         'copyright' => '© {year} Nextrace',
-        'browse' => 'Browse',
     ],
 
     'events' => [
@@ -106,12 +105,6 @@ return [
             'city' => 'City',
             'all' => 'All',
             'reset' => 'Clear filters',
-        ],
-        'pagination' => [
-            'label' => 'Pagination',
-            'previous' => 'Previous page',
-            'next' => 'Next page',
-            'page' => 'Page {number}',
         ],
         'index' => [
             'title' => 'Upcoming races',
@@ -225,6 +218,27 @@ return [
             'remove' => 'Remove from favorites',
             'add_named' => 'Add {name} to favorites',
             'remove_named' => 'Remove {name} from favorites',
+        ],
+    ],
+
+    'pagination' => [
+        'label' => 'Pagination',
+        'previous' => 'Previous page',
+        'next' => 'Next page',
+        'page' => 'Page {number}',
+    ],
+
+    'posts' => [
+        'title' => 'Posts',
+        'empty' => 'There are no posts yet. Check back soon.',
+        'browse_events' => 'Browse events',
+        'back' => 'Back to posts',
+        'source' => 'Source:',
+        'categories' => [
+            'news' => 'News',
+            'guide' => 'Guide',
+            'results' => 'Results',
+            'interview' => 'Interview',
         ],
     ],
 

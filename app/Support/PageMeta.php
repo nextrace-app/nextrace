@@ -6,6 +6,7 @@ use App\Enums\EventStatus;
 use App\Enums\RaceStatus;
 use App\Enums\RegistrationStatus;
 use App\Models\Event;
+use App\Models\Post;
 use App\Models\Race;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
@@ -49,6 +50,14 @@ class PageMeta
 
     private string $type = 'website';
 
+    /**
+     * The picture every page shares when it has none of its own, relative to
+     * the public directory; see the "Share image" page of the Figma file.
+     */
+    public const THEME_COLOR = '#f6f4ee';
+
+    public const DEFAULT_IMAGE = 'images/share-default.png';
+
     private ?string $image = null;
 
     /** @var list<array<string, mixed>> */
@@ -79,6 +88,58 @@ class PageMeta
                 [__('seo.breadcrumbs.home'), route(Locale::routeName('home'))],
                 [__('seo.breadcrumbs.events'), route(Locale::routeName('events.index'))],
                 [$name, Locale::alternates(request())[$locale]],
+            ]),
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Describe the page of a single post: its own meta title and description
+     * when it has them, otherwise its title and excerpt.
+     */
+    public function forPost(Post $post): static
+    {
+        $locale = app()->getLocale();
+        $title = $post->translated('title', $locale);
+        $room = self::TITLE_LIMIT - mb_strlen(' - '.config()->string('app.name'));
+
+        $description = $post->translatedOrNull('meta_description')
+            ?? $post->translatedOrNull('excerpt')
+            ?? strip_tags($post->bodyHtml());
+
+        $this->title = Str::limit($post->translatedOrNull('meta_title') ?? $title, $room, '…', true);
+        $this->description = Str::limit(Str::of($description)->squish()->toString(), self::DESCRIPTION_LIMIT, '…', true);
+        $this->type = 'article';
+        $this->image = $post->cover_image_url;
+
+        $url = Locale::alternates(request())[$locale];
+
+        $this->jsonLd = [
+            array_filter([
+                '@context' => 'https://schema.org',
+                '@type' => 'BlogPosting',
+                'headline' => Str::limit($title, 110, '…', true),
+                'description' => $this->description,
+                'image' => $post->cover_image_url,
+                'datePublished' => $post->published_at?->toIso8601String(),
+                'dateModified' => $post->updated_at?->toIso8601String(),
+                'inLanguage' => $locale,
+                'url' => $url,
+                'mainEntityOfPage' => $url,
+                'author' => ['@id' => url('/').'#organization'],
+                'publisher' => [
+                    '@type' => 'Organization',
+                    '@id' => url('/').'#organization',
+                    'name' => config()->string('app.name'),
+                    'url' => route(Locale::routeName('home')),
+                    'logo' => url('/apple-touch-icon.png'),
+                ],
+            ], fn (mixed $value) => $value !== null),
+            $this->breadcrumbs([
+                [__('seo.breadcrumbs.home'), route(Locale::routeName('home'))],
+                [__('seo.breadcrumbs.posts'), route(Locale::routeName('posts.index'))],
+                [$title, $url],
             ]),
         ];
 
@@ -145,7 +206,7 @@ class PageMeta
     /**
      * Everything the root template needs, with defaults for pages that set nothing.
      *
-     * @return array{title: string|null, description: string, type: string, image: string|null, robots: string, locale: string, localeAlternates: list<string>, siteName: string, twitterCard: string, jsonLd: list<string>}
+     * @return array{title: string|null, description: string, type: string, image: string, themeColor: string, robots: string, locale: string, localeAlternates: list<string>, siteName: string, twitterCard: string, jsonLd: list<string>}
      */
     public function toArray(): array
     {
@@ -156,7 +217,8 @@ class PageMeta
             'title' => $this->title ?? ($key ? Lang::string("seo.{$key}.title") : null),
             'description' => $this->description ?? ($key ? Lang::string("seo.{$key}.description") : Lang::string('seo.default_description')),
             'type' => $this->type,
-            'image' => $this->image,
+            'image' => $this->image ?? asset(self::DEFAULT_IMAGE),
+            'themeColor' => self::THEME_COLOR,
             'robots' => $this->robots(),
             'locale' => $this->openGraphLocale($locale),
             'localeAlternates' => array_values(array_map(
@@ -164,7 +226,7 @@ class PageMeta
                 array_diff(config()->array('app.supported_locales'), [$locale]),
             )),
             'siteName' => config()->string('app.name'),
-            'twitterCard' => $this->image ? 'summary_large_image' : 'summary',
+            'twitterCard' => 'summary_large_image',
             'jsonLd' => array_map(self::encode(...), $this->jsonLd ?: $this->pageJsonLd()),
         ];
     }
@@ -216,6 +278,7 @@ class PageMeta
         return match ($name) {
             'home' => 'home',
             'events.index' => 'events',
+            'posts.index' => 'posts',
             default => null,
         };
     }
@@ -326,6 +389,12 @@ class PageMeta
                 $this->breadcrumbs([
                     [__('seo.breadcrumbs.home'), $home],
                     [__('seo.breadcrumbs.events'), route(Locale::routeName('events.index'))],
+                ]),
+            ],
+            'posts' => [
+                $this->breadcrumbs([
+                    [__('seo.breadcrumbs.home'), $home],
+                    [__('seo.breadcrumbs.posts'), route(Locale::routeName('posts.index'))],
                 ]),
             ],
             default => [],

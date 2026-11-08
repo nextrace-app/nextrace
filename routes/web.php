@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\SeriesController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Middleware\HideAdminArea;
@@ -18,6 +19,9 @@ $localized = function () {
 
     Route::get('events', [EventController::class, 'index'])->name('events.index');
     Route::get('events/{event}', [EventController::class, 'show'])->name('events.show');
+
+    Route::get('posts', [PostController::class, 'index'])->name('posts.index');
+    Route::get('posts/{post}', [PostController::class, 'show'])->name('posts.show');
 
     Route::middleware('auth')->group(function () {
         Route::inertia('profile', 'Profile')->name('profile.show');
