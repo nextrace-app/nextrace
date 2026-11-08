@@ -151,6 +151,9 @@ return [
             'until' => 'until {date}',
             'from' => 'from {date}',
             'register' => 'Register',
+            'schedule_hint' => '{races} over {days}. Choose a race to see its details.',
+            'days' => 'one day | {n} days',
+            'time_tba' => 'time TBA',
             'cancelled' => 'Race cancelled',
             'discipline' => [
                 'run' => 'Run',

@@ -86,6 +86,56 @@ class EventSeeder extends Seeder
                 'start_time_known' => false,
             ]);
         }
+
+        $this->seedAthensWeekend();
+    }
+
+    /**
+     * Athens Marathon is a weekend of races, as on athensauthenticmarathon.gr:
+     * the 5 km, the universities night run, the kids race and the Special
+     * Olympics race on Saturday, the marathon and the 10 km on Sunday.
+     */
+    private function seedAthensWeekend(): void
+    {
+        $event = Event::query()->find(1);
+
+        if ($event === null) {
+            return;
+        }
+
+        $event->update(['starts_on' => '2026-11-07', 'ends_on' => '2026-11-08']);
+
+        $stadium = ['el' => 'Παναθηναϊκό Στάδιο', 'en' => 'Panathenaic Stadium'];
+        $amalias = ['el' => 'Λεωφ. Βασ. Αμαλίας', 'en' => 'Vasilissis Amalias Avenue'];
+        $sofias = ['el' => 'Λεωφ. Βασ. Σοφίας', 'en' => 'Vasilissis Sofias Avenue'];
+
+        $races = [
+            'marathon' => [['el' => 'Μαραθώνιος', 'en' => 'Marathon'], DistanceClass::Marathon, 42195, '2026-11-08 08:30', ['el' => 'Μαραθώνας', 'en' => 'Marathon'], true, 20],
+            '10k' => [['el' => '10 χλμ.', 'en' => '10 km'], DistanceClass::TenK, 10000, '2026-11-08 08:00', $amalias, true, null],
+            '5k' => [['el' => '5 χλμ.', 'en' => '5 km'], DistanceClass::FiveK, 5000, '2026-11-07 17:00', $amalias, true, null],
+            'night-run-5k' => [['el' => 'Νυχτερινός αγώνας πανεπιστημίων 5 χλμ.', 'en' => 'Universities night run 5 km'], DistanceClass::FiveK, 5000, '2026-11-07 20:00', $amalias, true, null],
+            'kids-race' => [['el' => 'Παιδικός αγώνας 1,2 χλμ.', 'en' => 'Kids race 1.2 km'], DistanceClass::Kids, 1200, '2026-11-07 16:00', $sofias, false, null],
+            'special-olympics' => [['el' => 'Special Olympics 1,2 χλμ.', 'en' => 'Special Olympics 1.2 km'], DistanceClass::Other, 1200, '2026-11-07 16:45', $sofias, false, null],
+        ];
+
+        $order = 0;
+
+        foreach ($races as $slug => [$name, $class, $metres, $startsAt, $start, $competitive, $minAge]) {
+            $event->races()->updateOrCreate(['slug' => $slug], [
+                'name' => $name,
+                'sort_order' => $order++,
+                'is_main' => $slug === 'marathon',
+                'terrain' => RaceTerrain::Road,
+                'distance_class' => $class,
+                'distance_meters' => $metres,
+                'starts_at' => $startsAt,
+                'start_time_known' => true,
+                'start_location' => $start,
+                'finish_location' => $stadium,
+                'is_competitive' => $competitive,
+                'min_age' => $minAge,
+            ]);
+        }
     }
 
     private function distanceClass(string $category): DistanceClass

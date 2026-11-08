@@ -24,7 +24,7 @@ import {
     Users,
 } from '@lucide/vue';
 import type { Component } from 'vue';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -56,9 +56,9 @@ const {
 } = useEventFormat();
 
 const fullDate = computed(() =>
-    props.event.ends_on
-        ? formatDateRange(props.event.date, props.event.ends_on)
-        : formatDate(props.event.date, {
+    props.event.dates.to
+        ? formatDateRange(props.event.dates.from, props.event.dates.to)
+        : formatDate(props.event.dates.from, {
               weekday: 'long',
               day: 'numeric',
               month: 'long',
@@ -133,11 +133,11 @@ const facts = computed(() => {
             icon: Calendar,
             label: t('events.fields.date'),
             value: fullDate.value,
-            datetime: props.event.date,
+            datetime: props.event.dates.from,
         },
     ];
 
-    if (!props.event.ends_on) {
+    if (!props.event.dates.to) {
         items.push({
             key: 'time',
             icon: Clock,
@@ -187,8 +187,40 @@ function lowestPrice(race: Event['races'][number]): string | null {
         : formatPrice(cheapest.amount, cheapest.currency);
 }
 
+type EventRace = Event['races'][number];
+
+/** The races grouped by the day they start on, the days and the races in each in order. */
+const raceDays = computed(() => {
+    // Map is the icon from lucide here, hence globalThis.
+    const days = new globalThis.Map<string, EventRace[]>();
+
+    for (const race of props.event.races) {
+        days.set(race.date, [...(days.get(race.date) ?? []), race]);
+    }
+
+    return [...days.entries()]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([date, races]) => ({
+            date,
+            races: [...races].sort((a, b) =>
+                (a.time ?? '99:99').localeCompare(b.time ?? '99:99'),
+            ),
+        }));
+});
+
+const selectedRaceId = ref<number | null>(
+    (props.event.races.find((race) => race.is_main) ?? props.event.races[0])
+        ?.id ?? null,
+);
+const selectedRace = computed(
+    () =>
+        props.event.races.find((race) => race.id === selectedRaceId.value) ??
+        props.event.races[0],
+);
+
+// The course follows the race chosen in the schedule.
 const courseRaces = computed(() =>
-    props.event.races.filter(
+    (selectedRace.value ? [selectedRace.value] : []).filter(
         (race) => race.start_location || race.finish_location || race.route_url,
     ),
 );
@@ -359,15 +391,93 @@ const hasContact = computed(
                         v-if="event.races.length > 0"
                         data-testid="event-page__races"
                     >
-                        <h2 class="mb-4 text-xl font-extrabold tracking-tight">
+                        <h2 class="text-xl font-extrabold tracking-tight">
                             {{ t('events.races.title') }}
                         </h2>
+                        <template v-if="event.races.length > 1">
+                            <p
+                                class="mt-2 text-sm text-muted-foreground"
+                                data-testid="event-page__schedule-hint"
+                            >
+                                {{
+                                    t('events.races.schedule_hint', {
+                                        races: t('events.races.count', {
+                                            count: event.races.length,
+                                        }),
+                                        days: t(
+                                            'events.races.days',
+                                            raceDays.length,
+                                        ),
+                                    })
+                                }}
+                            </p>
+                            <div
+                                class="mt-4 flex flex-wrap gap-4"
+                                data-testid="event-page__schedule"
+                            >
+                                <div
+                                    v-for="day in raceDays"
+                                    :key="day.date"
+                                    class="flex min-w-[18rem] flex-1 flex-col gap-3 rounded-lg border bg-card p-4"
+                                    data-testid="event-page__schedule-day"
+                                >
+                                    <h3
+                                        class="text-[11px] font-bold tracking-widest text-muted-foreground uppercase"
+                                    >
+                                        <time :datetime="day.date">{{
+                                            formatDate(day.date, {
+                                                weekday: 'long',
+                                                day: 'numeric',
+                                                month: 'long',
+                                            })
+                                        }}</time>
+                                    </h3>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button
+                                            v-for="race in day.races"
+                                            :key="race.id"
+                                            type="button"
+                                            class="inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-2.5 text-left text-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                            :class="
+                                                race.id === selectedRace?.id
+                                                    ? 'border-transparent bg-primary text-primary-foreground'
+                                                    : 'bg-card hover:border-primary'
+                                            "
+                                            :aria-pressed="
+                                                race.id === selectedRace?.id
+                                            "
+                                            :aria-controls="`race-${race.id}`"
+                                            data-testid="event-page__schedule-race"
+                                            @click="selectedRaceId = race.id"
+                                        >
+                                            <span class="font-bold">{{
+                                                race.name
+                                            }}</span>
+                                            <span
+                                                :class="
+                                                    race.id === selectedRace?.id
+                                                        ? 'text-primary-foreground/80'
+                                                        : 'text-muted-foreground'
+                                                "
+                                                >{{
+                                                    race.time ??
+                                                    t('events.races.time_tba')
+                                                }}</span
+                                            >
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
                         <ul
-                            class="flex flex-col gap-4"
+                            class="mt-4 flex flex-col gap-4"
                             data-testid="event-page__race-list"
                         >
                             <li
-                                v-for="race in event.races"
+                                v-for="race in selectedRace
+                                    ? [selectedRace]
+                                    : []"
+                                :id="`race-${race.id}`"
                                 :key="race.id"
                                 class="rounded-lg border bg-card p-6"
                                 data-testid="event-page__race"

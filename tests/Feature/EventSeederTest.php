@@ -25,7 +25,7 @@ class EventSeederTest extends TestCase
                 'participants' => $event['participants'],
                 'image_url' => $event['image'],
             ]);
-            $this->assertSame($event['category'], Event::query()->findOrFail($event['id'])->mainRace->name['en']);
+            $this->assertSame($event['id'] === 1 ? 'Marathon' : $event['category'], Event::query()->findOrFail($event['id'])->mainRace->name['en']);
         }
     }
 
@@ -37,10 +37,6 @@ class EventSeederTest extends TestCase
 
         $this->assertSame('athens-marathon', $athens->slug);
         $this->assertSame(['el' => 'Athens Marathon', 'en' => 'Athens Marathon'], $athens->name);
-        $this->assertSame(42200, $athens->mainRace->distance_meters);
-        $this->assertSame('2026-11-08', $athens->starts_on->toDateString());
-        $this->assertSame('2026-11-08 00:00:00', $athens->mainRace->starts_at->toDateTimeString());
-        $this->assertFalse($athens->mainRace->start_time_known);
         $this->assertSame('attiki', $athens->region->slug);
         $this->assertSame('Athens', $athens->city);
         $this->assertSame('GR', $athens->country);
@@ -52,13 +48,34 @@ class EventSeederTest extends TestCase
         $this->assertSame('Athens to Sparta', $spartathlon->city);
     }
 
+    public function test_athens_marathon_is_a_weekend_of_six_races(): void
+    {
+        $this->seed(EventSeeder::class);
+
+        $athens = Event::query()->findOrFail(1);
+
+        $this->assertSame('2026-11-07', $athens->starts_on->toDateString());
+        $this->assertSame('2026-11-08', $athens->ends_on->toDateString());
+        $this->assertSame(
+            ['marathon', '10k', '5k', 'night-run-5k', 'kids-race', 'special-olympics'],
+            $athens->races->pluck('slug')->all(),
+        );
+        $this->assertSame(1, $athens->races->where('is_main', true)->count());
+        $this->assertSame(42195, $athens->mainRace->distance_meters);
+        $this->assertSame('2026-11-08 08:30', $athens->mainRace->starts_at->format('Y-m-d H:i'));
+        $this->assertTrue($athens->mainRace->start_time_known);
+        $this->assertSame(20, $athens->mainRace->min_age);
+        $this->assertSame(4, $athens->races->filter(fn (Race $race) => $race->starts_at->toDateString() === '2026-11-07')->count());
+    }
+
     public function test_it_can_be_run_again_without_duplicating_events(): void
     {
         $this->seed(EventSeeder::class);
         $this->seed(EventSeeder::class);
 
         $this->assertSame(count(EventSeeder::catalogue()), Event::query()->count());
-        $this->assertSame(count(EventSeeder::catalogue()), Race::query()->count());
+        // Every event has one race, except Athens Marathon with its weekend of six.
+        $this->assertSame(count(EventSeeder::catalogue()) + 5, Race::query()->count());
     }
 
     public function test_every_seeded_event_has_exactly_one_main_race(): void
