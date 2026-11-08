@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
+use League\CommonMark\Extension\ExternalLink\ExternalLinkExtension;
 
 /**
  * An editorial post: news, a guide, results or an interview.
@@ -104,6 +106,38 @@ class Post extends Model
     {
         $query->where('posts.status', PostStatus::Published)
             ->where('posts.published_at', '<=', now());
+    }
+
+    /**
+     * Whether visitors can see the post: it is published and its date has come.
+     */
+    public function isPublished(): bool
+    {
+        return $this->status === PostStatus::Published
+            && $this->published_at !== null
+            && $this->published_at->lte(now());
+    }
+
+    /**
+     * The body of the post in the current locale, rendered from Markdown to HTML.
+     *
+     * Raw HTML in the text is dropped and unsafe links (javascript: and the
+     * like) are neutralised, so the result is safe to print as it is. Links to
+     * other sites open in a new tab and are not vouched for.
+     */
+    public function bodyHtml(): string
+    {
+        return Str::markdown($this->translated('body'), [
+            'html_input' => 'strip',
+            'allow_unsafe_links' => false,
+            'external_link' => [
+                'internal_hosts' => parse_url(config()->string('app.url'), PHP_URL_HOST) ?: 'localhost',
+                'open_in_new_window' => true,
+                'nofollow' => 'external',
+                'noopener' => 'external',
+                'noreferrer' => 'external',
+            ],
+        ], [new ExternalLinkExtension]);
     }
 
     /**

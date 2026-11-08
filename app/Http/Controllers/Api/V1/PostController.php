@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Enums\PostStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StorePostRequest;
-use App\Http\Resources\PostResource;
+use App\Http\Resources\StoredPostResource;
 use App\Models\Post;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
@@ -43,7 +43,7 @@ class PostController extends Controller
             $post->events()->sync($data['event_ids']);
         }
 
-        return PostResource::make($post)->response()->setStatusCode(201);
+        return StoredPostResource::make($post)->response()->setStatusCode(201);
     }
 
     /**

@@ -16,9 +16,15 @@ return [
         'description' => 'Upcoming races across Greece, from Crete to Macedonia: 5K, 10K, half marathons, marathons, trail and ultra, with dates and registration.',
     ],
 
+    'posts' => [
+        'title' => 'Running news, guides and race results in Greece',
+        'description' => 'News, guides, results and interviews from the running scene in Greece: what is new in the races, how to prepare and who won.',
+    ],
+
     'breadcrumbs' => [
         'home' => 'Home',
         'events' => 'Races',
+        'posts' => 'Posts',
     ],
 
     'event' => [
