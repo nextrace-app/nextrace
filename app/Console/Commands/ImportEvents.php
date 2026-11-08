@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Enums\Certification;
 use App\Enums\DistanceClass;
 use App\Enums\EventStatus;
+use App\Enums\KeyDateType;
 use App\Enums\LinkType;
 use App\Enums\RaceDiscipline;
 use App\Enums\RaceStatus;
@@ -27,13 +28,14 @@ use RuntimeException;
 use Throwable;
 
 /**
- * Imports events with their races, prices and links from a nested JSON file.
+ * Imports events with their races, prices, links and key dates from a nested
+ * JSON file.
  *
  * Every level is upserted by slug, so re-running it updates what it imported
  * before: series and organizers by slug, events by slug (or by one of their
  * previous_slugs, which renames them), races by event and slug. The races of an
- * event that are missing from the file are removed, and its links and prices
- * are replaced. Each event is written in one transaction and skipped with a
+ * event that are missing from the file are removed, and its links, key dates
+ * and prices are replaced. Each event is written in one transaction and skipped with a
  * warning when it is invalid, so nothing is ever half written.
  *
  * New events are drafts. `published: true` publishes an event that is not yet
@@ -228,6 +230,12 @@ class ImportEvents extends Command
             'links.*.url' => ['required', 'url'],
             'links.*.label' => ['nullable', 'array'],
 
+            'dates' => ['nullable', 'array'],
+            'dates.*.type' => ['required', Rule::enum(KeyDateType::class)],
+            'dates.*.starts_on' => ['required', 'date'],
+            'dates.*.ends_on' => ['nullable', 'date', 'after_or_equal:dates.*.starts_on'],
+            'dates.*.label' => ['nullable', 'array'],
+
             'races' => ['required', 'array', 'min:1'],
             'races.*.slug' => ['required', 'string', 'max:255'],
             'races.*.name' => ['required', 'array'],
@@ -343,6 +351,12 @@ class ImportEvents extends Command
 
         foreach (array_values($data['links'] ?? []) as $position => $link) {
             $event->links()->create([...$link, 'sort_order' => $position]);
+        }
+
+        $event->dates()->delete();
+
+        foreach (array_values($data['dates'] ?? []) as $position => $date) {
+            $event->dates()->create([...$date, 'sort_order' => $position]);
         }
     }
 

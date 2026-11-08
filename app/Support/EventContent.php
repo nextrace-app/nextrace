@@ -8,17 +8,18 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 
 /**
- * Writes the races, prices and links of an event from the admin form, the way
- * the importer does: races are matched by slug, the ones missing from the form
- * are removed, and prices and links are replaced.
+ * Writes the races, prices, links and key dates of an event from the admin
+ * form, the way the importer does: races are matched by slug, the ones missing
+ * from the form are removed, and prices, links and dates are replaced.
  */
 class EventContent
 {
     /**
      * @param  list<array<string, mixed>>  $races
      * @param  list<array<string, mixed>>  $links
+     * @param  list<array<string, mixed>>  $dates
      */
-    public static function sync(Event $event, array $races, array $links): void
+    public static function sync(Event $event, array $races, array $links, array $dates = []): void
     {
         foreach ($races as $position => $data) {
             $startsAt = Carbon::parse($data['starts_at'], 'Europe/Athens');
@@ -51,6 +52,16 @@ class EventContent
 
         foreach ($links as $position => $link) {
             $event->links()->create([...Arr::only($link, ['type', 'url', 'label']), 'sort_order' => $position]);
+        }
+
+        $event->dates()->delete();
+
+        foreach ($dates as $position => $date) {
+            $event->dates()->create([
+                ...Arr::only($date, ['type', 'starts_on', 'label']),
+                'ends_on' => ($date['ends_on'] ?? null) ?: null,
+                'sort_order' => $position,
+            ]);
         }
     }
 }

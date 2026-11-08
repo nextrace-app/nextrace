@@ -51,15 +51,21 @@ export function useEventFormat() {
             timeZone: 'UTC',
         }).format(new Date(`${value.replace(' ', 'T')}Z`));
 
-    const formatDateRange = (start: string, end: string | null): string => {
-        if (end === null || end === start) {
-            return formatDate(start);
-        }
-
-        return new Intl.DateTimeFormat(locale.value, {
+    const formatDateRange = (
+        start: string,
+        end: string | null,
+        options: Intl.DateTimeFormatOptions = {
             day: 'numeric',
             month: 'long',
             year: 'numeric',
+        },
+    ): string => {
+        if (end === null || end === start) {
+            return formatDate(start, options);
+        }
+
+        return new Intl.DateTimeFormat(locale.value, {
+            ...options,
             timeZone: 'UTC',
         }).formatRange(
             new Date(`${start}T00:00:00Z`),

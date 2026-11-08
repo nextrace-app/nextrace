@@ -174,6 +174,16 @@ class Event extends Model
     }
 
     /**
+     * The important dates of the event: expo, bib pickup, deadlines.
+     *
+     * @return HasMany<EventDate, $this>
+     */
+    public function dates(): HasMany
+    {
+        return $this->hasMany(EventDate::class)->orderBy('starts_on')->orderBy('sort_order')->orderBy('id');
+    }
+
+    /**
      * @return HasMany<EventLink, $this>
      */
     public function links(): HasMany
@@ -344,7 +354,7 @@ class Event extends Model
     #[Scope]
     protected function withDetails(Builder $query): void
     {
-        $query->with(['mainRace', 'races.prices', 'links', 'series', 'organizer', 'region']);
+        $query->with(['mainRace', 'races.prices', 'links', 'dates', 'series', 'organizer', 'region']);
     }
 
     /**

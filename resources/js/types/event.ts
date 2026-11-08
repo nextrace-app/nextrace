@@ -86,6 +86,25 @@ export type EventLink = {
     label: string | null;
 };
 
+export type KeyDateType =
+    | 'registration_opens'
+    | 'registration_closes'
+    | 'changes_deadline'
+    | 'expo'
+    | 'bib_pickup'
+    | 'other';
+
+/** One entry of the timeline of important dates of an event. */
+export type KeyDate = {
+    type: KeyDateType;
+    from: string;
+    /** The last day of a span; null for a single day. */
+    to: string | null;
+    /** Null when the type says what the date is. */
+    label: string | null;
+    state: 'past' | 'next' | 'upcoming';
+};
+
 export type Event = {
     id: number;
     slug: string;
@@ -133,5 +152,6 @@ export type Event = {
         state: RegistrationState;
         price_rises_soon: boolean;
     };
+    key_dates: KeyDate[];
     links: EventLink[];
 };

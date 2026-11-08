@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\EventStatus;
+use App\Enums\KeyDateType;
 use App\Enums\LinkType;
 use App\Enums\RaceDiscipline;
 use App\Enums\RaceStatus;
@@ -106,8 +107,8 @@ class EventController extends Controller
         abort_if(! $this->canModerate($user) && $user->organizer_id === null, 403);
 
         $event = DB::transaction(function () use ($attributes) {
-            $event = Event::create(Arr::except($attributes, ['races', 'links']));
-            EventContent::sync($event, $attributes['races'], $attributes['links']);
+            $event = Event::create(Arr::except($attributes, ['races', 'links', 'dates']));
+            EventContent::sync($event, $attributes['races'], $attributes['links'], $attributes['dates']);
 
             return $event;
         });
@@ -129,8 +130,8 @@ class EventController extends Controller
         $attributes = $this->withOwnOrganizer($request->attributesForModel(), $this->user($request));
 
         DB::transaction(function () use ($event, $attributes) {
-            $event->update(Arr::except($attributes, ['races', 'links']));
-            EventContent::sync($event, $attributes['races'], $attributes['links']);
+            $event->update(Arr::except($attributes, ['races', 'links', 'dates']));
+            EventContent::sync($event, $attributes['races'], $attributes['links'], $attributes['dates']);
         });
 
         return to_route(Locale::routeName('admin.events.edit'), $event)->with('status', 'updated');
@@ -214,6 +215,7 @@ class EventController extends Controller
                 'state' => $event->moderationState(),
                 'races' => $this->races($event),
                 'links' => $this->links($event),
+                'dates' => $this->dates($event),
                 'urls' => [
                     'submit' => $this->url('submit', $event),
                     'publish' => $this->url('publish', $event),
@@ -232,6 +234,7 @@ class EventController extends Controller
                 'terrains' => array_column(RaceTerrain::cases(), 'value'),
                 'statuses' => array_column(RaceStatus::cases(), 'value'),
                 'linkTypes' => array_column(LinkType::cases(), 'value'),
+                'dateTypes' => array_column(KeyDateType::cases(), 'value'),
             ],
             'canPublish' => $user->can('publish', Event::class),
             'canDelete' => $event !== null && $user->can('delete', $event),
@@ -296,6 +299,25 @@ class EventController extends Controller
         }
 
         return $links;
+    }
+
+    /**
+     * @return list<array{type: string, starts_on: string, ends_on: string|null, label: array<string, string>|null}>
+     */
+    private function dates(Event $event): array
+    {
+        $dates = [];
+
+        foreach ($event->dates as $date) {
+            $dates[] = [
+                'type' => $date->type->value,
+                'starts_on' => $date->starts_on->toDateString(),
+                'ends_on' => $date->ends_on?->toDateString(),
+                'label' => $date->label,
+            ];
+        }
+
+        return $dates;
     }
 
     /**

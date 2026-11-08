@@ -72,6 +72,11 @@ class EventSeederTest extends TestCase
         $this->assertSame([7500, 16500], $athens->mainRace->prices->pluck('amount_cents')->all());
         $this->assertSame([0], $athens->races->firstWhere('slug', 'kids-race')->prices->pluck('amount_cents')->all());
         $this->assertSame(4, $athens->races->filter(fn (Race $race) => $race->starts_at->toDateString() === '2026-11-07')->count());
+        $this->assertSame(
+            ['registration_opens', 'changes_deadline', 'bib_pickup', 'other', 'other'],
+            $athens->dates->map(fn ($date) => $date->type->value)->all(),
+        );
+        $this->assertSame('2026-11-07', $athens->dates->firstWhere('type.value', 'bib_pickup')->ends_on->toDateString());
     }
 
     public function test_it_can_be_run_again_without_duplicating_events(): void

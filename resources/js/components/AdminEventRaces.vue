@@ -36,6 +36,12 @@ export type Race = {
     prices: Price[];
 };
 export type EventLink = { type: string; url: string; label: Translated };
+export type KeyDate = {
+    type: string;
+    starts_on: string;
+    ends_on: string;
+    label: Translated;
+};
 
 defineProps<{
     errors: Record<string, string | undefined>;
@@ -44,11 +50,13 @@ defineProps<{
         terrains: string[];
         statuses: string[];
         linkTypes: string[];
+        dateTypes: string[];
     };
 }>();
 
 const races = defineModel<Race[]>('races', { required: true });
 const links = defineModel<EventLink[]>('links', { required: true });
+const dates = defineModel<KeyDate[]>('dates', { required: true });
 
 const { t } = useI18n();
 
@@ -132,6 +140,22 @@ const addLink = () => {
 
 const removeLink = (index: number) => {
     links.value = links.value.filter((_, i) => i !== index);
+};
+
+const addDate = () => {
+    dates.value = [
+        ...dates.value,
+        {
+            type: 'expo',
+            starts_on: '',
+            ends_on: '',
+            label: { el: '', en: '' },
+        },
+    ];
+};
+
+const removeDate = (index: number) => {
+    dates.value = dates.value.filter((_, i) => i !== index);
 };
 </script>
 
@@ -531,6 +555,94 @@ const removeLink = (index: number) => {
             @click="addRace"
         >
             {{ t('admin.events.races.add') }}
+        </Button>
+
+        <div class="flex flex-col gap-1">
+            <h2 class="text-xl font-bold">
+                {{ t('admin.events.races.dates') }}
+            </h2>
+            <p class="text-sm text-muted-foreground">
+                {{ t('admin.events.races.dates_hint') }}
+            </p>
+        </div>
+        <div
+            v-for="(date, index) in dates"
+            :key="index"
+            class="grid gap-2 rounded-lg border p-4 sm:grid-cols-3"
+            data-testid="admin-races__date"
+        >
+            <div class="grid gap-1">
+                <Label :for="`date-${index}-type`">{{
+                    t('admin.events.races.date_type')
+                }}</Label>
+                <select
+                    :id="`date-${index}-type`"
+                    v-model="date.type"
+                    :class="select"
+                >
+                    <option
+                        v-for="value in options.dateTypes"
+                        :key="value"
+                        :value="value"
+                    >
+                        {{ t(`events.key_dates.types.${value}`) }}
+                    </option>
+                </select>
+            </div>
+            <div class="grid gap-1">
+                <Label :for="`date-${index}-from`">{{
+                    t('admin.events.races.date_from')
+                }}</Label>
+                <Input
+                    :id="`date-${index}-from`"
+                    v-model="date.starts_on"
+                    type="date"
+                    data-testid="admin-races__date-from"
+                />
+                <InputError :message="errors[`dates.${index}.starts_on`]" />
+            </div>
+            <div class="grid gap-1">
+                <Label :for="`date-${index}-to`">{{
+                    t('admin.events.races.date_to')
+                }}</Label>
+                <Input
+                    :id="`date-${index}-to`"
+                    v-model="date.ends_on"
+                    type="date"
+                />
+                <InputError :message="errors[`dates.${index}.ends_on`]" />
+            </div>
+            <div class="grid gap-1 sm:col-span-3">
+                <Label :for="`date-${index}-label`"
+                    >{{ t('admin.events.races.date_label') }} (EL / EN)</Label
+                >
+                <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                    <Input
+                        :id="`date-${index}-label`"
+                        v-model="date.label.el"
+                        lang="el"
+                        placeholder="EL"
+                    />
+                    <Input v-model="date.label.en" lang="en" placeholder="EN" />
+                    <button
+                        type="button"
+                        class="text-sm text-destructive hover:underline"
+                        @click="removeDate(index)"
+                    >
+                        {{ t('admin.events.races.remove') }}
+                    </button>
+                </div>
+                <InputError :message="errors[`dates.${index}.label.en`]" />
+            </div>
+        </div>
+        <Button
+            type="button"
+            variant="outline"
+            class="self-start"
+            data-testid="admin-races__add-date"
+            @click="addDate"
+        >
+            {{ t('admin.events.races.add_date') }}
         </Button>
 
         <h2 class="text-xl font-bold">{{ t('admin.events.races.links') }}</h2>

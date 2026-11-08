@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Event;
 use App\Models\Race;
 use App\Models\RacePrice;
+use App\Support\KeyDates;
 use App\Support\RaceRegistration;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -80,6 +81,7 @@ class EventResource extends JsonResource
             ],
             'races' => $races = $this->races->map(fn (Race $race) => $this->race($race))->all(),
             'registration_state' => $this->registrationState($races),
+            'key_dates' => KeyDates::for($this->resource, RaceRegistration::today()),
             'links' => $this->links->map(fn ($link) => [
                 'type' => $link->type->value,
                 'url' => $link->url,
