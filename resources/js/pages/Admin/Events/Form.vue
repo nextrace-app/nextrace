@@ -3,7 +3,11 @@ import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AdminEventRaces from '@/components/AdminEventRaces.vue';
-import type { EventLink, Race } from '@/components/AdminEventRaces.vue';
+import type {
+    EventLink,
+    KeyDate,
+    Race,
+} from '@/components/AdminEventRaces.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import {
@@ -58,6 +62,12 @@ type RaceRecord = Omit<
     }[];
 };
 type LinkRecord = { type: string; url: string; label: Translated | null };
+type DateRecord = {
+    type: string;
+    starts_on: string;
+    ends_on: string | null;
+    label: Translated | null;
+};
 
 const props = defineProps<{
     record: {
@@ -89,6 +99,7 @@ const props = defineProps<{
         state: 'draft' | 'in_review' | 'published';
         races: RaceRecord[];
         links: LinkRecord[];
+        dates: DateRecord[];
         urls: {
             submit: string;
             publish: string;
@@ -107,6 +118,7 @@ const props = defineProps<{
         terrains: string[];
         statuses: string[];
         linkTypes: string[];
+        dateTypes: string[];
     };
     canPublish: boolean;
     canDelete: boolean;
@@ -181,6 +193,13 @@ const form = useForm({
     ) as Race[],
     links: (r?.links ?? []).map(
         (link): EventLink => ({ ...link, label: pair(link.label) }),
+    ),
+    dates: (r?.dates ?? []).map(
+        (date): KeyDate => ({
+            ...date,
+            ends_on: date.ends_on ?? '',
+            label: pair(date.label),
+        }),
     ),
 });
 
@@ -626,6 +645,7 @@ const field = 'min-h-11 rounded-md border bg-transparent px-3 text-sm';
                 <AdminEventRaces
                     v-model:races="form.races"
                     v-model:links="form.links"
+                    v-model:dates="form.dates"
                     :errors="allErrors"
                     :options="raceOptions"
                 />

@@ -1087,6 +1087,10 @@ const hasContact = computed(
                             </a>
                         </Button>
                     </div>
+                    <KeyDates
+                        v-if="event.key_dates.length > 0"
+                        :dates="event.key_dates"
+                    />
                 </aside>
             </div>
         </main>

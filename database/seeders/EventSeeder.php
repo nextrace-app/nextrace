@@ -170,6 +170,19 @@ class EventSeeder extends Seeder
                 $race->prices()->create(['amount_cents' => 0]);
             }
         }
+
+        // The "important dates" of the race site; the closing of the registration comes from the event.
+        $event->dates()->delete();
+
+        foreach ([
+            ['registration_opens', '2026-09-14', null, ['el' => 'Ανοίγουν οι εγγραφές του παιδικού αγώνα', 'en' => 'Kids race registration opens']],
+            ['changes_deadline', '2026-09-25', null, ['el' => 'Τελευταία ημέρα για αλλαγές και ακυρώσεις', 'en' => 'Last day for changes and cancellations']],
+            ['bib_pickup', '2026-11-04', '2026-11-07', ['el' => 'Έκθεση και παραλαβή αριθμών, Κλειστό Φαλήρου', 'en' => 'Expo and bib pickup, Faliro Indoor Hall']],
+            ['other', '2026-11-07', null, ['el' => 'Αγώνες Σαββάτου', 'en' => 'Saturday races']],
+            ['other', '2026-11-08', null, ['el' => 'Μαραθώνιος και 10 χλμ.', 'en' => 'Marathon and 10 km']],
+        ] as $position => [$type, $startsOn, $endsOn, $label]) {
+            $event->dates()->create(['type' => $type, 'starts_on' => $startsOn, 'ends_on' => $endsOn, 'label' => $label, 'sort_order' => $position]);
+        }
     }
 
     private function distanceClass(string $category): DistanceClass

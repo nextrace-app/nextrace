@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Enums\EventStatus;
+use App\Enums\KeyDateType;
 use App\Enums\LinkType;
 use App\Enums\RaceDiscipline;
 use App\Enums\RaceStatus;
@@ -103,6 +104,15 @@ class EventRequest extends FormRequest
             'links.*.label' => ['nullable', 'array'],
             'links.*.label.el' => ['nullable', 'string', 'max:255'],
             'links.*.label.en' => ['nullable', 'string', 'max:255'],
+
+            'dates' => ['nullable', 'array'],
+            'dates.*.type' => ['required', Rule::enum(KeyDateType::class)],
+            'dates.*.starts_on' => ['required', 'date'],
+            'dates.*.ends_on' => ['nullable', 'date', 'after_or_equal:dates.*.starts_on'],
+            'dates.*.label' => ['nullable', 'array'],
+            // A date of the type "other" says what it is.
+            'dates.*.label.el' => ['nullable', 'string', 'max:255'],
+            'dates.*.label.en' => ['nullable', 'required_if:dates.*.type,other', 'string', 'max:255'],
         ];
     }
 
@@ -152,6 +162,7 @@ class EventRequest extends FormRequest
         }, $data['races']);
 
         $data['links'] = array_map(fn (array $link) => [...$link, 'label' => $label($link['label'] ?? null)], $data['links'] ?? []);
+        $data['dates'] = array_map(fn (array $date) => [...$date, 'label' => $label($date['label'] ?? null)], $data['dates'] ?? []);
 
         return $data;
     }

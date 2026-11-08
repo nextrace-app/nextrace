@@ -316,4 +316,23 @@ class ImportEventsTest extends TestCase
         $this->assertSame(1, Event::query()->where('slug', 'like', 'crete-marathon%')->count());
         $this->assertTrue($old->fresh()->isPublished());
     }
+
+    public function test_it_imports_the_key_dates_and_replaces_them_on_the_next_run(): void
+    {
+        $this->seed(RegionSeeder::class);
+
+        $this->import([$this->row(['dates' => [
+            ['type' => 'bib_pickup', 'starts_on' => '2027-03-01', 'ends_on' => '2027-03-03', 'label' => ['en' => 'Bib pickup at the town hall']],
+            ['type' => 'changes_deadline', 'starts_on' => '2027-02-01'],
+        ]])]);
+
+        $event = Event::query()->where('slug', 'chania-10k-2027')->firstOrFail();
+
+        $this->assertSame(['changes_deadline', 'bib_pickup'], $event->dates->map(fn ($date) => $date->type->value)->all());
+        $this->assertSame('2027-03-03', $event->dates[1]->ends_on->toDateString());
+
+        $this->import([$this->row(['dates' => [['type' => 'expo', 'starts_on' => '2027-03-02']]])]);
+
+        $this->assertSame(['expo'], $event->fresh()->dates->map(fn ($date) => $date->type->value)->all());
+    }
 }
