@@ -28,15 +28,17 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PracticalInfo from '@/components/PracticalInfo.vue';
 import RaceCutoffs from '@/components/RaceCutoffs.vue';
+import RaceNews from '@/components/RaceNews.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useEventFormat } from '@/composables/useEventFormat';
 import { useLocale } from '@/composables/useLocale';
 import { index as eventsIndex } from '@/routes/events';
-import type { Event, LinkType } from '@/types';
+import type { Event, LinkType, Post } from '@/types';
 
 const props = defineProps<{
     event: Event;
+    news: { posts: Post[]; total: number };
     isFavorite: boolean;
 }>();
 
@@ -810,6 +812,12 @@ const hasContact = computed(
                     <PracticalInfo
                         v-if="event.sections.length > 0"
                         :sections="event.sections"
+                    />
+                    <RaceNews
+                        v-if="news.posts.length > 0"
+                        :posts="news.posts"
+                        :total="news.total"
+                        :event-slug="event.slug"
                     />
                     <section data-testid="event-page__facts">
                         <h2 class="mb-4 text-xl font-extrabold tracking-tight">
