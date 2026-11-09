@@ -15,14 +15,14 @@ class ApiTokenCommandsTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->artisan('api-token:create', ['name' => 'scout', '--ability' => ['events:read', 'posts:write'], '--user' => $user->email])
+        $this->artisan('api-token:create', ['name' => 'scout', '--ability' => ['events:read', 'events:write', 'posts:write'], '--user' => $user->email])
             ->expectsOutputToContain('nr_')
             ->assertSuccessful();
 
         $token = ApiToken::query()->sole();
 
         $this->assertSame('scout', $token->name);
-        $this->assertSame(['events:read', 'posts:write'], $token->abilities);
+        $this->assertSame(['events:read', 'events:write', 'posts:write'], $token->abilities);
         $this->assertSame($user->id, $token->user_id);
         $this->assertNull($token->expires_at);
     }

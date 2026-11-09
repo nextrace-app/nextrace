@@ -20,6 +20,10 @@ Route::middleware('throttle:api')->group(function () {
         ->middleware('api.token:'.ApiToken::EVENTS_READ)
         ->name('api.events.index');
 
+    Route::post('events', [EventController::class, 'store'])
+        ->middleware('api.token:'.ApiToken::EVENTS_WRITE)
+        ->name('api.events.store');
+
     Route::post('posts', [PostController::class, 'store'])
         ->middleware('api.token:'.ApiToken::POSTS_WRITE)
         ->name('api.posts.store');

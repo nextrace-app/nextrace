@@ -41,6 +41,8 @@ class ApiToken extends Model
 
     public const EVENTS_READ = 'events:read';
 
+    public const EVENTS_WRITE = 'events:write';
+
     public const POSTS_WRITE = 'posts:write';
 
     /**
@@ -48,7 +50,7 @@ class ApiToken extends Model
      *
      * @var list<string>
      */
-    public const ABILITIES = [self::ALL, self::EVENTS_READ, self::POSTS_WRITE];
+    public const ABILITIES = [self::ALL, self::EVENTS_READ, self::EVENTS_WRITE, self::POSTS_WRITE];
 
     private const PREFIX = 'nr_';
 
