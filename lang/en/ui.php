@@ -222,6 +222,7 @@ return [
             'other' => 'Link',
         ],
         'news' => ['title' => 'News', 'all' => 'All news'],
+        'related' => ['similar' => 'Similar races', 'organizer' => 'More from {name}'],
         'results' => [
             'title' => 'Results and past editions',
             'edition' => 'Edition',

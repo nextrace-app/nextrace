@@ -27,6 +27,7 @@ import type { Component } from 'vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import EventCountdown from '@/components/EventCountdown.vue';
+import MoreRaces from '@/components/MoreRaces.vue';
 import PracticalInfo from '@/components/PracticalInfo.vue';
 import RaceCourse from '@/components/RaceCourse.vue';
 import RaceCutoffs from '@/components/RaceCutoffs.vue';
@@ -49,6 +50,9 @@ const props = defineProps<{
     event: Event;
     news: { posts: Post[]; total: number };
     editions: EventEdition[];
+    similarEvents: Event[];
+    organizerEvents: Event[];
+    favorites: number[];
     countdown: Countdown | null;
     isFavorite: boolean;
 }>();
@@ -1158,6 +1162,28 @@ const hasContact = computed(
                         :dates="event.key_dates"
                     />
                 </aside>
+            </div>
+            <div
+                v-if="similarEvents.length > 0 || organizerEvents.length > 0"
+                class="flex flex-col gap-12 pt-12 lg:pt-16"
+                data-testid="event-page__more-races"
+            >
+                <MoreRaces
+                    v-if="similarEvents.length > 0"
+                    :title="t('events.related.similar')"
+                    :events="similarEvents"
+                    :favorites="favorites"
+                />
+                <MoreRaces
+                    v-if="organizerEvents.length > 0 && event.organizer"
+                    :title="
+                        t('events.related.organizer', {
+                            name: event.organizer.name,
+                        })
+                    "
+                    :events="organizerEvents"
+                    :favorites="favorites"
+                />
             </div>
         </main>
     </DefaultShell>
