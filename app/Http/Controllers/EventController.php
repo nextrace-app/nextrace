@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DistanceClass;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\PostResource;
 use App\Models\Event;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Collection;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -26,6 +28,12 @@ class EventController extends Controller
     public const DISTANCE_FILTERS = ['5k', '10k', 'half_marathon', 'marathon', 'ultra', 'kids_other'];
 
     public const MAX_SEARCH_LENGTH = 100;
+
+    /**
+     * How many cards the "Similar races" and "More from the organiser"
+     * blocks of the event page show at most.
+     */
+    public const MORE_RACES_LIMIT = 3;
 
     /**
      * One page of the published events that are not over yet, the one coming up first.
@@ -101,6 +109,8 @@ class EventController extends Controller
             'event' => (new EventResource($event))->resolve(),
             'news' => $this->news($event),
             'editions' => $this->editions($event),
+            ...$this->moreRaces($event),
+            'favorites' => $request->user()?->favoriteEventIds() ?? [],
             'countdown' => EventCalendar::countdown($event, RaceRegistration::today()),
             'isFavorite' => $request->user()?->favorites()->where('event_id', $event->id)->exists() ?? false,
         ]);
@@ -119,6 +129,67 @@ class EventController extends Controller
             'Content-Type' => 'text/calendar; charset=utf-8',
             'Content-Disposition' => 'attachment; filename="'.$event->slug.'.ics"',
         ]);
+    }
+
+    /**
+     * Other races to run next: upcoming events in the same region that share
+     * a distance with this one, and upcoming events of the same organiser
+     * that are not already among them. A race of the class "other" is no
+     * reason to call two events similar.
+     *
+     * @return array{similarEvents: array<int, mixed>, organizerEvents: array<int, mixed>}
+     */
+    private function moreRaces(Event $event): array
+    {
+        $classes = $event->races
+            ->pluck('distance_class')
+            ->filter(fn (?DistanceClass $class) => $class !== null && $class !== DistanceClass::Other)
+            ->map(fn (DistanceClass $class) => $class->value)
+            ->unique()
+            ->values()
+            ->all();
+
+        /** @var Collection<int, Event> $similar */
+        $similar = new Collection;
+
+        if ($event->region_id !== null && $classes !== []) {
+            $similar = $this->otherEvents($event)
+                ->where('events.region_id', $event->region_id)
+                ->whereHas('races', fn (Builder $races) => $races->whereIn('distance_class', $classes))
+                ->get();
+        }
+
+        /** @var Collection<int, Event> $organizer */
+        $organizer = new Collection;
+
+        if ($event->organizer_id !== null) {
+            $organizer = $this->otherEvents($event)
+                ->where('events.organizer_id', $event->organizer_id)
+                ->whereNotIn('events.id', $similar->pluck('id')->all())
+                ->get();
+        }
+
+        return [
+            'similarEvents' => EventResource::collection($similar)->resolve(),
+            'organizerEvents' => EventResource::collection($organizer)->resolve(),
+        ];
+    }
+
+    /**
+     * The published upcoming events other than this one, the nearest first,
+     * ready to be shown as cards.
+     *
+     * @return Builder<Event>
+     */
+    private function otherEvents(Event $event): Builder
+    {
+        return Event::query()
+            ->published()
+            ->upcoming()
+            ->whereKeyNot($event->id)
+            ->chronological()
+            ->withDetails()
+            ->limit(self::MORE_RACES_LIMIT);
     }
 
     /**
