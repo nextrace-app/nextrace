@@ -364,7 +364,7 @@ class Event extends Model
     #[Scope]
     protected function withDetails(Builder $query): void
     {
-        $query->with(['mainRace', 'races.prices', 'links', 'dates', 'series', 'organizer', 'region']);
+        $query->with(['mainRace', 'races.prices', 'races.course:id,race_id,gpx_path', 'links', 'dates', 'series', 'organizer', 'region']);
     }
 
     /**

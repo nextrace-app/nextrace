@@ -54,6 +54,8 @@ type RaceRecord = Omit<
     aid_stations: number | null;
     medical_certificate_required: boolean | null;
     route_url: string | null;
+    gpx_name: string | null;
+    gpx_url: string | null;
     sold_out: boolean;
     prices: {
         label: Translated | null;
@@ -191,6 +193,8 @@ const form = useForm({
                       ? 'yes'
                       : 'no',
             route_url: race.route_url ?? '',
+            gpx: null,
+            remove_gpx: false,
             prices: race.prices.map((price) => ({
                 label: pair(price.label),
                 amount_cents: price.amount_cents,
@@ -259,8 +263,13 @@ const translatedFields = [
 ] as const;
 
 const submit = () => {
+    // A GPX file goes up as multipart, which PUT cannot carry: it is sent as a
+    // POST that Laravel treats as the PUT it stands for.
+    const uploads = form.races.some((race) => race.gpx !== null);
+
     form.transform((data) => ({
         ...data,
+        ...(uploads && props.record ? { _method: 'put' } : {}),
         edition_number: data.edition_number === '' ? null : data.edition_number,
         ends_on: data.ends_on || null,
         registration_opens_at: data.registration_opens_at || null,
@@ -290,7 +299,7 @@ const submit = () => {
         })),
     }));
 
-    if (props.record) {
+    if (props.record && !uploads) {
         form.put(props.urls.submit);
     } else {
         form.post(props.urls.submit);

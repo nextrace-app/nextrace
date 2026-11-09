@@ -11,9 +11,12 @@ use App\Enums\RaceTerrain;
 use App\Enums\RegistrationStatus;
 use App\Enums\SectionType;
 use App\Models\Event;
+use App\Support\GpxCourse;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
+use InvalidArgumentException;
 
 class EventRequest extends FormRequest
 {
@@ -98,6 +101,8 @@ class EventRequest extends FormRequest
             'races.*.prices.*.amount_cents' => ['required', 'integer', 'min:0', 'max:100000000'],
             'races.*.prices.*.valid_from' => ['nullable', 'date'],
             'races.*.prices.*.valid_until' => ['nullable', 'date', 'after_or_equal:races.*.prices.*.valid_from'],
+            'races.*.gpx' => ['nullable', 'file', 'extensions:gpx', 'max:10240'],
+            'races.*.remove_gpx' => ['boolean'],
             'races.*.checkpoints' => ['nullable', 'array'],
             'races.*.checkpoints.*.distance_meters' => ['required', 'integer', 'min:1', 'max:1000000'],
             'races.*.checkpoints.*.closes_at' => ['required', 'date'],
@@ -131,9 +136,16 @@ class EventRequest extends FormRequest
     }
 
     /**
-     * Exactly one race is the main race, as the model expects.
+     * The courses read from the uploaded GPX files, by race position.
+     *
+     * @var array<int, array<string, mixed>>
      */
+    private array $courses = [];
+
     /**
+     * Exactly one race is the main race, as the model expects, and every
+     * uploaded GPX file can be read.
+     *
      * @return list<callable(Validator): void>
      */
     public function after(): array
@@ -143,7 +155,19 @@ class EventRequest extends FormRequest
                 return;
             }
 
-            $mains = count(array_filter($this->array('races'), fn ($race) => is_array($race) && ($race['is_main'] ?? false) === true));
+            foreach (array_keys($this->array('races')) as $position) {
+                $file = $this->file("races.{$position}.gpx");
+
+                if ($file instanceof UploadedFile) {
+                    try {
+                        $this->courses[$position] = GpxCourse::parse((string) $file->get());
+                    } catch (InvalidArgumentException) {
+                        $validator->errors()->add("races.{$position}.gpx", trans('ui.admin.events.races.gpx_invalid'));
+                    }
+                }
+            }
+
+            $mains = count(array_filter($this->array('races'), fn ($race) => is_array($race) && filter_var($race['is_main'] ?? false, FILTER_VALIDATE_BOOLEAN)));
 
             if ($mains !== 1) {
                 $validator->errors()->add('races', trans('ui.admin.events.main_race_error'));
@@ -167,14 +191,15 @@ class EventRequest extends FormRequest
 
         $label = fn (mixed $value) => array_filter(is_array($value) ? $value : [], fn ($text) => $text !== null && $text !== '') ?: null;
 
-        $data['races'] = array_map(function (array $race) use ($label): array {
+        $data['races'] = array_map(function (array $race, int|string $position) use ($label): array {
             $race['start_location'] = $label($race['start_location'] ?? null);
             $race['finish_location'] = $label($race['finish_location'] ?? null);
             $race['prices'] = array_map(fn (array $price) => [...$price, 'label' => $label($price['label'] ?? null)], $race['prices'] ?? []);
             $race['checkpoints'] = $race['checkpoints'] ?? [];
+            $race['course'] = $this->courses[$position] ?? null;
 
             return $race;
-        }, $data['races']);
+        }, $data['races'], array_keys($data['races']));
 
         $data['links'] = array_map(fn (array $link) => [...$link, 'label' => $label($link['label'] ?? null)], $data['links'] ?? []);
         $data['dates'] = array_map(fn (array $date) => [...$date, 'label' => $label($date['label'] ?? null)], $data['dates'] ?? []);

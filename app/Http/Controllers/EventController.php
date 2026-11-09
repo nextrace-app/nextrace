@@ -90,7 +90,7 @@ class EventController extends Controller
         // A draft has no page of its own until it is published.
         abort_unless($event->isPublished(), 404);
 
-        $event->load(['mainRace', 'races.prices', 'races.checkpoints', 'links', 'dates', 'sections', 'series', 'organizer', 'region']);
+        $event->load(['mainRace', 'races.prices', 'races.checkpoints', 'races.course', 'links', 'dates', 'sections', 'series', 'organizer', 'region']);
 
         $meta->forEvent($event);
 
