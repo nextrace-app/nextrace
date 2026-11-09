@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\PostResource;
 use App\Models\Event;
+use App\Support\EventCalendar;
 use App\Support\PageMeta;
+use App\Support\RaceRegistration;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -97,7 +100,23 @@ class EventController extends Controller
         return Inertia::render('Events/Show', [
             'event' => (new EventResource($event))->resolve(),
             'news' => $this->news($event),
+            'countdown' => EventCalendar::countdown($event, RaceRegistration::today()),
             'isFavorite' => $request->user()?->favorites()->where('event_id', $event->id)->exists() ?? false,
+        ]);
+    }
+
+    /**
+     * The event as a calendar file, for Apple Calendar and Outlook.
+     */
+    public function calendar(Event $event): HttpResponse
+    {
+        abort_unless($event->isPublished(), 404);
+
+        $event->load(['mainRace', 'races']);
+
+        return response(EventCalendar::ics($event), 200, [
+            'Content-Type' => 'text/calendar; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename="'.$event->slug.'.ics"',
         ]);
     }
 

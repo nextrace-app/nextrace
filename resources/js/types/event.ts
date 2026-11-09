@@ -127,6 +127,18 @@ export type EventSection = {
     body_html: string;
 };
 
+/** The countdown card of an event page, and where its calendar entry lives. */
+export type EventCountdown = {
+    /** The day the main race starts, Y-m-d. */
+    starts_on: string;
+    /** Its start time, H:i, or null when it is not known. */
+    time: string | null;
+    /** Today in Athens, Y-m-d, as the server saw it. */
+    today: string;
+    ics_url: string;
+    google_url: string;
+};
+
 /** The course of a race, read from its GPX file. */
 export type RaceCourse = {
     distance_meters: number;

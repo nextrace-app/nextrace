@@ -245,6 +245,17 @@ return [
             'closes_at' => 'Closes at',
             'finish' => 'Finish',
         ],
+        'countdown' => [
+            'starts_in' => 'Starts in',
+            'starts' => 'Starts',
+            'days' => '{n} day | {n} days',
+            'tomorrow' => 'Tomorrow',
+            'today' => 'Today',
+            'add_to_calendar' => 'Add to calendar',
+            'apple' => 'Apple Calendar (.ics)',
+            'google' => 'Google Calendar',
+            'outlook' => 'Outlook (.ics)',
+        ],
         'key_dates' => [
             'title' => 'Key dates',
             'next' => 'Next',
