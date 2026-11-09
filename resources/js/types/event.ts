@@ -24,6 +24,7 @@ export type LinkType =
     | 'route'
     | 'results'
     | 'photos'
+    | 'certificate'
     | 'timing'
     | 'other';
 
@@ -83,6 +84,15 @@ export type Race = {
     gpx_url: string | null;
     /** What the course block draws; only the event page sends it. */
     course: RaceCourse | null;
+};
+
+/** One published edition of the series an event belongs to. */
+export type EventEdition = {
+    slug: string;
+    year: number;
+    edition_number: number | null;
+    /** True for the edition whose page is open. */
+    current: boolean;
 };
 
 export type EventLink = {

@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Enums\LinkType;
 use App\Models\Event;
+use App\Models\EventSeries;
 use App\Models\Race;
 use App\Models\Region;
 use Database\Seeders\EventSeeder;
@@ -17,7 +19,8 @@ class EventSeederTest extends TestCase
     {
         $this->seed(EventSeeder::class);
 
-        $this->assertSame(count(EventSeeder::catalogue()), Event::query()->count());
+        // The catalogue, plus the 2025 edition of Athens Marathon.
+        $this->assertSame(count(EventSeeder::catalogue()) + 1, Event::query()->count());
 
         foreach (EventSeeder::catalogue() as $event) {
             $this->assertDatabaseHas('events', [
@@ -91,9 +94,11 @@ class EventSeederTest extends TestCase
         $this->seed(EventSeeder::class);
         $this->seed(EventSeeder::class);
 
-        $this->assertSame(count(EventSeeder::catalogue()), Event::query()->count());
+        $this->assertSame(count(EventSeeder::catalogue()) + 1, Event::query()->count());
         // Every event has one race, except Athens Marathon with its weekend of six.
-        $this->assertSame(count(EventSeeder::catalogue()) + 5, Race::query()->count());
+        $this->assertSame(count(EventSeeder::catalogue()) + 6, Race::query()->count());
+        $this->assertSame(1, EventSeries::query()->count());
+        $this->assertSame(4, Event::query()->findOrFail(1)->links()->count() + Event::query()->where('slug', 'athens-marathon-2025')->sole()->links()->count());
     }
 
     public function test_every_seeded_event_has_exactly_one_main_race(): void
@@ -112,7 +117,7 @@ class EventSeederTest extends TestCase
         $this->assertDatabaseHas('regions', ['slug' => 'heraklion']);
         $this->assertSame('crete', Region::query()->where('slug', 'heraklion')->firstOrFail()->parent->slug);
         $this->assertSame('greece', Region::query()->where('slug', 'crete')->firstOrFail()->parent->slug);
-        $this->assertSame(count(EventSeeder::catalogue()), Event::query()->count());
+        $this->assertSame(count(EventSeeder::catalogue()) + 1, Event::query()->count());
     }
 
     public function test_an_event_created_afterwards_gets_a_free_id(): void
@@ -123,6 +128,24 @@ class EventSeederTest extends TestCase
         $event = Event::factory()->create();
 
         $this->assertFalse($seededIds->contains($event->id));
-        $this->assertSame(count(EventSeeder::catalogue()) + 1, Event::query()->count());
+        $this->assertSame(count(EventSeeder::catalogue()) + 2, Event::query()->count());
+    }
+
+    public function test_athens_marathon_is_a_series_with_its_2025_edition(): void
+    {
+        $this->seed(EventSeeder::class);
+
+        $athens = Event::query()->findOrFail(1);
+        $previous = Event::query()->where('slug', 'athens-marathon-2025')->sole();
+
+        $this->assertSame('athens-marathon', $athens->series->slug);
+        $this->assertSame(43, $athens->edition_number);
+        $this->assertSame($athens->series_id, $previous->series_id);
+        $this->assertSame(42, $previous->edition_number);
+        $this->assertSame('2025-11-09', $previous->starts_on->toDateString());
+        $this->assertNotNull($previous->published_at);
+        $this->assertSame(42195, $previous->mainRace->distance_meters);
+        $this->assertSame([LinkType::Results, LinkType::Photos], $athens->links->whereIn('type', [LinkType::Results, LinkType::Photos])->pluck('type')->all());
+        $this->assertSame([LinkType::Results, LinkType::Photos], $previous->links->pluck('type')->all());
     }
 }

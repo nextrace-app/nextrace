@@ -31,6 +31,7 @@ import PracticalInfo from '@/components/PracticalInfo.vue';
 import RaceCourse from '@/components/RaceCourse.vue';
 import RaceCutoffs from '@/components/RaceCutoffs.vue';
 import RaceNews from '@/components/RaceNews.vue';
+import RaceResults from '@/components/RaceResults.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useEventFormat } from '@/composables/useEventFormat';
@@ -39,6 +40,7 @@ import { index as eventsIndex } from '@/routes/events';
 import type {
     Event,
     EventCountdown as Countdown,
+    EventEdition,
     LinkType,
     Post,
 } from '@/types';
@@ -46,6 +48,7 @@ import type {
 const props = defineProps<{
     event: Event;
     news: { posts: Post[]; total: number };
+    editions: EventEdition[];
     countdown: Countdown | null;
     isFavorite: boolean;
 }>();
@@ -53,6 +56,15 @@ const props = defineProps<{
 const { t } = useI18n();
 const page = usePage();
 const seo = computed(() => page.props.seo);
+
+/** The links that belong in "Results and past editions", not in the facts. */
+const resultLinkTypes: LinkType[] = ['results', 'photos', 'certificate'];
+const resultLinks = computed(() =>
+    props.event.links.filter((link) => resultLinkTypes.includes(link.type)),
+);
+const factLinks = computed(() =>
+    props.event.links.filter((link) => !resultLinkTypes.includes(link.type)),
+);
 
 /** The races that have a course to draw, from their GPX files. */
 const courseRaces = computed(() =>
@@ -104,6 +116,7 @@ const linkIcons: Record<LinkType, Component> = {
     route: Route,
     results: Trophy,
     photos: Camera,
+    certificate: FileText,
     timing: Timer,
     other: Link2,
 };
@@ -842,6 +855,11 @@ const hasContact = computed(
                         :total="news.total"
                         :event-slug="event.slug"
                     />
+                    <RaceResults
+                        v-if="editions.length > 1 || resultLinks.length > 0"
+                        :editions="editions"
+                        :links="resultLinks"
+                    />
                     <section data-testid="event-page__facts">
                         <h2 class="mb-4 text-xl font-extrabold tracking-tight">
                             {{ t('events.facts.title') }}
@@ -1012,13 +1030,13 @@ const hasContact = computed(
                         </dl>
 
                         <ul
-                            v-if="event.links.length > 0"
+                            v-if="factLinks.length > 0"
                             class="mt-4 flex flex-wrap gap-2"
                             data-testid="event-page__links"
                             :aria-label="t('events.facts.links')"
                         >
                             <li
-                                v-for="link in event.links"
+                                v-for="link in factLinks"
                                 :key="link.url"
                                 data-testid="event-page__link"
                             >

@@ -100,6 +100,7 @@ class EventController extends Controller
         return Inertia::render('Events/Show', [
             'event' => (new EventResource($event))->resolve(),
             'news' => $this->news($event),
+            'editions' => $this->editions($event),
             'countdown' => EventCalendar::countdown($event, RaceRegistration::today()),
             'isFavorite' => $request->user()?->favorites()->where('event_id', $event->id)->exists() ?? false,
         ]);
@@ -118,6 +119,38 @@ class EventController extends Controller
             'Content-Type' => 'text/calendar; charset=utf-8',
             'Content-Disposition' => 'attachment; filename="'.$event->slug.'.ics"',
         ]);
+    }
+
+    /**
+     * The published editions of the series the event belongs to, the oldest
+     * first, so the page can switch between them. A single edition has
+     * nothing to switch to, so the list is empty then.
+     *
+     * @return array<int, array{slug: string, year: int, edition_number: int|null, current: bool}>
+     */
+    private function editions(Event $event): array
+    {
+        if ($event->series_id === null) {
+            return [];
+        }
+
+        $editions = Event::query()
+            ->published()
+            ->where('series_id', $event->series_id)
+            ->orderBy('starts_on')
+            ->orderBy('id')
+            ->get(['id', 'slug', 'starts_on', 'edition_number']);
+
+        if ($editions->count() < 2) {
+            return [];
+        }
+
+        return $editions->map(fn (Event $edition) => [
+            'slug' => $edition->slug,
+            'year' => $edition->starts_on->year,
+            'edition_number' => $edition->edition_number,
+            'current' => $edition->is($event),
+        ])->all();
     }
 
     /**

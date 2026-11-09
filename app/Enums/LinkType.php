@@ -11,6 +11,7 @@ enum LinkType: string
     case Route = 'route';
     case Results = 'results';
     case Photos = 'photos';
+    case Certificate = 'certificate';
     case Timing = 'timing';
     case Other = 'other';
 }
