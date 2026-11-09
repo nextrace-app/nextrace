@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\PostCategory;
 use App\Enums\PostStatus;
 use App\Models\Concerns\HasTranslations;
+use App\Support\SafeMarkdown;
 use Carbon\CarbonImmutable;
 use Database\Factories\PostFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -15,8 +16,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
-use League\CommonMark\Extension\ExternalLink\ExternalLinkExtension;
 
 /**
  * An editorial post: news, a guide, results or an interview.
@@ -127,17 +126,7 @@ class Post extends Model
      */
     public function bodyHtml(): string
     {
-        return Str::markdown($this->translated('body'), [
-            'html_input' => 'strip',
-            'allow_unsafe_links' => false,
-            'external_link' => [
-                'internal_hosts' => parse_url(config()->string('app.url'), PHP_URL_HOST) ?: 'localhost',
-                'open_in_new_window' => true,
-                'nofollow' => 'external',
-                'noopener' => 'external',
-                'noreferrer' => 'external',
-            ],
-        ], [new ExternalLinkExtension]);
+        return SafeMarkdown::toHtml($this->translated('body'));
     }
 
     /**

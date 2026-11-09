@@ -3,8 +3,10 @@
 namespace App\Http\Resources;
 
 use App\Models\Event;
+use App\Models\EventSection;
 use App\Models\Race;
 use App\Models\RacePrice;
+use App\Support\Cutoffs;
 use App\Support\KeyDates;
 use App\Support\RaceRegistration;
 use Illuminate\Http\Request;
@@ -82,6 +84,7 @@ class EventResource extends JsonResource
             'races' => $races = $this->races->map(fn (Race $race) => $this->race($race))->all(),
             'registration_state' => $this->registrationState($races),
             'key_dates' => KeyDates::for($this->resource, RaceRegistration::today()),
+            'sections' => $this->sections(),
             'links' => $this->links->map(fn ($link) => [
                 'type' => $link->type->value,
                 'url' => $link->url,
@@ -135,6 +138,8 @@ class EventResource extends JsonResource
             'sold_out' => $race->sold_out,
             'registration_state' => $state,
             'price_rises_after' => $state === RaceRegistration::OPEN ? RaceRegistration::priceRisesAfter($race, $today) : null,
+            // Only the event page loads the checkpoints; the lists have no table.
+            'cutoffs' => $race->relationLoaded('checkpoints') ? Cutoffs::for($race) : [],
             'prices' => $race->prices->map(fn (RacePrice $price) => [
                 'label' => $price->translatedOrNull('label'),
                 'amount' => $price->amount_cents / 100,
@@ -144,6 +149,29 @@ class EventResource extends JsonResource
                 'state' => RaceRegistration::priceState($price, $current, $today),
             ])->all(),
         ];
+    }
+
+    /**
+     * The practical information, in its order, without the sections that have
+     * no text in any language. Only the event page loads it.
+     *
+     * @return array<int, array{type: string, title: string|null, body_html: string}>
+     */
+    private function sections(): array
+    {
+        if (! $this->relationLoaded('sections')) {
+            return [];
+        }
+
+        return $this->sections
+            ->map(fn (EventSection $section) => [
+                'type' => $section->type->value,
+                'title' => $section->translatedOrNull('title'),
+                'body_html' => $section->bodyHtml(),
+            ])
+            ->filter(fn (array $section) => $section['body_html'] !== null)
+            ->values()
+            ->all();
     }
 
     /**

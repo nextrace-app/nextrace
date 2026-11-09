@@ -11,6 +11,7 @@ use App\Enums\RaceDiscipline;
 use App\Enums\RaceStatus;
 use App\Enums\RaceTerrain;
 use App\Enums\RegistrationStatus;
+use App\Enums\SectionType;
 use App\Models\Event;
 use App\Models\EventSeries;
 use App\Models\Organizer;
@@ -28,14 +29,14 @@ use RuntimeException;
 use Throwable;
 
 /**
- * Imports events with their races, prices, links and key dates from a nested
- * JSON file.
+ * Imports events with their races, prices, cut-offs, links, key dates and
+ * practical information from a nested JSON file.
  *
  * Every level is upserted by slug, so re-running it updates what it imported
  * before: series and organizers by slug, events by slug (or by one of their
  * previous_slugs, which renames them), races by event and slug. The races of an
- * event that are missing from the file are removed, and its links, key dates
- * and prices are replaced. Each event is written in one transaction and skipped with a
+ * event that are missing from the file are removed, and its links, key dates,
+ * sections, prices and checkpoints are replaced. Each event is written in one transaction and skipped with a
  * warning when it is invalid, so nothing is ever half written.
  *
  * New events are drafts. `published: true` publishes an event that is not yet
@@ -236,6 +237,13 @@ class ImportEvents extends Command
             'dates.*.ends_on' => ['nullable', 'date', 'after_or_equal:dates.*.starts_on'],
             'dates.*.label' => ['nullable', 'array'],
 
+            'sections' => ['nullable', 'array'],
+            'sections.*.type' => ['required', Rule::enum(SectionType::class)],
+            'sections.*.title' => ['nullable', 'array'],
+            'sections.*.title.en' => ['required_if:sections.*.type,other', 'nullable', 'string'],
+            'sections.*.body' => ['required', 'array'],
+            'sections.*.body.en' => ['required', 'string'],
+
             'races' => ['required', 'array', 'min:1'],
             'races.*.slug' => ['required', 'string', 'max:255'],
             'races.*.name' => ['required', 'array'],
@@ -267,6 +275,9 @@ class ImportEvents extends Command
             'races.*.prices.*.currency' => ['nullable', 'string', 'size:3'],
             'races.*.prices.*.valid_from' => ['nullable', 'date'],
             'races.*.prices.*.valid_until' => ['nullable', 'date'],
+            'races.*.checkpoints' => ['nullable', 'array'],
+            'races.*.checkpoints.*.distance_meters' => ['required', 'integer', 'min:1'],
+            'races.*.checkpoints.*.closes_at' => ['required', 'date'],
         ];
     }
 
@@ -358,6 +369,12 @@ class ImportEvents extends Command
         foreach (array_values($data['dates'] ?? []) as $position => $date) {
             $event->dates()->create([...$date, 'sort_order' => $position]);
         }
+
+        $event->sections()->delete();
+
+        foreach (array_values($data['sections'] ?? []) as $position => $section) {
+            $event->sections()->create([...$section, 'sort_order' => $position]);
+        }
     }
 
     /**
@@ -420,6 +437,12 @@ class ImportEvents extends Command
 
             foreach ($data['prices'] ?? [] as $price) {
                 $race->prices()->create($price);
+            }
+
+            $race->checkpoints()->delete();
+
+            foreach ($data['checkpoints'] ?? [] as $checkpoint) {
+                $race->checkpoints()->create($checkpoint);
             }
         }
 

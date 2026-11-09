@@ -9,6 +9,7 @@ use App\Enums\RaceDiscipline;
 use App\Enums\RaceStatus;
 use App\Enums\RaceTerrain;
 use App\Enums\RegistrationStatus;
+use App\Enums\SectionType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\EventRequest;
 use App\Models\Event;
@@ -107,8 +108,8 @@ class EventController extends Controller
         abort_if(! $this->canModerate($user) && $user->organizer_id === null, 403);
 
         $event = DB::transaction(function () use ($attributes) {
-            $event = Event::create(Arr::except($attributes, ['races', 'links', 'dates']));
-            EventContent::sync($event, $attributes['races'], $attributes['links'], $attributes['dates']);
+            $event = Event::create(Arr::except($attributes, ['races', 'links', 'dates', 'sections']));
+            EventContent::sync($event, $attributes['races'], $attributes['links'], $attributes['dates'], $attributes['sections']);
 
             return $event;
         });
@@ -130,8 +131,8 @@ class EventController extends Controller
         $attributes = $this->withOwnOrganizer($request->attributesForModel(), $this->user($request));
 
         DB::transaction(function () use ($event, $attributes) {
-            $event->update(Arr::except($attributes, ['races', 'links', 'dates']));
-            EventContent::sync($event, $attributes['races'], $attributes['links'], $attributes['dates']);
+            $event->update(Arr::except($attributes, ['races', 'links', 'dates', 'sections']));
+            EventContent::sync($event, $attributes['races'], $attributes['links'], $attributes['dates'], $attributes['sections']);
         });
 
         return to_route(Locale::routeName('admin.events.edit'), $event)->with('status', 'updated');
@@ -216,6 +217,7 @@ class EventController extends Controller
                 'races' => $this->races($event),
                 'links' => $this->links($event),
                 'dates' => $this->dates($event),
+                'sections' => $this->sections($event),
                 'urls' => [
                     'submit' => $this->url('submit', $event),
                     'publish' => $this->url('publish', $event),
@@ -235,6 +237,7 @@ class EventController extends Controller
                 'statuses' => array_column(RaceStatus::cases(), 'value'),
                 'linkTypes' => array_column(LinkType::cases(), 'value'),
                 'dateTypes' => array_column(KeyDateType::cases(), 'value'),
+                'sectionTypes' => array_column(SectionType::cases(), 'value'),
             ],
             'canPublish' => $user->can('publish', Event::class),
             'canDelete' => $event !== null && $user->can('delete', $event),
@@ -248,7 +251,7 @@ class EventController extends Controller
     {
         $races = [];
 
-        foreach ($event->races()->with('prices')->get() as $race) {
+        foreach ($event->races()->with(['prices', 'checkpoints'])->get() as $race) {
             $prices = [];
 
             foreach ($race->prices as $price) {
@@ -281,6 +284,10 @@ class EventController extends Controller
                 'status' => $race->status->value,
                 'registration_url' => $race->registration_url,
                 'prices' => $prices,
+                'checkpoints' => $race->checkpoints->map(fn ($checkpoint) => [
+                    'distance_meters' => $checkpoint->distance_meters,
+                    'closes_at' => $checkpoint->closes_at->format('Y-m-d\TH:i'),
+                ])->all(),
             ];
         }
 
@@ -318,6 +325,24 @@ class EventController extends Controller
         }
 
         return $dates;
+    }
+
+    /**
+     * @return list<array{type: string, title: array<string, string>|null, body: array<string, string>}>
+     */
+    private function sections(Event $event): array
+    {
+        $sections = [];
+
+        foreach ($event->sections as $section) {
+            $sections[] = [
+                'type' => $section->type->value,
+                'title' => $section->title,
+                'body' => $section->body,
+            ];
+        }
+
+        return $sections;
     }
 
     /**

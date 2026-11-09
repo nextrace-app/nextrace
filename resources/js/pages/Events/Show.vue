@@ -26,6 +26,8 @@ import {
 import type { Component } from 'vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import PracticalInfo from '@/components/PracticalInfo.vue';
+import RaceCutoffs from '@/components/RaceCutoffs.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useEventFormat } from '@/composables/useEventFormat';
@@ -757,6 +759,12 @@ const hasContact = computed(
                                     </ul>
                                 </section>
 
+                                <RaceCutoffs
+                                    v-if="race.cutoffs.length > 0"
+                                    :cutoffs="race.cutoffs"
+                                    :race-date="race.date"
+                                />
+
                                 <div
                                     v-if="
                                         race.registration_url || race.route_url
@@ -799,6 +807,10 @@ const hasContact = computed(
                             </li>
                         </ul>
                     </section>
+                    <PracticalInfo
+                        v-if="event.sections.length > 0"
+                        :sections="event.sections"
+                    />
                     <section data-testid="event-page__facts">
                         <h2 class="mb-4 text-xl font-extrabold tracking-tight">
                             {{ t('events.facts.title') }}

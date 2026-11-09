@@ -184,6 +184,16 @@ class Event extends Model
     }
 
     /**
+     * The practical information of the event, in the order it is shown.
+     *
+     * @return HasMany<EventSection, $this>
+     */
+    public function sections(): HasMany
+    {
+        return $this->hasMany(EventSection::class)->orderBy('sort_order')->orderBy('id');
+    }
+
+    /**
      * @return HasMany<EventLink, $this>
      */
     public function links(): HasMany

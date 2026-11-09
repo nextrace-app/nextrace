@@ -77,6 +77,13 @@ class EventSeederTest extends TestCase
             $athens->dates->map(fn ($date) => $date->type->value)->all(),
         );
         $this->assertSame('2026-11-07', $athens->dates->firstWhere('type.value', 'bib_pickup')->ends_on->toDateString());
+        $this->assertSame(
+            ['transport', 'bag_drop', 'expo', 'road_closures', 'medical'],
+            $athens->sections->map(fn ($section) => $section->type->value)->all(),
+        );
+        $this->assertCount(17, $athens->mainRace->checkpoints);
+        $this->assertSame('2026-11-08 14:14', $athens->mainRace->checkpoints->firstWhere('distance_meters', 21097)->closes_at->format('Y-m-d H:i'));
+        $this->assertSame('2026-11-08 18:15', $athens->mainRace->checkpoints->last()->closes_at->format('Y-m-d H:i'));
     }
 
     public function test_it_can_be_run_again_without_duplicating_events(): void

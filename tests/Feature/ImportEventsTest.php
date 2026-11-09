@@ -335,4 +335,36 @@ class ImportEventsTest extends TestCase
 
         $this->assertSame(['expo'], $event->fresh()->dates->map(fn ($date) => $date->type->value)->all());
     }
+
+    public function test_it_imports_sections_and_checkpoints_and_replaces_them_on_the_next_run(): void
+    {
+        $this->seed(RegionSeeder::class);
+
+        $this->import([$this->row([
+            'sections' => [
+                ['type' => 'transport', 'body' => ['en' => 'By bus.', 'el' => 'Με λεωφορείο.']],
+                ['type' => 'other', 'title' => ['en' => 'Pacers'], 'body' => ['en' => 'Every 15 minutes.']],
+            ],
+            'races' => [$this->race(['checkpoints' => [['distance_meters' => 5000, 'closes_at' => '2027-03-07 10:00']]])],
+        ])]);
+
+        $event = Event::query()->where('slug', 'chania-10k-2027')->firstOrFail();
+
+        $this->assertSame(['transport', 'other'], $event->sections->map(fn ($section) => $section->type->value)->all());
+        $this->assertSame('2027-03-07 10:00', $event->races->first()->checkpoints->first()->closes_at->format('Y-m-d H:i'));
+
+        $this->import([$this->row(['sections' => [['type' => 'medical', 'body' => ['en' => 'At the finish.']]]])]);
+
+        $this->assertSame(['medical'], $event->fresh()->sections->map(fn ($section) => $section->type->value)->all());
+        $this->assertSame(0, $event->races()->first()->checkpoints()->count());
+    }
+
+    public function test_it_skips_an_event_with_an_untitled_other_section(): void
+    {
+        $this->seed(RegionSeeder::class);
+
+        $this->import([$this->row(['sections' => [['type' => 'other', 'body' => ['en' => 'Text']]]])]);
+
+        $this->assertSame(0, Event::query()->count());
+    }
 }

@@ -183,6 +183,46 @@ class EventSeeder extends Seeder
         ] as $position => [$type, $startsOn, $endsOn, $label]) {
             $event->dates()->create(['type' => $type, 'starts_on' => $startsOn, 'ends_on' => $endsOn, 'label' => $label, 'sort_order' => $position]);
         }
+
+        // The marathon cut-offs from the English race page; the waves end at 18:15.
+        $marathon = $event->races()->where('slug', 'marathon')->first();
+        $marathon?->checkpoints()->delete();
+
+        foreach ([
+            5000 => '11:08', 7500 => '11:40', 10000 => '12:10', 12500 => '12:37', 15000 => '13:05', 17500 => '13:33',
+            20000 => '14:02', 21097 => '14:14', 22500 => '14:31', 25000 => '14:58', 27500 => '15:27', 30000 => '15:54',
+            32500 => '16:28', 35000 => '16:52', 37500 => '17:22', 40000 => '17:49', 42195 => '18:15',
+        ] as $metres => $time) {
+            $marathon?->checkpoints()->create(['distance_meters' => $metres, 'closes_at' => "2026-11-08 {$time}:00"]);
+        }
+
+        // The practical information of the race page.
+        $event->sections()->delete();
+
+        foreach ([
+            ['transport', [
+                'el' => "Τα λεωφορεία της διοργάνωσης αναχωρούν για την αφετηρία στον Μαραθώνα χωρίς στάσεις:\n\n- **Μπλοκ 1–10:** 05:00–06:15 από Συγγρού-Φιξ, Σύνταγμα, Πανεπιστήμιο, Ευαγγελισμό, Κατεχάκη και Ομόνοια.\n- **Μπλοκ 11–15:** 06:30–07:30 από Εθνική Άμυνα, Κατεχάκη και Νομισματοκοπείο.\n\nΗ λεωφόρος Μαραθώνος κλείνει από τις 07:00· αν έρθετε με αυτοκίνητο, να είστε στην αφετηρία έως τις 07:30.",
+                'en' => "Organiser buses run to the start in Marathonas with no stops:\n\n- **Blocks 1–10:** 05:00–06:15 from Syngrou-Fix, Syntagma, Panepistimio, Evangelismos, Katechaki and Omonia.\n- **Blocks 11–15:** 06:30–07:30 from Ethniki Amyna, Katechaki and Nomismatokopio.\n\nMarathonos Avenue closes from 07:00; if you drive, be at the start by 07:30.",
+            ]],
+            ['bag_drop', [
+                'el' => 'Δεν υπάρχει φύλαξη ρούχων στην αφετηρία την ημέρα του αγώνα. Παραδώστε την τσάντα σας στην έκθεση στο Κλειστό Φαλήρου, 4–7 Νοεμβρίου, και παραλάβετε τη μετά τον τερματισμό στη λεωφ. Βασ. Όλγας, κάτω από το Ζάππειο, δείχνοντας τον αριθμό σας.',
+                'en' => 'There is no bag drop at the start on race day. Hand your bag in at the expo at the Faliro Indoor Hall, 4–7 November, and collect it after the finish on Vasilissis Olgas Avenue, below the Zappeion, by showing your bib.',
+            ]],
+            ['expo', [
+                'el' => 'Η έκθεση και η παραλαβή αριθμών γίνονται στο Κλειστό Φαλήρου: Τετάρτη 4 Νοεμβρίου 12:00–21:00, Πέμπτη και Παρασκευή 10:00–21:00, Σάββατο 7 Νοεμβρίου 10:00–20:00. Φέρτε το email με τον αριθμό σας και ταυτότητα ή διαβατήριο. Την Κυριακή δεν δίνονται αριθμοί.',
+                'en' => 'The expo and bib pickup are at the Faliro Indoor Hall: Wednesday 4 November 12:00–21:00, Thursday and Friday 10:00–21:00, Saturday 7 November 10:00–20:00. Bring the email with your bib number and an ID card or passport. No bibs are handed out on Sunday.',
+            ]],
+            ['road_closures', [
+                'el' => 'Όλες οι διαδρομές είναι κλειστές για τα οχήματα. Η Τροχαία ανοίγει τους δρόμους σταδιακά, αφού περάσουν οι τελευταίοι δρομείς εντός του χρονικού ορίου.',
+                'en' => 'All race routes are closed to traffic. The traffic police reopen the roads gradually once the last runners have passed within the time limit.',
+            ]],
+            ['medical', [
+                'el' => 'Το ΕΚΑΒ και ομάδες διάσωσης καλύπτουν τη διαδρομή: ιατρική βοήθεια σε κάθε σταθμό, ασθενοφόρα σε βασικά σημεία και ένα πίσω από τους τελευταίους δρομείς. Φυσικοθεραπευτές στα 25 και 30 χλμ.',
+                'en' => 'EKAB and rescue teams cover the course: medical help at every station, ambulances at key points and one behind the last runners. Physiotherapists at 25 and 30 km.',
+            ]],
+        ] as $position => [$type, $body]) {
+            $event->sections()->create(['type' => $type, 'body' => $body, 'sort_order' => $position]);
+        }
     }
 
     private function distanceClass(string $category): DistanceClass

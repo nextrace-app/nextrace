@@ -9,6 +9,7 @@ use App\Enums\RaceDiscipline;
 use App\Enums\RaceStatus;
 use App\Enums\RaceTerrain;
 use App\Enums\RegistrationStatus;
+use App\Enums\SectionType;
 use App\Models\Event;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -97,6 +98,9 @@ class EventRequest extends FormRequest
             'races.*.prices.*.amount_cents' => ['required', 'integer', 'min:0', 'max:100000000'],
             'races.*.prices.*.valid_from' => ['nullable', 'date'],
             'races.*.prices.*.valid_until' => ['nullable', 'date', 'after_or_equal:races.*.prices.*.valid_from'],
+            'races.*.checkpoints' => ['nullable', 'array'],
+            'races.*.checkpoints.*.distance_meters' => ['required', 'integer', 'min:1', 'max:1000000'],
+            'races.*.checkpoints.*.closes_at' => ['required', 'date'],
 
             'links' => ['nullable', 'array'],
             'links.*.type' => ['required', Rule::enum(LinkType::class)],
@@ -113,6 +117,16 @@ class EventRequest extends FormRequest
             // A date of the type "other" says what it is.
             'dates.*.label.el' => ['nullable', 'string', 'max:255'],
             'dates.*.label.en' => ['nullable', 'required_if:dates.*.type,other', 'string', 'max:255'],
+
+            'sections' => ['nullable', 'array'],
+            'sections.*.type' => ['required', Rule::enum(SectionType::class)],
+            'sections.*.title' => ['nullable', 'array'],
+            // A section of the type "other" says what it is about.
+            'sections.*.title.el' => ['nullable', 'string', 'max:255'],
+            'sections.*.title.en' => ['nullable', 'required_if:sections.*.type,other', 'string', 'max:255'],
+            'sections.*.body' => ['required', 'array'],
+            'sections.*.body.el' => ['nullable', 'string', 'max:20000'],
+            'sections.*.body.en' => ['required', 'string', 'max:20000'],
         ];
     }
 
@@ -157,12 +171,18 @@ class EventRequest extends FormRequest
             $race['start_location'] = $label($race['start_location'] ?? null);
             $race['finish_location'] = $label($race['finish_location'] ?? null);
             $race['prices'] = array_map(fn (array $price) => [...$price, 'label' => $label($price['label'] ?? null)], $race['prices'] ?? []);
+            $race['checkpoints'] = $race['checkpoints'] ?? [];
 
             return $race;
         }, $data['races']);
 
         $data['links'] = array_map(fn (array $link) => [...$link, 'label' => $label($link['label'] ?? null)], $data['links'] ?? []);
         $data['dates'] = array_map(fn (array $date) => [...$date, 'label' => $label($date['label'] ?? null)], $data['dates'] ?? []);
+        $data['sections'] = array_map(fn (array $section) => [
+            ...$section,
+            'title' => $label($section['title'] ?? null),
+            'body' => $label($section['body']) ?? [],
+        ], $data['sections'] ?? []);
 
         return $data;
     }
