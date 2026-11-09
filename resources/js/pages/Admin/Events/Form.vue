@@ -7,6 +7,7 @@ import type {
     EventLink,
     KeyDate,
     Race,
+    Section,
 } from '@/components/AdminEventRaces.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
@@ -62,6 +63,11 @@ type RaceRecord = Omit<
     }[];
 };
 type LinkRecord = { type: string; url: string; label: Translated | null };
+type SectionRecord = {
+    type: string;
+    title: Translated | null;
+    body: Translated;
+};
 type DateRecord = {
     type: string;
     starts_on: string;
@@ -100,6 +106,7 @@ const props = defineProps<{
         races: RaceRecord[];
         links: LinkRecord[];
         dates: DateRecord[];
+        sections: SectionRecord[];
         urls: {
             submit: string;
             publish: string;
@@ -119,6 +126,7 @@ const props = defineProps<{
         statuses: string[];
         linkTypes: string[];
         dateTypes: string[];
+        sectionTypes: string[];
     };
     canPublish: boolean;
     canDelete: boolean;
@@ -199,6 +207,13 @@ const form = useForm({
             ...date,
             ends_on: date.ends_on ?? '',
             label: pair(date.label),
+        }),
+    ),
+    sections: (r?.sections ?? []).map(
+        (section): Section => ({
+            type: section.type,
+            title: pair(section.title),
+            body: pair(section.body),
         }),
     ),
 });
@@ -646,6 +661,7 @@ const field = 'min-h-11 rounded-md border bg-transparent px-3 text-sm';
                     v-model:races="form.races"
                     v-model:links="form.links"
                     v-model:dates="form.dates"
+                    v-model:sections="form.sections"
                     :errors="allErrors"
                     :options="raceOptions"
                 />

@@ -197,3 +197,25 @@
         @apply rounded bg-muted px-1 py-0.5 text-base;
     }
 }
+
+/* The text of a practical information section, rendered from Markdown on the server. */
+@layer components {
+    .practical-body {
+        @apply text-sm leading-5 text-muted-foreground;
+    }
+    .practical-body > * + * {
+        @apply mt-2;
+    }
+    .practical-body ul {
+        @apply list-disc space-y-1 pl-5;
+    }
+    .practical-body ol {
+        @apply list-decimal space-y-1 pl-5;
+    }
+    .practical-body a {
+        @apply font-bold text-primary underline underline-offset-4;
+    }
+    .practical-body strong {
+        @apply text-foreground;
+    }
+}

@@ -165,6 +165,16 @@ class Race extends Model
     }
 
     /**
+     * The cut-offs along the course, the nearest to the start first.
+     *
+     * @return HasMany<RaceCheckpoint, $this>
+     */
+    public function checkpoints(): HasMany
+    {
+        return $this->hasMany(RaceCheckpoint::class)->orderBy('distance_meters')->orderBy('id');
+    }
+
+    /**
      * The category the events pages group this race under: Trail, Ultra, 5K, ...
      */
     public function category(): string

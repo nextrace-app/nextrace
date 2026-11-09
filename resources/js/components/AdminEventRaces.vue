@@ -12,6 +12,10 @@ export type Price = {
     valid_from: string;
     valid_until: string;
 };
+export type Checkpoint = {
+    distance_meters: number | string;
+    closes_at: string;
+};
 export type Race = {
     slug: string;
     name: Translated;
@@ -34,8 +38,10 @@ export type Race = {
     status: string;
     registration_url: string;
     prices: Price[];
+    checkpoints: Checkpoint[];
 };
 export type EventLink = { type: string; url: string; label: Translated };
+export type Section = { type: string; title: Translated; body: Translated };
 export type KeyDate = {
     type: string;
     starts_on: string;
@@ -51,12 +57,14 @@ defineProps<{
         statuses: string[];
         linkTypes: string[];
         dateTypes: string[];
+        sectionTypes: string[];
     };
 }>();
 
 const races = defineModel<Race[]>('races', { required: true });
 const links = defineModel<EventLink[]>('links', { required: true });
 const dates = defineModel<KeyDate[]>('dates', { required: true });
+const sections = defineModel<Section[]>('sections', { required: true });
 
 const { t } = useI18n();
 
@@ -83,6 +91,7 @@ const blankRace = (): Race => ({
     status: 'scheduled',
     registration_url: '',
     prices: [],
+    checkpoints: [],
 });
 
 const addRace = () => {
@@ -156,6 +165,38 @@ const addDate = () => {
 
 const removeDate = (index: number) => {
     dates.value = dates.value.filter((_, i) => i !== index);
+};
+
+const addCheckpoint = (race: Race) => {
+    race.checkpoints.push({ distance_meters: '', closes_at: '' });
+};
+
+const addSection = () => {
+    sections.value = [
+        ...sections.value,
+        {
+            type: 'transport',
+            title: { el: '', en: '' },
+            body: { el: '', en: '' },
+        },
+    ];
+};
+
+const removeSection = (index: number) => {
+    sections.value = sections.value.filter((_, i) => i !== index);
+};
+
+const moveSection = (index: number, by: -1 | 1) => {
+    const target = index + by;
+
+    if (target < 0 || target >= sections.value.length) {
+        return;
+    }
+
+    const next = [...sections.value];
+
+    [next[index], next[target]] = [next[target], next[index]];
+    sections.value = next;
 };
 </script>
 
@@ -545,6 +586,76 @@ const removeDate = (index: number) => {
                     {{ t('admin.events.races.add_price') }}
                 </Button>
             </div>
+
+            <div class="flex flex-col gap-3">
+                <div class="flex flex-col gap-1">
+                    <p class="text-sm font-medium">
+                        {{ t('admin.events.races.checkpoints') }}
+                    </p>
+                    <p class="text-sm text-muted-foreground">
+                        {{ t('admin.events.races.checkpoints_hint') }}
+                    </p>
+                </div>
+                <div
+                    v-for="(checkpoint, checkpointIndex) in race.checkpoints"
+                    :key="checkpointIndex"
+                    class="grid gap-2 rounded-md border bg-card p-3 sm:grid-cols-3"
+                    data-testid="admin-races__checkpoint"
+                >
+                    <div>
+                        <Input
+                            v-model="checkpoint.distance_meters"
+                            type="number"
+                            min="1"
+                            :aria-label="
+                                t('admin.events.races.checkpoint_distance')
+                            "
+                            :placeholder="
+                                t('admin.events.races.checkpoint_distance')
+                            "
+                        />
+                        <InputError
+                            :message="
+                                errors[
+                                    `races.${index}.checkpoints.${checkpointIndex}.distance_meters`
+                                ]
+                            "
+                        />
+                    </div>
+                    <div>
+                        <Input
+                            v-model="checkpoint.closes_at"
+                            type="datetime-local"
+                            :aria-label="
+                                t('admin.events.races.checkpoint_closes_at')
+                            "
+                        />
+                        <InputError
+                            :message="
+                                errors[
+                                    `races.${index}.checkpoints.${checkpointIndex}.closes_at`
+                                ]
+                            "
+                        />
+                    </div>
+                    <button
+                        type="button"
+                        class="justify-self-start text-sm text-destructive hover:underline"
+                        @click="race.checkpoints.splice(checkpointIndex, 1)"
+                    >
+                        {{ t('admin.events.races.remove') }}
+                    </button>
+                </div>
+                <Button
+                    type="button"
+                    variant="outline"
+                    class="self-start"
+                    data-testid="admin-races__add-checkpoint"
+                    @click="addCheckpoint(race)"
+                >
+                    {{ t('admin.events.races.add_checkpoint') }}
+                </Button>
+            </div>
         </div>
 
         <Button
@@ -643,6 +754,122 @@ const removeDate = (index: number) => {
             @click="addDate"
         >
             {{ t('admin.events.races.add_date') }}
+        </Button>
+
+        <div class="flex flex-col gap-1">
+            <h2 class="text-xl font-bold">
+                {{ t('admin.events.races.sections') }}
+            </h2>
+            <p class="text-sm text-muted-foreground">
+                {{ t('admin.events.races.sections_hint') }}
+            </p>
+        </div>
+        <div
+            v-for="(section, index) in sections"
+            :key="index"
+            class="grid gap-3 rounded-lg border p-4"
+            data-testid="admin-races__section"
+        >
+            <div class="flex flex-wrap items-end gap-2">
+                <div class="grid gap-1">
+                    <Label :for="`section-${index}-type`">{{
+                        t('admin.events.races.section_type')
+                    }}</Label>
+                    <select
+                        :id="`section-${index}-type`"
+                        v-model="section.type"
+                        :class="select"
+                    >
+                        <option
+                            v-for="value in options.sectionTypes"
+                            :key="value"
+                            :value="value"
+                        >
+                            {{ t(`events.practical.types.${value}`) }}
+                        </option>
+                    </select>
+                </div>
+                <div class="ml-auto flex gap-2">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        :disabled="index === 0"
+                        :aria-label="t('admin.events.races.move_up')"
+                        @click="moveSection(index, -1)"
+                        >↑</Button
+                    >
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        :disabled="index === sections.length - 1"
+                        :aria-label="t('admin.events.races.move_down')"
+                        @click="moveSection(index, 1)"
+                        >↓</Button
+                    >
+                    <button
+                        type="button"
+                        class="text-sm text-destructive hover:underline"
+                        @click="removeSection(index)"
+                    >
+                        {{ t('admin.events.races.remove') }}
+                    </button>
+                </div>
+            </div>
+            <div class="grid gap-1">
+                <Label :for="`section-${index}-title`"
+                    >{{ t('admin.events.races.section_title') }} (EL /
+                    EN)</Label
+                >
+                <div class="flex flex-col gap-2 sm:flex-row">
+                    <Input
+                        :id="`section-${index}-title`"
+                        v-model="section.title.el"
+                        lang="el"
+                        placeholder="EL"
+                    />
+                    <Input
+                        v-model="section.title.en"
+                        lang="en"
+                        placeholder="EN"
+                    />
+                </div>
+                <InputError :message="errors[`sections.${index}.title.en`]" />
+            </div>
+            <div class="grid gap-2 sm:grid-cols-2">
+                <div
+                    v-for="locale in ['el', 'en'] as const"
+                    :key="locale"
+                    class="grid gap-1"
+                >
+                    <Label :for="`section-${index}-body-${locale}`"
+                        >{{ t('admin.events.races.section_body') }} ({{
+                            locale.toUpperCase()
+                        }})</Label
+                    >
+                    <textarea
+                        :id="`section-${index}-body-${locale}`"
+                        v-model="section.body[locale]"
+                        :lang="locale"
+                        rows="4"
+                        class="rounded-md border bg-transparent px-3 py-2 text-sm"
+                        :data-testid="`admin-races__section-body-${locale}`"
+                    />
+                    <InputError
+                        :message="errors[`sections.${index}.body.${locale}`]"
+                    />
+                </div>
+            </div>
+        </div>
+        <Button
+            type="button"
+            variant="outline"
+            class="self-start"
+            data-testid="admin-races__add-section"
+            @click="addSection"
+        >
+            {{ t('admin.events.races.add_section') }}
         </Button>
 
         <h2 class="text-xl font-bold">{{ t('admin.events.races.links') }}</h2>

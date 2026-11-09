@@ -78,6 +78,7 @@ export type Race = {
     /** The last day of the current price when a dearer tier follows within a week. */
     price_rises_after: string | null;
     prices: RacePrice[];
+    cutoffs: Cutoff[];
 };
 
 export type EventLink = {
@@ -103,6 +104,31 @@ export type KeyDate = {
     /** Null when the type says what the date is. */
     label: string | null;
     state: 'past' | 'next' | 'upcoming';
+};
+
+export type SectionType =
+    | 'transport'
+    | 'bag_drop'
+    | 'expo'
+    | 'road_closures'
+    | 'medical'
+    | 'other';
+
+/** One section of the practical information of an event. */
+export type EventSection = {
+    type: SectionType;
+    /** Null when the type names the section. */
+    title: string | null;
+    /** Markdown rendered to safe HTML on the server. */
+    body_html: string;
+};
+
+/** One row of the cut-off table of a race. */
+export type Cutoff = {
+    distance_meters: number;
+    /** Wall-clock moment, "Y-m-d H:i". */
+    closes_at: string;
+    is_finish: boolean;
 };
 
 export type Event = {
@@ -153,5 +179,6 @@ export type Event = {
         price_rises_soon: boolean;
     };
     key_dates: KeyDate[];
+    sections: EventSection[];
     links: EventLink[];
 };

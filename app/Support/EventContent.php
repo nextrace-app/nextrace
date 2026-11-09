@@ -8,9 +8,10 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 
 /**
- * Writes the races, prices, links and key dates of an event from the admin
- * form, the way the importer does: races are matched by slug, the ones missing
- * from the form are removed, and prices, links and dates are replaced.
+ * Writes the races, prices, checkpoints, links, key dates and practical
+ * information of an event from the admin form, the way the importer does: races
+ * are matched by slug, the ones missing from the form are removed, and the rest
+ * is replaced.
  */
 class EventContent
 {
@@ -18,8 +19,9 @@ class EventContent
      * @param  list<array<string, mixed>>  $races
      * @param  list<array<string, mixed>>  $links
      * @param  list<array<string, mixed>>  $dates
+     * @param  list<array<string, mixed>>  $sections
      */
-    public static function sync(Event $event, array $races, array $links, array $dates = []): void
+    public static function sync(Event $event, array $races, array $links, array $dates = [], array $sections = []): void
     {
         foreach ($races as $position => $data) {
             $startsAt = Carbon::parse($data['starts_at'], 'Europe/Athens');
@@ -44,6 +46,15 @@ class EventContent
             foreach ($data['prices'] ?? [] as $price) {
                 $race->prices()->create(Arr::only($price, ['label', 'amount_cents', 'valid_from', 'valid_until']));
             }
+
+            $race->checkpoints()->delete();
+
+            foreach ($data['checkpoints'] ?? [] as $checkpoint) {
+                $race->checkpoints()->create([
+                    'distance_meters' => $checkpoint['distance_meters'],
+                    'closes_at' => Carbon::parse($checkpoint['closes_at'], 'Europe/Athens'),
+                ]);
+            }
         }
 
         $event->races()->whereNotIn('slug', array_column($races, 'slug'))->get()->each->delete();
@@ -62,6 +73,12 @@ class EventContent
                 'ends_on' => ($date['ends_on'] ?? null) ?: null,
                 'sort_order' => $position,
             ]);
+        }
+
+        $event->sections()->delete();
+
+        foreach ($sections as $position => $section) {
+            $event->sections()->create([...Arr::only($section, ['type', 'title', 'body']), 'sort_order' => $position]);
         }
     }
 }
