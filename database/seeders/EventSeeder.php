@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Enums\DistanceClass;
+use App\Enums\LinkType;
 use App\Enums\RaceTerrain;
 use App\Models\Event;
+use App\Models\EventSeries;
 use App\Models\Region;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -88,6 +90,61 @@ class EventSeeder extends Seeder
         }
 
         $this->seedAthensWeekend();
+        $this->seedAthensEditions();
+    }
+
+    /**
+     * Athens Marathon as a series: the 2026 race is its 43rd edition and the
+     * 42nd, on the second Sunday of November 2025, is kept as a past edition.
+     * The links are the results and photo pages of the official site.
+     */
+    private function seedAthensEditions(): void
+    {
+        $event = Event::query()->find(1);
+
+        if ($event === null) {
+            return;
+        }
+
+        $series = EventSeries::query()->updateOrCreate(['slug' => 'athens-marathon'], [
+            'name' => ['el' => 'Μαραθώνιος Αθήνας', 'en' => 'Athens Marathon'],
+            'website' => 'https://www.athensauthenticmarathon.gr',
+        ]);
+
+        $event->update(['series_id' => $series->id, 'edition_number' => 43]);
+        $event->links()->whereIn('type', [LinkType::Results, LinkType::Photos])->delete();
+        $event->links()->create(['type' => LinkType::Results, 'url' => 'https://www.athensauthenticmarathon.gr/en/results/live_results/agones-2-26', 'sort_order' => 10]);
+        $event->links()->create(['type' => LinkType::Photos, 'url' => 'https://photos.athensauthenticmarathon.gr', 'sort_order' => 11]);
+
+        $previous = Event::query()->updateOrCreate(['slug' => 'athens-marathon-2025'], [
+            'series_id' => $series->id,
+            'edition_number' => 42,
+            'name' => $event->name,
+            'description' => $event->description,
+            'starts_on' => '2025-11-09',
+            'ends_on' => null,
+            'region_id' => $event->region_id,
+            'city' => $event->city,
+            'country' => 'GR',
+            'registration_status' => 'closed',
+            'published_at' => now(),
+        ]);
+
+        $previous->races()->updateOrCreate(['slug' => 'marathon'], [
+            'name' => ['el' => 'Μαραθώνιος', 'en' => 'Marathon'],
+            'is_main' => true,
+            'terrain' => RaceTerrain::Road,
+            'distance_class' => DistanceClass::Marathon,
+            'distance_meters' => 42195,
+            'starts_at' => '2025-11-09 00:00',
+            'start_time_known' => false,
+            'start_location' => ['el' => 'Μαραθώνας', 'en' => 'Marathon'],
+            'finish_location' => ['el' => 'Παναθηναϊκό Στάδιο', 'en' => 'Panathenaic Stadium'],
+        ]);
+
+        $previous->links()->delete();
+        $previous->links()->create(['type' => LinkType::Results, 'url' => 'https://www.athensauthenticmarathon.gr/en/results', 'sort_order' => 0]);
+        $previous->links()->create(['type' => LinkType::Photos, 'url' => 'https://www.athensauthenticmarathon.gr/en/pages/previous-photos', 'sort_order' => 1]);
     }
 
     /**
