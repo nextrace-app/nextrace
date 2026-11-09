@@ -3,14 +3,16 @@ import { Head, Link, usePage } from '@inertiajs/vue3';
 import { ArrowLeft } from '@lucide/vue';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import RelatedRace from '@/components/RelatedRace.vue';
 import { Badge } from '@/components/ui/badge';
 import { useEventFormat } from '@/composables/useEventFormat';
 import { useLocale } from '@/composables/useLocale';
 import { index as postsIndex } from '@/routes/posts';
-import type { PostPage } from '@/types';
+import type { PostPage, RelatedEvent } from '@/types';
 
 const props = defineProps<{
     post: PostPage;
+    events: RelatedEvent[];
 }>();
 
 const { t } = useI18n();
@@ -109,6 +111,18 @@ const sourceHost = computed(() => {
                         >{{ sourceHost ?? post.source_url }}</a
                     >
                 </footer>
+
+                <div
+                    v-if="events.length > 0"
+                    class="flex flex-col gap-4"
+                    data-testid="post-page__events"
+                >
+                    <RelatedRace
+                        v-for="event in events"
+                        :key="event.slug"
+                        :event="event"
+                    />
+                </div>
             </article>
         </main>
     </DefaultShell>

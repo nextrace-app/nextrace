@@ -226,6 +226,7 @@ return [
             'finish' => 'Finish',
             'route' => 'View the route',
         ],
+        'news' => ['title' => 'News', 'all' => 'All news'],
         'practical' => [
             'title' => 'Practical information',
             'types' => ['transport' => 'Getting to the start', 'bag_drop' => 'Bag drop', 'expo' => 'Expo and bib pickup', 'road_closures' => 'Road closures', 'medical' => 'Medical support', 'other' => 'Other'],
@@ -263,6 +264,8 @@ return [
 
     'posts' => [
         'title' => 'Posts',
+        'event_news' => 'News: {name}',
+        'related_race' => 'Related race',
         'empty' => 'There are no posts yet. Check back soon.',
         'browse_events' => 'Browse events',
         'back' => 'Back to posts',

@@ -60,6 +60,9 @@ class PageMeta
 
     private ?string $image = null;
 
+    /** Whether the page is kept out of search results while its links are followed. */
+    private bool $noindex = false;
+
     /** @var list<array<string, mixed>> */
     private array $jsonLd = [];
 
@@ -142,6 +145,21 @@ class PageMeta
                 [$title, $url],
             ]),
         ];
+
+        return $this;
+    }
+
+    /**
+     * Describe the posts list filtered to the news of one event. It repeats
+     * posts the full list has, so it stays out of search results.
+     */
+    public function forEventNews(Event $event): static
+    {
+        $name = $event->translated('name');
+
+        $this->title = Str::limit(__('seo.event_news.title', ['name' => $name]), self::TITLE_LIMIT - mb_strlen(' - '.config()->string('app.name')), '…', true);
+        $this->description = __('seo.event_news.description', ['name' => $name]);
+        $this->noindex = true;
 
         return $this;
     }
@@ -294,7 +312,7 @@ class PageMeta
             return 'noindex, nofollow';
         }
 
-        return $this->isEventSearch() ? 'noindex, follow' : 'index, follow';
+        return $this->isEventSearch() || $this->noindex ? 'noindex, follow' : 'index, follow';
     }
 
     private function isEventSearch(): bool

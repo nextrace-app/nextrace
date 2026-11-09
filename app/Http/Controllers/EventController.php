@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\EventResource;
+use App\Http\Resources\PostResource;
 use App\Models\Event;
 use App\Support\PageMeta;
 use Illuminate\Database\Eloquent\Builder;
@@ -95,7 +96,26 @@ class EventController extends Controller
 
         return Inertia::render('Events/Show', [
             'event' => (new EventResource($event))->resolve(),
+            'news' => $this->news($event),
             'isFavorite' => $request->user()?->favorites()->where('event_id', $event->id)->exists() ?? false,
         ]);
+    }
+
+    /**
+     * The latest published posts about the event, and how many there are in
+     * all, so the page links to the full list only when it shows less.
+     *
+     * @return array{posts: array<int, mixed>, total: int}
+     */
+    private function news(Event $event): array
+    {
+        $posts = $event->posts()->published();
+
+        return [
+            'posts' => PostResource::collection(
+                (clone $posts)->latest('posts.published_at')->latest('posts.id')->limit(3)->get()
+            )->resolve(),
+            'total' => $posts->count(),
+        ];
     }
 }

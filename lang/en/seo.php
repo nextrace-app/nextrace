@@ -21,6 +21,11 @@ return [
         'description' => 'News, guides, results and interviews from the running scene in Greece: what is new in the races, how to prepare and who won.',
     ],
 
+    'event_news' => [
+        'title' => 'News: :name',
+        'description' => 'The latest news and announcements about :name.',
+    ],
+
     'breadcrumbs' => [
         'home' => 'Home',
         'events' => 'Races',
