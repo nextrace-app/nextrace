@@ -26,6 +26,7 @@ import {
 import type { Component } from 'vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import EventCountdown from '@/components/EventCountdown.vue';
 import PracticalInfo from '@/components/PracticalInfo.vue';
 import RaceCourse from '@/components/RaceCourse.vue';
 import RaceCutoffs from '@/components/RaceCutoffs.vue';
@@ -35,11 +36,17 @@ import { Button } from '@/components/ui/button';
 import { useEventFormat } from '@/composables/useEventFormat';
 import { useLocale } from '@/composables/useLocale';
 import { index as eventsIndex } from '@/routes/events';
-import type { Event, LinkType, Post } from '@/types';
+import type {
+    Event,
+    EventCountdown as Countdown,
+    LinkType,
+    Post,
+} from '@/types';
 
 const props = defineProps<{
     event: Event;
     news: { posts: Post[]; total: number };
+    countdown: Countdown | null;
     isFavorite: boolean;
 }>();
 
@@ -462,6 +469,12 @@ const hasContact = computed(
                     class="flex min-w-0 flex-col gap-8"
                     data-testid="event-page__content"
                 >
+                    <!-- First in the content below the desktop layout, first in the sidebar on it. -->
+                    <EventCountdown
+                        v-if="countdown"
+                        :countdown="countdown"
+                        class="lg:hidden"
+                    />
                     <div
                         v-if="banner"
                         role="alert"
@@ -1034,6 +1047,11 @@ const hasContact = computed(
                     class="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start"
                     data-testid="event-page__sidebar"
                 >
+                    <EventCountdown
+                        v-if="countdown"
+                        :countdown="countdown"
+                        class="max-lg:hidden"
+                    />
                     <div
                         class="flex flex-col gap-4 rounded-lg border bg-card p-6"
                     >

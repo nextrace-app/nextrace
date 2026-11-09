@@ -19,6 +19,7 @@ $localized = function () {
 
     Route::get('events', [EventController::class, 'index'])->name('events.index');
     Route::get('events/{event}', [EventController::class, 'show'])->name('events.show');
+    Route::get('events/{event}/calendar.ics', [EventController::class, 'calendar'])->name('events.calendar');
 
     Route::get('posts', [PostController::class, 'index'])->name('posts.index');
     Route::get('posts/{post}', [PostController::class, 'show'])->name('posts.show');

@@ -245,6 +245,17 @@ return [
             'closes_at' => 'Κλείνει στις',
             'finish' => 'Τερματισμός',
         ],
+        'countdown' => [
+            'starts_in' => 'Ξεκινά σε',
+            'starts' => 'Ξεκινά',
+            'days' => '{n} ημέρα | {n} ημέρες',
+            'tomorrow' => 'Αύριο',
+            'today' => 'Σήμερα',
+            'add_to_calendar' => 'Προσθήκη στο ημερολόγιο',
+            'apple' => 'Apple Calendar (.ics)',
+            'google' => 'Google Calendar',
+            'outlook' => 'Outlook (.ics)',
+        ],
         'key_dates' => [
             'title' => 'Σημαντικές ημερομηνίες',
             'next' => 'Επόμενη',
