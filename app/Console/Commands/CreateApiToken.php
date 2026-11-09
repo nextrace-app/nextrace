@@ -14,7 +14,7 @@ use Throwable;
  * Issues an API token and prints it. The token cannot be read back later:
  * only its hash is stored.
  */
-#[Signature('api-token:create {name : What the token is for, e.g. race-news-scout} {--ability=* : events:read, posts:write or * (repeat for several)} {--user= : Email or id of the user the token acts as} {--expires= : Date or period after which the token stops working, e.g. 2027-01-01 or "+90 days"}')]
+#[Signature('api-token:create {name : What the token is for, e.g. race-news-scout} {--ability=* : events:read, events:write, posts:write or * (repeat for several)} {--user= : Email or id of the user the token acts as} {--expires= : Date or period after which the token stops working, e.g. 2027-01-01 or "+90 days"}')]
 #[Description('Create an API token and print it once')]
 class CreateApiToken extends Command
 {
