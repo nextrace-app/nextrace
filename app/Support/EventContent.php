@@ -4,8 +4,13 @@ namespace App\Support;
 
 use App\Enums\DistanceClass;
 use App\Models\Event;
+use App\Models\Race;
+use App\Models\RaceCourse;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * Writes the races, prices, checkpoints, links, key dates and practical
@@ -47,6 +52,8 @@ class EventContent
                 $race->prices()->create(Arr::only($price, ['label', 'amount_cents', 'valid_from', 'valid_until']));
             }
 
+            self::syncCourse($race, $data);
+
             $race->checkpoints()->delete();
 
             foreach ($data['checkpoints'] ?? [] as $checkpoint) {
@@ -57,7 +64,10 @@ class EventContent
             }
         }
 
-        $event->races()->whereNotIn('slug', array_column($races, 'slug'))->get()->each->delete();
+        $event->races()->whereNotIn('slug', array_column($races, 'slug'))->with('course')->get()->each(function (Race $race): void {
+            self::deleteCourse($race);
+            $race->delete();
+        });
 
         $event->links()->delete();
 
@@ -79,6 +89,51 @@ class EventContent
 
         foreach ($sections as $position => $section) {
             $event->sections()->create([...Arr::only($section, ['type', 'title', 'body']), 'sort_order' => $position]);
+        }
+    }
+
+    /**
+     * Store a newly uploaded GPX file with the course read from it, replacing
+     * the previous one, or remove the course when the form asks to.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    private static function syncCourse(Race $race, array $data): void
+    {
+        $file = $data['gpx'] ?? null;
+        $course = $data['course'] ?? null;
+
+        if ($file instanceof UploadedFile && is_array($course)) {
+            $previous = $race->course;
+            $path = $file->storeAs('gpx', "{$race->id}-".Str::lower(Str::random(12)).'.gpx', RaceCourse::DISK);
+
+            $race->course()->updateOrCreate([], [
+                ...$course,
+                'gpx_path' => $path,
+                'gpx_name' => Str::limit($file->getClientOriginalName(), 200, ''),
+            ]);
+
+            if ($previous !== null && $previous->gpx_path !== $path) {
+                Storage::disk(RaceCourse::DISK)->delete($previous->gpx_path);
+            }
+
+            return;
+        }
+
+        if (filter_var($data['remove_gpx'] ?? false, FILTER_VALIDATE_BOOLEAN)) {
+            self::deleteCourse($race);
+        }
+    }
+
+    /**
+     * Remove the course of a race together with its file.
+     */
+    private static function deleteCourse(Race $race): void
+    {
+        if ($race->course !== null) {
+            Storage::disk(RaceCourse::DISK)->delete($race->course->gpx_path);
+            $race->course->delete();
+            $race->unsetRelation('course');
         }
     }
 }

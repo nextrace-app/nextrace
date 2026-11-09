@@ -39,6 +39,13 @@ export type Race = {
     registration_url: string;
     prices: Price[];
     checkpoints: Checkpoint[];
+    /** A new GPX file to upload with the form. */
+    gpx: File | null;
+    /** Removes the stored GPX file when no new one is picked. */
+    remove_gpx: boolean;
+    /** The stored GPX file, if any. */
+    gpx_name: string | null;
+    gpx_url: string | null;
 };
 export type EventLink = { type: string; url: string; label: Translated };
 export type Section = { type: string; title: Translated; body: Translated };
@@ -92,6 +99,10 @@ const blankRace = (): Race => ({
     registration_url: '',
     prices: [],
     checkpoints: [],
+    gpx: null,
+    remove_gpx: false,
+    gpx_name: null,
+    gpx_url: null,
 });
 
 const addRace = () => {
@@ -165,6 +176,10 @@ const addDate = () => {
 
 const removeDate = (index: number) => {
     dates.value = dates.value.filter((_, i) => i !== index);
+};
+
+const pickGpx = (race: Race, event: Event) => {
+    race.gpx = (event.target as HTMLInputElement).files?.[0] ?? null;
 };
 
 const addCheckpoint = (race: Race) => {
@@ -508,6 +523,50 @@ const moveSection = (index: number, by: -1 | 1) => {
                         data-testid="admin-races__route-url"
                     />
                     <InputError :message="errors[`races.${index}.route_url`]" />
+                </div>
+                <div
+                    class="grid gap-2 sm:col-span-2"
+                    data-testid="admin-races__gpx"
+                >
+                    <Label :for="`race-${index}-gpx`">{{
+                        t('admin.events.races.gpx')
+                    }}</Label>
+                    <input
+                        :id="`race-${index}-gpx`"
+                        type="file"
+                        accept=".gpx,application/gpx+xml"
+                        class="min-h-11 text-sm file:mr-3 file:min-h-9 file:rounded-md file:border file:bg-card file:px-3 file:text-sm file:font-bold"
+                        data-testid="admin-races__gpx-input"
+                        @change="pickGpx(race, $event)"
+                    />
+                    <p class="text-sm text-muted-foreground">
+                        {{ t('admin.events.races.gpx_hint') }}
+                    </p>
+                    <div
+                        v-if="race.gpx_name && !race.gpx"
+                        class="flex flex-wrap items-center gap-3 text-sm"
+                    >
+                        <span class="text-muted-foreground">{{
+                            t('admin.events.races.gpx_current')
+                        }}</span>
+                        <a
+                            v-if="race.gpx_url"
+                            :href="race.gpx_url"
+                            class="font-bold text-primary hover:underline"
+                            download
+                            >{{ race.gpx_name }}</a
+                        >
+                        <label class="flex min-h-11 items-center gap-2">
+                            <input
+                                v-model="race.remove_gpx"
+                                type="checkbox"
+                                class="size-5 accent-primary"
+                                data-testid="admin-races__gpx-remove"
+                            />
+                            {{ t('admin.events.races.gpx_remove') }}
+                        </label>
+                    </div>
+                    <InputError :message="errors[`races.${index}.gpx`]" />
                 </div>
                 <div class="grid gap-2">
                     <Label>{{

@@ -219,3 +219,13 @@
         @apply text-foreground;
     }
 }
+
+/* The start and finish labels on the course map. */
+@layer components {
+    .course-map .course-map__label {
+        @apply rounded-md border-0 bg-card px-2 py-0.5 text-[13px] font-medium text-primary shadow-sm;
+    }
+    .course-map .course-map__label::before {
+        @apply hidden;
+    }
+}

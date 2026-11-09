@@ -79,6 +79,10 @@ export type Race = {
     price_rises_after: string | null;
     prices: RacePrice[];
     cutoffs: Cutoff[];
+    /** The GPX file of the race, when one was uploaded. */
+    gpx_url: string | null;
+    /** What the course block draws; only the event page sends it. */
+    course: RaceCourse | null;
 };
 
 export type EventLink = {
@@ -121,6 +125,19 @@ export type EventSection = {
     title: string | null;
     /** Markdown rendered to safe HTML on the server. */
     body_html: string;
+};
+
+/** The course of a race, read from its GPX file. */
+export type RaceCourse = {
+    distance_meters: number;
+    elevation_gain_m: number | null;
+    elevation_loss_m: number | null;
+    highest_point_m: number | null;
+    /** [lat, lng] along the course. */
+    track: [number, number][];
+    /** [kilometres, metres] at even steps; null without elevation. */
+    profile: [number, number][] | null;
+    gpx_name: string;
 };
 
 /** One row of the cut-off table of a race. */

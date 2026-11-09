@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -162,6 +163,16 @@ class Race extends Model
     public function prices(): HasMany
     {
         return $this->hasMany(RacePrice::class)->orderBy('valid_from')->orderBy('id');
+    }
+
+    /**
+     * The course from the GPX file of the race, when one was uploaded.
+     *
+     * @return HasOne<RaceCourse, $this>
+     */
+    public function course(): HasOne
+    {
+        return $this->hasOne(RaceCourse::class);
     }
 
     /**

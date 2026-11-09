@@ -138,6 +138,8 @@ class EventResource extends JsonResource
             'sold_out' => $race->sold_out,
             'registration_state' => $state,
             'price_rises_after' => $state === RaceRegistration::OPEN ? RaceRegistration::priceRisesAfter($race, $today) : null,
+            'gpx_url' => $race->course?->gpxUrl(),
+            'course' => $this->course($race),
             // Only the event page loads the checkpoints; the lists have no table.
             'cutoffs' => $race->relationLoaded('checkpoints') ? Cutoffs::for($race) : [],
             'prices' => $race->prices->map(fn (RacePrice $price) => [
@@ -148,6 +150,31 @@ class EventResource extends JsonResource
                 'valid_until' => $price->valid_until?->toDateString(),
                 'state' => RaceRegistration::priceState($price, $current, $today),
             ])->all(),
+        ];
+    }
+
+    /**
+     * What the course block draws: the figures, the map line and the profile.
+     * Only the event page loads them; the lists know just the file.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function course(Race $race): ?array
+    {
+        $course = $race->course;
+
+        if ($course === null || ! array_key_exists('track', $course->getAttributes())) {
+            return null;
+        }
+
+        return [
+            'distance_meters' => $course->distance_meters,
+            'elevation_gain_m' => $course->elevation_gain_m,
+            'elevation_loss_m' => $course->elevation_loss_m,
+            'highest_point_m' => $course->highest_point_m,
+            'track' => $course->track,
+            'profile' => $course->profile,
+            'gpx_name' => $course->gpx_name,
         ];
     }
 

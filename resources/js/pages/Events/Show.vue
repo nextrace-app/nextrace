@@ -27,6 +27,7 @@ import type { Component } from 'vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PracticalInfo from '@/components/PracticalInfo.vue';
+import RaceCourse from '@/components/RaceCourse.vue';
 import RaceCutoffs from '@/components/RaceCutoffs.vue';
 import RaceNews from '@/components/RaceNews.vue';
 import { Badge } from '@/components/ui/badge';
@@ -45,6 +46,11 @@ const props = defineProps<{
 const { t } = useI18n();
 const page = usePage();
 const seo = computed(() => page.props.seo);
+
+/** The races that have a course to draw, from their GPX files. */
+const courseRaces = computed(() =>
+    props.event.races.filter((race) => race.course !== null),
+);
 const { localeRoute } = useLocale();
 const {
     formatDate,
@@ -809,6 +815,10 @@ const hasContact = computed(
                             </li>
                         </ul>
                     </section>
+                    <RaceCourse
+                        v-if="courseRaces.length > 0"
+                        :races="courseRaces"
+                    />
                     <PracticalInfo
                         v-if="event.sections.length > 0"
                         :sections="event.sections"

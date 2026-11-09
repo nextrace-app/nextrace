@@ -251,7 +251,7 @@ class EventController extends Controller
     {
         $races = [];
 
-        foreach ($event->races()->with(['prices', 'checkpoints'])->get() as $race) {
+        foreach ($event->races()->with(['prices', 'checkpoints', 'course:id,race_id,gpx_path,gpx_name'])->get() as $race) {
             $prices = [];
 
             foreach ($race->prices as $price) {
@@ -284,6 +284,8 @@ class EventController extends Controller
                 'status' => $race->status->value,
                 'registration_url' => $race->registration_url,
                 'prices' => $prices,
+                'gpx_name' => $race->course?->gpx_name,
+                'gpx_url' => $race->course?->gpxUrl(),
                 'checkpoints' => $race->checkpoints->map(fn ($checkpoint) => [
                     'distance_meters' => $checkpoint->distance_meters,
                     'closes_at' => $checkpoint->closes_at->format('Y-m-d\TH:i'),
