@@ -16,7 +16,7 @@ class Permissions
     /**
      * The managed resources and the abilities every one of them has.
      */
-    private const RESOURCES = ['events', 'races', 'series', 'regions'];
+    private const RESOURCES = ['events', 'races', 'series', 'regions', 'features'];
 
     private const ABILITIES = ['viewAny', 'create', 'update', 'delete'];
 

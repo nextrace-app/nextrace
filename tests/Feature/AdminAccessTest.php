@@ -132,7 +132,7 @@ class AdminAccessTest extends TestCase
 
         $this->actingAs(User::factory()->admin()->create())
             ->get(route('admin.dashboard'))
-            ->assertInertia(fn (Assert $page) => $page->where('adminMenu', fn ($menu) => collect($menu)->pluck('key')->all() === ['overview', 'events', 'regions', 'series']));
+            ->assertInertia(fn (Assert $page) => $page->where('adminMenu', fn ($menu) => collect($menu)->pluck('key')->all() === ['overview', 'events', 'regions', 'series', 'features']));
     }
 
     public function test_the_menu_links_stay_in_the_current_locale(): void

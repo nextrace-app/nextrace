@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Admin\FeatureController;
 use App\Http\Controllers\Admin\RegionController;
 use App\Http\Controllers\Admin\SeriesController;
 use App\Http\Controllers\EventController;
@@ -48,6 +49,9 @@ $localized = function () {
 
         Route::resource('regions', RegionController::class)->except('show');
         Route::resource('series', SeriesController::class)->except('show');
+
+        Route::resource('features', FeatureController::class)->except('show');
+        Route::put('features/{feature}/active', [FeatureController::class, 'activate'])->name('features.activate');
     });
 
     require __DIR__.'/settings.php';

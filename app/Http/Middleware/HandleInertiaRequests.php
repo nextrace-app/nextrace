@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Support\AdminMenu;
+use App\Support\Features;
 use App\Support\Locale;
 use App\Support\PageMeta;
 use Illuminate\Http\Request;
@@ -50,6 +51,8 @@ class HandleInertiaRequests extends Middleware
             ],
             // The admin sections this user may open; empty outside the admin area.
             'adminMenu' => fn () => $request->routeIs('admin.*', '*.admin.*') ? AdminMenu::for($request->user()) : [],
+            // The keys of the feature flags that are on (admin > Features).
+            'features' => fn () => Features::activeKeys(),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'locale' => app()->getLocale(),
             'defaultLocale' => Locale::default(),
