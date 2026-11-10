@@ -21,6 +21,7 @@ return [
         ['key' => 'events', 'permission' => 'events.viewAny', 'route' => 'admin.events.index'],
         ['key' => 'regions', 'permission' => 'regions.viewAny', 'route' => 'admin.regions.index'],
         ['key' => 'series', 'permission' => 'series.viewAny', 'route' => 'admin.series.index'],
+        ['key' => 'features', 'permission' => 'features.viewAny', 'route' => 'admin.features.index'],
     ],
 
 ];

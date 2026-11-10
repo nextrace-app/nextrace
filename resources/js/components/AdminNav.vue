@@ -7,6 +7,7 @@ import {
     LayoutDashboard,
     LogOut,
     MapPin,
+    ToggleRight,
 } from '@lucide/vue';
 import type { Component } from 'vue';
 import { computed } from 'vue';
@@ -25,6 +26,7 @@ const icons: Record<string, Component> = {
     events: Calendar,
     regions: MapPin,
     series: Layers,
+    features: ToggleRight,
 };
 
 const sections = computed(() => page.props.adminMenu);
