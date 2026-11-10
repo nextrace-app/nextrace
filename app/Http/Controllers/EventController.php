@@ -6,7 +6,9 @@ use App\Enums\DistanceClass;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\PostResource;
 use App\Models\Event;
+use App\Models\Post;
 use App\Support\EventCalendar;
+use App\Support\Features;
 use App\Support\PageMeta;
 use App\Support\RaceRegistration;
 use Illuminate\Database\Eloquent\Builder;
@@ -107,7 +109,7 @@ class EventController extends Controller
 
         return Inertia::render('Events/Show', [
             'event' => (new EventResource($event))->resolve(),
-            'news' => $this->news($event),
+            'news' => Features::active(Post::FEATURE) ? $this->news($event) : ['posts' => [], 'total' => 0],
             'editions' => $this->editions($event),
             ...$this->moreRaces($event),
             'favorites' => $request->user()?->favoriteEventIds() ?? [],

@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Models\FeatureFlag;
+use App\Models\Post;
 use App\Support\Locale;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -11,8 +12,8 @@ use Laravel\Fortify\Features;
 abstract class TestCase extends BaseTestCase
 {
     /**
-     * Tests run against the multilingual site, as it is meant to be: the flag
-     * that turns English off starts off in a fresh database.
+     * Tests run against the whole site, as it is meant to be: the flags that
+     * hide parts of it start off in a fresh database.
      */
     protected function setUp(): void
     {
@@ -20,6 +21,7 @@ abstract class TestCase extends BaseTestCase
 
         if (in_array(RefreshDatabase::class, class_uses_recursive($this), true)) {
             $this->switchLocalization(true);
+            $this->switchFeature(Post::FEATURE, true);
         }
     }
 
@@ -28,7 +30,15 @@ abstract class TestCase extends BaseTestCase
      */
     protected function switchLocalization(bool $on): void
     {
-        FeatureFlag::query()->where('key', Locale::FEATURE)->update(['is_active' => $on]);
+        $this->switchFeature(Locale::FEATURE, $on);
+    }
+
+    /**
+     * Switch a feature flag the application ships with on or off.
+     */
+    protected function switchFeature(string $key, bool $on): void
+    {
+        FeatureFlag::query()->where('key', $key)->update(['is_active' => $on]);
 
         request()->attributes->remove('features.active');
     }

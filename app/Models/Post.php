@@ -55,6 +55,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 ])]
 class Post extends Model
 {
+    /**
+     * The feature flag that shows posts on the site.
+     */
+    public const FEATURE = 'posts';
+
     /** @use HasFactory<PostFactory> */
     use HasFactory;
 

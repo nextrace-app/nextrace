@@ -12,6 +12,7 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Middleware\HideAdminArea;
 use App\Http\Middleware\RememberLocale;
+use App\Models\Post;
 use App\Support\Locale;
 use Illuminate\Support\Facades\Route;
 
@@ -22,8 +23,10 @@ $localized = function () {
     Route::get('events/{event}', [EventController::class, 'show'])->name('events.show');
     Route::get('events/{event}/calendar.ics', [EventController::class, 'calendar'])->name('events.calendar');
 
-    Route::get('posts', [PostController::class, 'index'])->name('posts.index');
-    Route::get('posts/{post}', [PostController::class, 'show'])->name('posts.show');
+    Route::middleware('feature:'.Post::FEATURE)->group(function () {
+        Route::get('posts', [PostController::class, 'index'])->name('posts.index');
+        Route::get('posts/{post}', [PostController::class, 'show'])->name('posts.show');
+    });
 
     Route::middleware('auth')->group(function () {
         Route::inertia('profile', 'Profile')->name('profile.show');
