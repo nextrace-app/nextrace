@@ -10,7 +10,7 @@ use Illuminate\Http\Response;
 class SitemapController extends Controller
 {
     /**
-     * Every public page in every locale: home, the events and posts lists, and each published event and post.
+     * Every public page in every locale the site is served in: home, the events and posts lists, and each published event and post.
      *
      * There is none while the site is not indexable, as it would invite crawlers in.
      */
@@ -38,7 +38,7 @@ class SitemapController extends Controller
     }
 
     /**
-     * The absolute URL of a route under every supported locale.
+     * The absolute URL of a route under every locale the site is served in.
      *
      * @return array<string, string>
      */
@@ -46,7 +46,7 @@ class SitemapController extends Controller
     {
         $urls = [];
 
-        foreach (config('app.supported_locales') as $locale) {
+        foreach (Locale::served() as $locale) {
             $urls[$locale] = route(Locale::routeName($route, $locale), $parameters);
         }
 

@@ -16,11 +16,13 @@
              is not a page of the site: its address names no content, so it
              carries neither a canonical nor alternates. --}}
         @unless ($page['component'] === 'Error')
-            <link rel="canonical" href="{{ $localeAlternates[app()->getLocale()] }}">
-            @foreach ($localeAlternates as $alternateLocale => $alternateUrl)
-                <link rel="alternate" hreflang="{{ $alternateLocale }}" href="{{ $alternateUrl }}">
-            @endforeach
-            <link rel="alternate" hreflang="x-default" href="{{ $localeAlternates[$defaultLocale] }}">
+            <link rel="canonical" href="{{ $localeAlternates[app()->getLocale()] ?? $localeAlternates[$defaultLocale] }}">
+            @if (count($localeAlternates) > 1)
+                @foreach ($localeAlternates as $alternateLocale => $alternateUrl)
+                    <link rel="alternate" hreflang="{{ $alternateLocale }}" href="{{ $alternateUrl }}">
+                @endforeach
+                <link rel="alternate" hreflang="x-default" href="{{ $localeAlternates[$defaultLocale] }}">
+            @endif
         @endunless
 
         @include('partials.seo')
