@@ -4,10 +4,12 @@
 @foreach ($page['paths'] as $locale => $url)
     <url>
         <loc>{{ $url }}</loc>
+@if (count($page['paths']) > 1)
 @foreach ($page['paths'] as $alternateLocale => $alternateUrl)
         <xhtml:link rel="alternate" hreflang="{{ $alternateLocale }}" href="{{ $alternateUrl }}"/>
 @endforeach
         <xhtml:link rel="alternate" hreflang="x-default" href="{{ $page['paths'][$defaultLocale] }}"/>
+@endif
 @if ($page['lastmod'])
         <lastmod>{{ $page['lastmod']->toAtomString() }}</lastmod>
 @endif

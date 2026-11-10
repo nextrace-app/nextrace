@@ -29,7 +29,9 @@ import { index as posts } from '@/routes/posts';
 import { show as profile } from '@/routes/profile';
 
 const { t } = useI18n();
-const { localeRoute } = useLocale();
+const { localeRoute, supportedLocales } = useLocale();
+// With localization switched off the site has one language and nothing to choose.
+const hasLanguageChoice = computed(() => supportedLocales.value.length > 1);
 const { isCurrentOrParentUrl } = useCurrentUrl();
 const page = usePage();
 const user = computed(() => page.props.auth.user);
@@ -143,7 +145,7 @@ const menuRow =
                     class="hidden items-center gap-2 lg:flex"
                     data-testid="site-header__desktop-nav"
                 >
-                    <LocaleSwitcher />
+                    <LocaleSwitcher v-if="hasLanguageChoice" />
                     <DropdownMenu v-if="user">
                         <DropdownMenuTrigger as-child>
                             <button
@@ -401,6 +403,7 @@ const menuRow =
                         </Link>
 
                         <div
+                            v-if="hasLanguageChoice"
                             class="mt-auto flex justify-end border-t px-6 py-4"
                             data-testid="site-header__menu-language"
                         >

@@ -25,6 +25,9 @@ class AdminFeaturesTest extends TestCase
 
         $this->seed(RoleSeeder::class);
 
+        // The flags the application ships with would crowd the lists below.
+        FeatureFlag::query()->delete();
+
         $this->admin = User::factory()->create(['name' => 'Ada Admin'])->assignRole(UserRole::Admin->value);
         $this->organizer = User::factory()->create()->assignRole(UserRole::Organizer->value);
     }
@@ -45,7 +48,7 @@ class AdminFeaturesTest extends TestCase
 
         $features = [];
 
-        $this->get(route('en.events.index'))->assertInertia(function (Assert $page) use (&$features) {
+        $this->get(route('events.index'))->assertInertia(function (Assert $page) use (&$features) {
             $features = $page->toArray()['props']['features'];
         });
 
@@ -58,7 +61,7 @@ class AdminFeaturesTest extends TestCase
         FeatureFlag::factory()->active()->create(['key' => 'posts', 'description' => 'Race news.', 'updated_by' => $this->admin->id]);
         FeatureFlag::factory()->create(['key' => 'calendar-export']);
 
-        $this->actingAs($this->admin)->get(route('en.admin.features.index'))->assertInertia(fn (Assert $page) => $page
+        $this->actingAs($this->admin)->get(route('admin.features.index'))->assertInertia(fn (Assert $page) => $page
             ->component('Admin/Features/Index')
             ->has('flags', 2)
             ->where('flags.0.key', 'calendar-export')
@@ -69,11 +72,11 @@ class AdminFeaturesTest extends TestCase
             ->where('flags.1.is_active', true)
             ->where('flags.1.updated_by', 'Ada Admin')
             ->where('flags.1.updated_at', fn (string $date) => str_starts_with($date, '2026-11-10'))
-            ->where('flags.1.edit_url', '/en/admin/features/posts/edit')
-            ->where('flags.1.activate_url', '/en/admin/features/posts/active')
-            ->where('flags.1.delete_url', '/en/admin/features/posts')
+            ->where('flags.1.edit_url', '/admin/features/posts/edit')
+            ->where('flags.1.activate_url', '/admin/features/posts/active')
+            ->where('flags.1.delete_url', '/admin/features/posts')
             ->where('canCreate', true)
-            ->where('urls.create', '/en/admin/features/create')
+            ->where('urls.create', '/admin/features/create')
             ->where('adminMenu', fn ($menu) => collect($menu)->pluck('key')->contains('features')));
     }
 

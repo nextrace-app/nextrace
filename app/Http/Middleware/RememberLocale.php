@@ -31,6 +31,10 @@ class RememberLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (! Locale::isMultilingual()) {
+            return $this->serveDefaultLocaleOnly($request, $next);
+        }
+
         if ($chosen = $this->chosenLocale($request)) {
             $this->remember($request, $chosen);
 
@@ -67,6 +71,21 @@ class RememberLocale
     /**
      * The locale the visitor just picked through the language switcher.
      */
+    /**
+     * While localization is off, a prefixed page is sent to the same page in the
+     * default locale, and a remembered or chosen locale is neither followed nor
+     * overwritten, so visitors get their language back once it is switched on.
+     * The redirect is temporary, so search engines keep the prefixed URLs.
+     */
+    private function serveDefaultLocaleOnly(Request $request, Closure $next): Response
+    {
+        if (Locale::fromRequest($request) !== null && $this->mayRedirect($request)) {
+            return redirect()->to($this->urlIn($request, Locale::default()));
+        }
+
+        return $next($request);
+    }
+
     private function chosenLocale(Request $request): ?string
     {
         $locale = $request->query(self::COOKIE);

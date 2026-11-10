@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 class Locale
 {
     /**
+     * The feature flag that serves the site in every supported locale. While it
+     * is off the site runs in the default locale only.
+     */
+    public const FEATURE = 'localization';
+
+    /**
      * The application's default locale, which is never shown in the URL.
      *
      * Deliberately not config('app.locale'): Application::setLocale() overwrites
@@ -25,6 +31,25 @@ class Locale
     public static function prefixed(): array
     {
         return array_values(array_diff(config('app.supported_locales'), [self::default()]));
+    }
+
+    /**
+     * Whether the site is served in every supported locale rather than in the default one only.
+     */
+    public static function isMultilingual(): bool
+    {
+        return Features::active(self::FEATURE);
+    }
+
+    /**
+     * The locales the site is served in right now: every supported one, or only
+     * the default one while localization is switched off.
+     *
+     * @return list<string>
+     */
+    public static function served(): array
+    {
+        return self::isMultilingual() ? config('app.supported_locales') : [self::default()];
     }
 
     /**
@@ -57,7 +82,7 @@ class Locale
     }
 
     /**
-     * The current page's absolute URL in every locale the application serves,
+     * The current page's absolute URL in every locale the site is served in,
      * for the alternate links search engines read.
      *
      * @return array<string, string>
@@ -73,7 +98,7 @@ class Locale
 
         $alternates = [];
 
-        foreach (config('app.supported_locales') as $locale) {
+        foreach (self::served() as $locale) {
             $alternates[$locale] = url()->query(self::path($path, $locale), $query);
         }
 
