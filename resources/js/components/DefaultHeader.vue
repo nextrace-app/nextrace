@@ -20,6 +20,7 @@ import {
     SheetTrigger,
 } from '@/components/ui/sheet';
 import { useCurrentUrl } from '@/composables/useCurrentUrl';
+import { useFeature } from '@/composables/useFeature';
 import { useInitials } from '@/composables/useInitials';
 import { useLocale } from '@/composables/useLocale';
 import { home, login, logout } from '@/routes';
@@ -32,6 +33,7 @@ const { t } = useI18n();
 const { localeRoute, supportedLocales } = useLocale();
 // With localization switched off the site has one language and nothing to choose.
 const hasLanguageChoice = computed(() => supportedLocales.value.length > 1);
+const showsPosts = useFeature('posts');
 const { isCurrentOrParentUrl } = useCurrentUrl();
 const page = usePage();
 const user = computed(() => page.props.auth.user);
@@ -124,6 +126,7 @@ const menuRow =
                 {{ t('nav.races') }}
             </Link>
             <Link
+                v-if="showsPosts"
                 :href="localeRoute(posts())"
                 :class="[
                     pill,
@@ -391,6 +394,7 @@ const menuRow =
                         </nav>
 
                         <Link
+                            v-if="showsPosts"
                             :href="localeRoute(posts())"
                             data-testid="site-header__menu-posts"
                             :class="[menuRow, 'border-t']"
